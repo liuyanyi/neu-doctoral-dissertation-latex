@@ -623,10 +623,12 @@
 \newcommand{\neutabref}[1]{表~\ref{#1}}
 \newcommand{\neueqref}[1]{式（\ref{#1}）}
 \@namedef{bibstyle@gbt7714-unsrt}{\bibstyle@super}
-\NewDocumentCommand{\upcite}{om}{%
+
+\DeclareDocumentCommand{\upcite}{om}{%
   \IfNoValueTF{#1}{\citep{#2}}{\citep[#1]{#2}}%
 }
-\NewDocumentCommand{\inlinecite}{om}{%
+
+\DeclareDocumentCommand{\inlinecite}{om}{%
   \begingroup
   \citestyle{inline}%
   \IfNoValueTF{#1}{\citep{#2}}{\citep[#1]{#2}}%
