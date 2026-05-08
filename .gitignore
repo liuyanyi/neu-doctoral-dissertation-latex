@@ -389,7 +389,9 @@ $RECYCLE.BIN/
 
 # base sty file
 latexmk
-.vscode/
+.vscode/*
+!.vscode/settings.json
+.docx-extract/
 */.venv
 */build
 .env

@@ -1,292 +1,229 @@
-\chapter{模板使用说明与排版规范}
+%!TEX root = ./main.tex
+\chapter{论文格式样例与模板验证}
 
-本章节旨在详细说明东北大学学位论文 LaTeX 模板的使用方法。本模板基于 `neudissertation.cls` 构建，预置了符合学校规范的字体、字号、行距及图表样式 。
+本章作为模板的集中样例章，用于快速检查正文中常见排版元素的显示效果。
+样例覆盖章节层级、正文段落、列表、脚注、图、表、公式、算法、交叉引用和参考文献引用等内容。
+编写正式论文时，可以保留本章作为排版对照，也可以删除本章并从第~\ref{chap:introduction}~章开始撰写正文。
 
-\section{文档设置与学位适配}
+\section{章节层级与正文段落}
 
-本模板支持学士（Bachelor）、硕士（Master）和博士（Doctor）三种学位论文的排版。根据学位类型的不同，需要在文档类参数、个人信息变量以及文末章节进行相应的调整。
+论文正文通常从一级标题开始组织内容，一级标题使用 \verb|\chapter|，二级标题使用 \verb|\section|，三级标题使用 \verb|\subsection|。
+本模板会自动设置章标题、节标题、页眉、页码和目录格式，作者只需要关注正文内容。
+正文段落首行缩进、行距和中英文字体均由模板统一控制。
 
-\subsection{文档类型参数 (Type)}
+中文正文可以直接书写；英文术语建议在首次出现时给出全称，例如自然语言处理（Natural Language Processing, NLP）。
+行内公式可以写作 $E=mc^2$，行内代码或命令可以使用 \verb|\verb|，例如 \verb|\input{chapter0-guide}|。
+脚注示例如此处所示\footnote{脚注用于补充说明，不宜放置过长的正文内容。}。
 
-在 \texttt{main.tex} 的第一行，通过 \texttt{Type} 参数指定学位类型。该参数决定了封面样式、页眉页脚格式以及必要的元数据字段。
+\subsection{字体、字号与强调}
 
-\begin{itemize}
-    \item \textbf{本科论文}：\verb|\documentclass[Type=Bachelor]{neudissertation}|
-    \item \textbf{硕士论文}：\verb|\documentclass[Type=Master]{neudissertation}|
-    \item \textbf{博士论文}：\verb|\documentclass[Type=Doctor]{neudissertation}|
-\end{itemize}
-
-\subsection{必要变量设置}
-
-所有学位类型的通用信息（如标题、作者、导师、学院等）在 \texttt{main.tex} 的“基础信息”和“导师”部分设置。
-
-以下变量直接决定了中英文封面的内容，请务必准确填写：
+模板预定义了常用中文字体命令。正式论文中通常不需要手动切换字体；只有在展示样式、术语强调或特殊说明时才建议使用。
+需要注意的是，Windows 常用中文字体多数只有常规字重，没有独立的粗体字形。
+因此 \verb|\bfseries| 或 \verb|\textbf| 对宋体、黑体、楷体、仿宋等中文字体未必产生真正加粗效果；模板中的黑体标题主要依靠“黑体”本身的笔画风格，而不是额外叠加粗体。
+若需要强调中文内容，建议优先使用黑体、调整标题层级或通过文字表述强调，不建议依赖中文伪粗体。
 
 \begin{table}[H]
   \centering
-  \twotabcaption{tab:basic-vars}{基础信息变量表}{Basic Information Variables}
+  \twotabcaption{tab:ch0-fonts}{字体与强调样例}{Examples of Fonts and Emphasis}
   \begin{tabular}{lll}
     \toprule
-    类别 & 变量命令 & 说明 \\
+    命令 & 显示效果 & 使用建议 \\
     \midrule
-    \multirow{2}{*}{标题} & \verb|\zhtitle{...}| & 中文论文题目 \\
-    & \verb|\entitle{...}| & 英文论文题目 \\
-    \midrule
-    \multirow{2}{*}{作者} & \verb|\zhauthor{...}| & 作者中文姓名 \\
-    & \verb|\enauthor{...}| & 作者英文姓名（拼音） \\
-    \midrule
-    \multirow{3}{*}{学籍} & \verb|\studentid{...}| & 学号 \\
-    & \verb|\campusname{...}| & 学院名称（如：软件学院） \\
-    & \verb|\zhmajor{...}| / \verb|\enmajor{...}| & 专业名称（中/英） \\
-    \midrule
-    时间 & \verb|\zhthesisdate{...}| & 封面日期（如：202x年6月） \\
+    \verb|\song| & {\song 宋体文字示例} & 正文默认字体 \\
+    \verb|\hei| & {\hei 黑体文字示例} & 标题或强调场景 \\
+    \verb|\kai| & {\kai 楷体文字示例} & 摘要、题签或引用语 \\
+    \verb|\fs| & {\fs 仿宋文字示例} & 特殊文书类内容 \\
+    \verb|\textbf| & \textbf{加粗文字示例} & 主要用于英文、数字或有粗体字重的字体 \\
+    \verb|\textit| & \textit{Italic text example} & 英文斜体或变量说明 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-模板支持\textbf{单导师}和\textbf{双导师}模式。请注意，英文导师姓名通常需要包含职称（如 Professor X）。
+\subsection{列表环境}
 
-\textbf{1. 第一导师（必须设置）}
-
-\begin{verbatim}
-\zhsupervisor{李四}                % 中文姓名
-\zhsupervisortitle{教授}           % 职称
-\zhsupervisorwork{东北大学软件学院} % 工作单位
-\ensupervisor{Professor Li Si}     % 英文姓名(含职称)
-\end{verbatim}
-
-\textbf{2. 第二导师（可选设置）}
-
-若您的论文有校外导师或协助指导教师，请填写 \verb|zhsupervisortwo| 系列变量。
-
+无序列表适合列出并列事项：
 \begin{itemize}
-  \item \textbf{有第二导师时}：正常填写下列变量。
-  \item \textbf{无第二导师时}：\textbf{必须}在 \texttt{main.tex} 中注释掉或删除下列四行代码！否则封面上会出现多余的空白或标点符号。
+  \item 图题位于图下方，表题位于表上方。
+  \item 图表应使用中英文双语标题。
+  \item 公式、图、表、算法均应使用标签进行交叉引用。
 \end{itemize}
 
-\begin{verbatim}
-% --- 只有在有第二导师时才取消注释 ---
-% \zhsupervisortwo{张三}
-% \zhsupervisortwotitle{副教授}
-% \zhsupervisortwowork{东北大学计算机学院}
-% \ensupervisortwo{Associate Prof. Zhang San}
-% ---------------------------------
-\end{verbatim}
+有序列表适合描述步骤：
+\begin{enumerate}
+  \item 在 \texttt{main.tex} 中填写论文元信息。
+  \item 在各章文件中撰写正文内容。
+  \item 使用 \texttt{latexmk -xelatex main.tex} 完成编译。
+\end{enumerate}
 
-对于\textbf{硕士和博士}学位论文，还必须补充填写“仅硕博需要下列变量”区域的信息，否则封面和题名页的相关字段将为空白：
+\section{图形排版}
+
+本模板提供 \verb|\twofigcaption{label}{中文题名}{English title}| 用于生成中英文图题。
+图题应置于图形下方，正文中使用 \verb|\figref{label}| 引用。
+
+\subsection{外部图片}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\textwidth]{Figures/oaspl_a.pdf}
+  \twofigcaption{fig:ch0-cover}{外部图片插入样例}{Example of Including an External Image}
+\end{figure}
+
+\figref{fig:ch0-cover} 展示了通过 \verb|\includegraphics| 插入图片文件的方式。
+正式论文中建议将图片统一放入 \texttt{Figures} 目录，并使用相对路径引用。
+
+\subsection{PDF 或位图图片}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.55\textwidth]{Figures/oaspl_b.pdf}
+  \twofigcaption{fig:ch0-pdf}{PDF 图片插入样例}{Example of Including a PDF Figure}
+\end{figure}
+
+PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入。
+若图片由绘图软件或数据分析程序导出，建议优先使用 PDF 格式以保持较清晰的显示效果。
+
+\subsection{并列图片}
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.46\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/oaspl_c.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.46\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/oaspl_d.pdf}
+  \end{minipage}
+  \twofigcaption{fig:ch0-side-by-side}{并列图形排版样例}{Example of Side-by-Side Figures}
+\end{figure}
+
+\figref{fig:ch0-side-by-side} 使用 \texttt{minipage} 完成并列排版。
+当两幅图共享一个总标题时，可使用这种方式；如果每幅图都需要独立编号，建议拆成两个独立的 \texttt{figure} 环境。
+
+\section{表格排版}
+
+本模板提供 \verb|\twotabcaption{label}{中文题名}{English title}| 用于生成中英文表题。
+表题应置于表格上方，正文中使用 \verb|\tabref{label}| 引用。
+
+\subsection{三线表}
+
+文本测试A
 
 \begin{table}[H]
   \centering
-  \twotabcaption{tab:grad-vars}{硕博学位论文专属变量}{Variables for Master and Doctoral Dissertations}
-  \begin{tabular}{lll}
+  \twotabcaption{tab:ch0-booktabs}{三线表样例}{Example of a Three-Line Table}
+  \begin{tabular}{lccc}
     \toprule
-    变量命令 & 含义 & 示例 \\
+    方法 & 准确率（\%） & 召回率（\%） & F1 值 \\
     \midrule
-    \verb|\zhdegreetype| & 学位类别 & 硕士 / 博士 \\
-    \verb|\zhmajortype| & 学科门类 & 工学 / 理学 \\
-    \verb|\zhsubmissiondate| & 论文提交日期 & 20xx年6月 \\
-    \verb|\zhdefensedate| & 论文答辩日期 & 20xx年6月 \\
-    \verb|\zhdegreegivendate| & 学位授予日期 & 20xx年6月 \\
-    \verb|\zhdefensechairmen| & 答辩委员会主席 & 某某教授 \\
-    \verb|\zhreviewers| & 评阅人 & 评阅人1\quad 评阅人2 \\
+    Baseline & 85.2 & 84.1 & 0.846 \\
+    Method A & 89.7 & 88.9 & 0.893 \\
+    Proposed & \textbf{92.1} & \textbf{91.5} & \textbf{0.918} \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-封面左上角的分类号和密级一般留空即可：
+\tabref{tab:ch0-booktabs} 展示了推荐的三线表格式。
+论文中应尽量避免过多竖线，以保持表格简洁。
 
-\begin{itemize}
-    \item \verb|\classification{}|：留空。
-    \item \verb|\serialno{}|：留空。
-    \item \verb|\udc{}|：留空。
-\end{itemize}
-
-\subsection{硕博补充章节：科研及发表论文}
-
-根据学校要求，硕士和博士论文需要在参考文献之后、致谢之前，增加“攻读学位期间科研及发表论文情况”章节。
-
-请在 \texttt{main.tex} 的 \verb|\backmatter| 区域（参考文献之后），取消相关代码的注释：
-
-\begin{verbatim}
-% --------------------------------------------------
-% 仅硕博需要此章节
-\chapter{攻读学位期间科研及发表论文情况}
-{
-   \noindent \sanhao \bf 科研情况:
-}
-\begin{enumerate}[label*=项目\arabic*：, leftmargin=*,
-    labelindent=\parindent, itemindent=6em]
-    \item 国家自然科学基金项目...
-\end{enumerate}
-
-{
-    \noindent \sanhao \bf 论文发表情况:
-}
-
-\begin{enumerate}[label*=发表\arabic*：,  leftmargin=*,
-    labelindent=\parindent,  itemindent=6em]
-    \item 作者名. 论文题目...
-\end{enumerate}
-% -------------------------------------------------
-\end{verbatim}
-
-\textbf{注意}：本科毕业设计（论文）不需要此章节，请保持注释状态。
-
-\section{字体与文本设置}
-
-\subsection{中文字体}
-模板预定义了符合规范的中文字体族，通常情况下系统会自动根据章节标题（黑体）和正文（宋体）切换，但在需要强调时可手动指定 ：
-
+\subsection{复杂表格}
 \begin{table}[H]
   \centering
-  \twotabcaption{tab:font-demo}{常用字体命令对照表}{Comparison of Common Font Commands}
-  \begin{tabular}{llll}
+  \twotabcaption{tab:ch0-complex}{合并单元格与自动换行表格样例}{Example of Merged Cells and Auto-Wrapping Columns}
+  \begin{tabularx}{\textwidth}{llXc}
     \toprule
-    命令 & 说明 & 示例 & 备注 \\
+    类别 & 指标 & 说明 & 是否必需 \\
     \midrule
-    \verb|\song| & 宋体 & \song 东北大学 (Northeastern University) & 正文默认 \\
-    \verb|\hei| & 黑体 & \hei 东北大学 (Northeastern University) & 标题默认 \\
-    \verb|\kai| & 楷体 & \kai 东北大学 (Northeastern University) & 摘要/强调 \\
-    \verb|\fs| & 仿宋 & \fs 东北大学 (Northeastern University) & 很少使用 \\
+    \multirow{2}{*}{图形} & 分辨率 & 位图图片应保证在最终 PDF 中清晰可辨。 & 是 \\
+    & 题名 & 图题使用中英文双语标题，并位于图片下方。 & 是 \\
+    \midrule
+    \multirow{2}{*}{表格} & 宽度 & 宽表格可使用 \texttt{tabularx} 自动分配列宽。 & 否 \\
+    & 表注 & 表内说明应简明，必要时可在正文中解释。 & 否 \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
-\subsection{文字强调}
-正文中请使用以下标准命令进行强调：
-\begin{itemize}
-    \item \textbf{加粗}：使用 \verb|\textbf{文字}|。
-    \item \textit{斜体}：使用 \verb|\textit{文字}|（中文环境通常显示为楷体）。
-\end{itemize}
+\tabref{tab:ch0-complex} 同时展示了 \verb|\multirow|、\verb|\makecell| 可配合使用的复杂表格场景。
+若单元格内容较长，优先使用 \texttt{tabularx} 或 \texttt{p\{...\}} 列类型控制宽度。
 
 \section{公式排版}
 
-\subsection{公式环境}
-行内公式请使用 \verb|$...$| 包裹，例如 $E=mc^2$。
-行间公式推荐使用 \verb|equation| 环境，以便自动生成编号：
+公式应使用标准数学环境，并通过 \verb|\label| 设置标签。
+引用公式时建议使用模板提供的 \verb|\equref{label}|。
 
+\subsection{单行公式}
+以分类任务中的交叉熵损失为例，可写为
 \begin{equation}
-  f(x) = \frac{1}{\sqrt{2\pi}\sigma} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
-  \label{eq:guassian}
+  \mathcal{L}(\theta)
+  = - \frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K} y_{ik}\log p_{ik}
+  \label{eq:ch0-loss}
 \end{equation}
 
-\subsection{公式引用}
-引用公式时，请务必使用模板定义的 \verb|\equref{label}| 命令。
-\begin{itemize}
-  \item \textbf{正确示例}：如 \equref{eq:guassian} 所示（会自动添加“式”字前缀）。
-  \item \textbf{错误示例}：如 公式\ref{eq:guassian} 所示。
-\end{itemize}
+如 \equref{eq:ch0-loss} 所示，带编号公式适合放置正文中需要引用的重要定义。
 
-\section{图表双语标题规范}
+\subsection{多行公式}
+循环模型中的状态更新和输出计算可写为
+\begin{align}
+  h_t &= \sigma(W_x x_t + W_h h_{t-1} + b), \label{eq:ch0-state} \\
+  \hat{y}_t &= \operatorname{softmax}(W_o h_t). \label{eq:ch0-output}
+\end{align}
 
-根据学校学位论文要求，图和表必须包含\textbf{中英双语标题}。本模板封装了 twofigcaption和 twotabcaption 命令来简化此操作 。
+\equref{eq:ch0-state} 和 \equref{eq:ch0-output} 展示了多行公式的编号方式。
+如果多行推导只需要一个编号，可使用 \texttt{aligned} 放在 \texttt{equation} 环境内部。
 
-\subsection{图片的插入}
-请注意：图片标题应位于图片\textbf{下方}。使用 \verb|\twofigcaption{label}{中文}{英文}| 命令。
+\subsection{分段函数与矩阵}
+分段函数和矩阵经常同时出现在数学定义中，例如
+\begin{equation}
+  g(x)=
+  \begin{cases}
+    0, & x < 0, \\
+    x, & 0 \le x < 1, \\
+    1, & x \ge 1,
+  \end{cases}
+  \qquad
+  A =
+  \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1
+  \end{bmatrix}.
+  \label{eq:ch0-piecewise}
+\end{equation}
 
-\begin{figure}[H]
-  \centering
-  % 使用 demo 占位符，实际请替换为 \includegraphics
-  \fbox{
-    \begin{minipage}{0.6\textwidth}
-      \centering
-      \vspace{1cm}
-      此处插入图片文件 \\
-      Image Placeholder
-      \vspace{1cm}
-  \end{minipage}}
-
-  \twofigcaption{fig:structure}{系统整体架构图}{System Architecture Diagram}
-\end{figure}
-
-引用图片请使用 \verb|\figref{fig:structure}|，效果为：\figref{fig:structure}。
-
-有能力的建议使用tikz 绘图，可以获得媲美svg的显示效果，示例如下.
-
-\begin{figure}[H]
-  \centering
-  \input{FigureData/figure-optimization-process.tex}
-  \twofigcaption{fig:optimization-process}{深度神经网络轻量化与部署过程}{Lightweight and Deploy Process of Deep Neural Network}
-\end{figure}
-
-多图并列排版示例如下
-
-\begin{figure}[H]
-  \centering
-  \begin{minipage}[t]{0.45\linewidth}
-    \centering
-    \resizebox{\textwidth}{!}{\input{FigureData/figure-params-cv}}
-  \end{minipage}%
-  ~
-  \begin{minipage}[t]{0.45\linewidth}
-    \centering
-    \resizebox{\textwidth}{!}{\input{FigureData/figure-params-nlp}
-    }
-  \end{minipage}
-  \twofigcaption{fig:param-compare}{神经网络参数量对比}{Comparesion of Neural Network Parameter Amount}
-\end{figure}
-
-tikz绘图建议：Tikz绘图涉及多次调整。建议先在figure-pdf.tex中单独绘制。绘制完成后，创建一个tex文件，引入到主文档中。figure-pdf.tex和main.tex都共享tikzbase.sty。若要加入新的tikz 库引用，建议改动该文件，从而使tikz依赖一致。
-
-\subsection{表格的插入}
-请注意：表格标题应位于表格\textbf{上方}。使用 \verb|\twotabcaption{label}{中文}{英文}| 命令。推荐使用三线表（booktabs）。
-
-\begin{table}[H]
-  \centering
-  \twotabcaption{tab:experiment}{实验数据对比}{Comparison of Experimental Data}
-  \begin{tabular}{l c c c}
-    \toprule
-    模型 (Model) & 准确率 (Acc) & 召回率 (Recall) & F1值 \\
-    \midrule
-    Baseline & 85.2\% & 84.1\% & 0.846 \\
-    Our Method & \textbf{92.1\%} & \textbf{91.5\%} & \textbf{0.918} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-引用表格请使用 \verb|\tabref{tab:experiment}|，效果为：\tabref{tab:experiment}。
-
-\section{参考文献引用}
-
-模板支持两种引用模式，请根据语境选择：
-
-\begin{enumerate}
-    \item \textbf{上标模式}（\verb|\upcite|）：
-    \begin{itemize}
-      \item 用于陈述事实或观点时。
-      \item 示例：已有研究表明深度学习在图像识别中表现优异\upcite{guo_2023_research}。
-    \end{itemize}
-
-    \item \textbf{正文模式}（\verb|\cite|）：
-    \begin{itemize}
-      \item 用于文献作为句子成分（如主语）时。
-      \item 示例：文献 \cite{guo_2023_research} 详细讨论了这一问题。
-    \end{itemize}
-\end{enumerate}
+\equref{eq:ch0-piecewise} 展示了分段函数和矩阵的常见写法。
 
 \section{算法伪代码}
 
-对于计算机类专业的论文，常需插入算法伪代码。模板已预置 `algorithm` 和 `algorithmic` 宏包。
+计算机类论文常需要给出算法步骤。本文档在 \texttt{main.tex} 中加载了 \texttt{algorithm} 和 \texttt{algorithmic} 宏包，可以直接使用如下环境。
 
 \begin{algorithm}[H]
-  \caption{自适应学习率调整算法}
-  \label{alg:learning_rate}
+  \caption{样例训练流程}
+  \label{alg:ch0-training}
   \begin{algorithmic}[1]
-    \REQUIRE Initial learning rate $\alpha_0$, decay rate $\gamma$
-    \ENSURE Updated parameters $\theta$
-    \STATE Initialize $t \leftarrow 0$
-    \WHILE{not converged}
-    \STATE $t \leftarrow t + 1$
-    \STATE $\alpha_t \leftarrow \alpha_0 / (1 + \gamma t)$
-    \STATE Update $\theta_t$ using gradient descent with $\alpha_t$
-    \ENDWHILE
-    \RETURN $\theta_t$
+    \REQUIRE Training set $\mathcal{D}$, learning rate $\eta$, maximum epoch $T$
+    \ENSURE Model parameters $\theta$
+    \STATE Initialize parameters $\theta$
+    \FOR{$t = 1$ to $T$}
+      \STATE Sample a mini-batch $\mathcal{B}$ from $\mathcal{D}$
+      \STATE Compute loss $\mathcal{L}(\theta)$ by \equref{eq:ch0-loss}
+      \STATE Update $\theta \leftarrow \theta - \eta \nabla_{\theta}\mathcal{L}(\theta)$
+    \ENDFOR
+    \RETURN $\theta$
   \end{algorithmic}
 \end{algorithm}
 
-\section{其他注意事项}
+算法~\ref{alg:ch0-training} 展示了带行号的伪代码。
+若需要中文关键字，可在导言区重定义相应命令。
 
+\section{引用、链接与交叉引用}
+
+参考文献引用可使用两种方式：
+上标引用适合放在句末，例如已有研究讨论了神经网络轻量化问题\upcite{guo_2023_research}；
+正文引用适合作为句子成分，例如文献 \inlinecite{thakkar_2018_performance} 给出了系统性能评测案例。
+多篇文献可写在同一条引用命令中，例如区块链平台相关研究\upcite{zheng_2019_nutbaas,thakkar_2018_performance}。
+
+交叉引用建议统一使用模板命令：
 \begin{itemize}
-  \item \textbf{列表环境}：模板优化了 `itemize` 和 `enumerate` 的间距，使其更符合中文排版习惯 。
-  \item \textbf{编译方式}：推荐使用Latex 结合-xelatex编译。确保中文字体和文献正确渲染。
+  \item 图引用：\verb|\figref{fig:ch0-pdf}|，效果为 \figref{fig:ch0-pdf}。
+  \item 表引用：\verb|\tabref{tab:ch0-complex}|，效果为 \tabref{tab:ch0-complex}。
+  \item 公式引用：\verb|\equref{eq:ch0-loss}|，效果为 \equref{eq:ch0-loss}。
+  \item 算法引用：当前模板未单独封装算法引用命令，可写作“算法~\ref{alg:ch0-training}”。
 \end{itemize}

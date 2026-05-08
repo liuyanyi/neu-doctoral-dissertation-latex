@@ -1,138 +1,88 @@
-% ------------------------------------------------------
-% 文档信息
-% Type = Bachelor 本科论文模板
-% Type = Master 硕士论文模板
-% Type = Doctor 博士论文模板
-\documentclass[Type=Doctor]{neudissertation}
-% ------------------------------------------------------
+% 东北大学博士学位论文 LaTeX 模板（2026 版）
+\documentclass[blindreview=false]{neudissertation}
 
-% ------------------------------------------------------
-% 基础信息
-\classification{}
-\serialno{}
-\udc{}
-\studentid{20221234}
-\campusname{软件学院}
-\zhmajor{软件工程}
-\enmajor{Software Engineer}
-\zhtitle{东北大学论文模板标题}
-\entitle{Dissertation Template of Northeastern University}
-\zhauthor{王五}
-\enauthor{Wang Wu}
-\zhthesisdate{20xx年6月}
-\enthesisdate{June 20xx}
-% ------------------------------------------------------
+\neudisetup{
+  classification = {},
+  security-level = {},
+  udc = {},
+  student-id = {},
+  title-cn = {面向机械翻译的随机词汇语义驱动方法的研究},
+  title-en = {Machine Translation Orented Stochastic\\Lexical Semantic Driven Approach},
+  author-cn = {李某某},
+  author-en = {Li Mou},
+  college-cn = {计算机科学与工程学院},
+  major-cn = {计算机软件与理论},
+  major-en = {Computer Software and Theory},
+  degree-level = {博士},
+  discipline = {},
+  supervisor-cn = {张某某},
+  supervisor-title-cn = {教授},
+  supervisor-affiliation-cn = {东北大学计算机科学与工程学院},
+  supervisor-en = {Professor Zhang Moumou},
+  cosupervisor-cn = {},
+  cosupervisor-title-cn = {},
+  cosupervisor-affiliation-cn = {},
+  cosupervisor-en = {},
+  submit-date = {2016年4月},
+  defense-date = {2016年6月},
+  degree-date = {2016年7月},
+  defense-chair = {王某某},
+  cover-date-cn = {2016年7月},
+  cover-date-en = {January 2016},
+  online-release = {两年},
+  signature-date = {},
+  author-signature = {Figures/signature.jpeg},
+  supervisor-signature = {Figures/signature.jpeg},
+  signature-height = {8mm}
+}
 
-% ------------------------------------------------------
-% 导师1
-\zhsupervisor{李四}
-\zhsupervisortitle{教授}
-\zhsupervisorwork{东北大学软件学院}
-\ensupervisor{Associate Professor Li Si}
-% ------------------------------------------------------
-
-% ------------------------------------------------------
-% 导师2
-% 若没有导师2，可以注释掉下列变量
-\zhsupervisortwo{张三}
-\zhsupervisortwotitle{教授}
-\zhsupervisortwowork{东北大学软件学院}
-\ensupervisortwo{Associate Professor Zhang San}
-% ------------------------------------------------------
-
-% ------------------------------------------------------
-% 仅硕博需要下列变量
-\zhdegreetype{硕士}
-\zhmajortype{工学}
-\zhsubmissiondate{20xx年6月}
-\zhdefensedate{20xx年6月}
-\zhdegreegivendate{20xx年6月}
-\zhdefensechairmen{主席}
-\zhreviewers{评阅人1\quad 评阅人2 }
-% ------------------------------------------------------
-
-% 用于伪代码
+% 用户扩展宏包
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{makecell}
-
-% 用于tikz绘图基本设置
-\usepackage{tikzbase}
-
-% 导入随机文本
 \usepackage{lipsum}
 \usepackage{zhlipsum}
 
 \begin{document}
 
+\makeneucovers
+
 \frontmatter
-\maketitle
 
-\input{declaration}
+\makeneudeclaration
 
-\zhabstractmatter
+\begin{abstract-cn}
+  \input{abstract-cn}
+\end{abstract-cn}
 
-\input{zhabstract}
-
-\enabstractmatter
-
-\input{enabstract}
-
-\tableofcontentsmatter
+\begin{enabstract}
+  \input{enabstract}
+\end{enabstract}
 
 \tableofcontents
 
 \mainmatter
 
 \input{chapter0-guide}
-
 \input{chapter1}
-
 \input{chapter2}
-
 \input{chapter3}
-
 \input{chapter4}
-
 \input{chapter5}
-
 \input{chapter6}
 
 \backmatter
 
-{
+\addcontentsline{toc}{chapter}{参考文献}
+\nocite{guo_2023_research}
+\bibliography{references}
 
-  \addcontentsline{toc}{chapter}{参考文献}
-  \bibliographystyle{gbt7714-numerical}
-  \bibliography{references}
-}
+\chapter{攻读博士学位期间取得的学术成果}
+\begin{enumerate}
+  \item 第一作者. 示例论文题名[J]. 示例期刊，20xx，1（1）：1-10. （检索情况）（对应论文第一章）
+  \item 第一排序. 示例专利题名：中国，XXXXXXXXX[P]. 20xx-xx-xx. （对应论文第二章）
+\end{enumerate}
 
 \input{thanks}
 
-% -----------------------------------------------------------------------
-% 仅硕博
-%\chapter{攻读学位期间科研及发表论文情况}
-%
-%{
-%   \noindent \sanhao \bf 科研情况:
-%}
-%
-%
-%\begin{enumerate}[label*=项目\arabic*：, leftmargin=*, labelindent=\parindent, itemindent=6em]
-%  \item
-%    \item
-%\end{enumerate}
-%
-%
-%{
-%    \noindent \sanhao \bf 论文发表情况:
-%}
-%
-%\begin{enumerate}[label*=发表\arabic*：, leftmargin=*, labelindent=\parindent, itemindent=6em]
-%  \item Gerald Tesauro, et al. A hybrid reinforcement learning approach to autonomic resource allocation[C]. IEEE International Conference on Autonomic Computing. 2006.
-%    \item
-%\end{enumerate}
-% -----------------------------------------------------------------------
-
-\begin{ 
 \end{document}

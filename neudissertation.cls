@@ -1,76 +1,90 @@
 %%
-%% This is file `neudissertation.cls'.
+%% Northeastern University doctoral dissertation template, 2026 edition.
 %%
-%% Copyright (C) 2020 by Chaopeng GUO <guochaopeng@swc.neu.edu.cn>
-%%
-%% This file may be distributed and/or modified under the
-%% conditions of the LaTeX Project Public License, either version 1.3a
-%% of this license or (at your option) any later version.
-%% The latest version of this license is in:
-%%
-%% http://www.latex-project.org/lppl.txt
-%%
-%% and version 1.3a or later is part of all distributions of LaTeX
-%% version 2004/10/01 or later.
-%%
-%% Any Suggestions : Chaopeng Guo <guochaopeng@swc.neu.edu.cn>
-%%
-\NeedsTeXFormat{LaTeX2e}[2023/11/01]
-\ProvidesClass{neudissertation}[2026/01/01 v1.0 Northeastern University Dissertation Template]
+\NeedsTeXFormat{LaTeX2e}[2022/11/01]
+\ProvidesClass{neudissertation}[2026/05/07 v2.0 NEU doctoral dissertation template]
+
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=neuclass,prefix=neuclass@}
+\DeclareBoolOption[false]{blindreview}
+\ProcessKeyvalOptions*
+
+\LoadClass[a4paper,zihao=-4,fontset=none,openright,twoside]{ctexbook}
+
+\RequirePackage{xkeyval}
 \RequirePackage{etoolbox}
-\RequirePackage{expl3}
-\RequirePackage { l3keys2e }
-\ExplSyntaxOn
-\tl_new:N \g_neudissertation_type_tl
-\keys_define:nn { neudissertation }
-{
-  % 定义 Type 键
-  Type .choices:nn =
-  {Bachelor, Master, Doctor}
-  {
-    %      \iow_term:e { [DEBUG]~Matched~Choice:~ \l_keys_choice_tl }
-    \tl_gset:NV \g_neudissertation_type_tl \l_keys_choice_tl
-  },
-  Type / unknown .code:n =
-  {
-    \ClassError{neudissertation}{Unknown~Type:~'#1'}{
-      Valid~options~are:~Bachelor,~Master,~Doctor.\MessageBreak
-      The~default~'Bachelor'~will~be~used.
-    }
-    \tl_gset:Nn \g_neudissertation_type_tl {Bachelor}
-  },
-  unknown .code:n = { \PassOptionsToClass { \CurrentOption } { ctexbook } }
-}
-% 处理参数
-\ProcessKeysOptions{neudissertation}
-\ExplSyntaxOff
-
-\LoadClass[a4paper,zihao=-4,openright,oneside]{ctexbook}
-
-% 使用示例：
-\RequirePackage{ifthen}
-\RequirePackage[includeheadfoot]{geometry}
+\RequirePackage{fontspec}
 \RequirePackage{geometry}
-\geometry{a4paper,left=2.5cm, right=2.5cm, top=1.5cm, bottom=2cm}
-\geometry{headsep=0.5cm,footskip=1cm}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{titletoc}
+\RequirePackage{graphicx}
+\RequirePackage{float}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage{makecell}
+\RequirePackage{enumitem}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{eso-pic}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{bm}
+\RequirePackage{indentfirst}
+\RequirePackage{caption}
+\RequirePackage[sort&compress]{gbt7714}
+\RequirePackage[hidelinks]{hyperref}
+\usetikzlibrary{calc}
+\pdfstringdefDisableCommands{%
+  \def\quad{ }%
+}
 
-% Font Style Settings
+% Base page layout matched to the Word template.
+\geometry{
+  a4paper,
+  left=2.54cm,
+  right=2.54cm,
+  top=2.54cm,
+  bottom=2.54cm,
+  headheight=14bp,
+  headsep=0.617cm,
+  footskip=0.79cm
+}
+
+% Font families.
 \setmainfont{Times New Roman}
 \setsansfont{Arial}
 \setmonofont{Courier New}
-\setCJKmainfont[BoldFont=华文中宋,ItalicFont=楷体]{宋体}
-\setCJKsansfont{黑体} % Hei
-\setCJKmonofont{仿宋} % Fangsong
-\setCJKfamilyfont{song}{宋体}
-\setCJKfamilyfont{hei}{黑体}
-\setCJKfamilyfont{fs}{仿宋} % fang-song
-\setCJKfamilyfont{kai}{楷体} % Kai
-\newcommand{\cusong}{\bfseries}
-\newcommand{\song}{\CJKfamily{song}} % 宋体
-\newcommand{\fs}{\CJKfamily{fs}}
-\newcommand{\kai}{\CJKfamily{kai}}
+\setCJKmainfont[BoldFont=SimHei,ItalicFont=KaiTi]{SimSun}
+\setCJKsansfont[
+  BoldFont=SimHei,
+  ItalicFont=SimHei,
+  BoldItalicFont=SimHei
+]{SimHei}
+\setCJKmonofont{FangSong}
+\setCJKfamilyfont{song}{SimSun}
+\setCJKfamilyfont{hei}[
+  BoldFont=SimHei,
+  ItalicFont=SimHei,
+  BoldItalicFont=SimHei
+]{SimHei}
+\setCJKfamilyfont{kai}{KaiTi}
+\setCJKfamilyfont{fs}{FangSong}
+\xeCJKsetup{
+  % CJKecglue = {},
+  PunctStyle = CCT
+}
+
+\newcommand{\song}{\CJKfamily{song}}
 \newcommand{\hei}{\CJKfamily{hei}}
-%% Font Size Settings
+\newcommand{\kai}{\CJKfamily{kai}}
+\newcommand{\fs}{\CJKfamily{fs}}
+\newcommand{\cusong}{\bfseries}
+
+% Chinese font sizes.
 \newcommand{\chuhao}{\zihao{0}}
 \newcommand{\xiaochu}{\zihao{-0}}
 \newcommand{\yihao}{\zihao{1}}
@@ -83,680 +97,561 @@
 \newcommand{\xiaosi}{\zihao{-4}}
 \newcommand{\wuhao}{\zihao{5}}
 \newcommand{\xiaowu}{\zihao{-5}}
-\newcommand{\liuhao}{\zihao{6}}
-\newcommand{\xiaoliu}{\zihao{-6}}
-\newcommand{\qihao}{\zihao{7}}
-\newcommand{\bahao}{\zihao{8}}
 
-% Define Variables
-\def\@empty{}
-\newcommand\studentid[1]{\renewcommand\@studentid{#1}}
-\newcommand\@studentid{}
+% Base body style matched to the Word template:
+% SimSun + Times New Roman, 12 bp text with fixed 22 bp leading.
+\newcommand{\thesisbodyfont}{%
+  \renewcommand{\baselinestretch}{1}%
+  \song
+  \rmfamily
+  \fontsize{12bp}{22bp}\selectfont
+}
+\newcommand{\thesisparagraphsetup}{%
+  \setlength{\parindent}{2em}%
+  \setlength{\parskip}{0bp}%
+}
+\newcommand{\thesisfloatsetup}{%
+  \setlength{\floatsep}{6bp plus 2bp minus 2bp}%
+  \setlength{\textfloatsep}{6bp plus 2bp minus 2bp}%
+  \setlength{\intextsep}{6bp plus 2bp minus 2bp}%
+  \setlength{\abovedisplayskip}{8bp plus 2bp minus 2bp}%
+  \setlength{\belowdisplayskip}{8bp plus 2bp minus 2bp}%
+  \setlength{\abovedisplayshortskip}{4bp plus 2bp minus 1bp}%
+  \setlength{\belowdisplayshortskip}{8bp plus 2bp minus 2bp}%
+}
+\AtBeginDocument{%
+  \thesisbodyfont
+  \thesisparagraphsetup
+  \thesisfloatsetup
+  \raggedbottom
+}
 
-\newcommand\zhsupervisor[1]{\renewcommand\@zhsupervisor{#1}}
-\newcommand\@zhsupervisor{}
-\newcommand\zhsupervisortitle[1]{\renewcommand\@zhsupervisortitle{#1}}
-\newcommand\@zhsupervisortitle{}
-\newcommand\zhsupervisorwork[1]{\renewcommand\@zhsupervisorwork{#1}}
-\newcommand\@zhsupervisorwork{}
-\newcommand\ensupervisor[1]{\renewcommand\@ensupervisor{#1}}
-\newcommand\@ensupervisor{}
+\makeatletter
 
-\newcommand\zhsupervisortwo[1]{\renewcommand\@zhsupervisortwo{#1}}
-\newcommand\@zhsupervisortwo{}
-\newcommand\zhsupervisortwotitle[1]{\renewcommand\@zhsupervisortwotitle{#1}}
-\newcommand\@zhsupervisortwotitle{}
-\newcommand\zhsupervisortwowork[1]{\renewcommand\@zhsupervisortwowork{#1}}
-\newcommand\@zhsupervisortwowork{}
-\newcommand\ensupervisortwo[1]{\renewcommand\@ensupervisortwo{#1}}
-\newcommand\@ensupervisortwo{}
+% Metadata defaults.
+\newcommand{\neu@classification}{}
+\newcommand{\neu@securitylevel}{}
+\newcommand{\neu@udc}{}
+\newcommand{\neu@studentid}{}
+\newcommand{\neu@titlecn}{东北大学博士学位论文题名}
+\newcommand{\neu@titleen}{Doctoral Dissertation Title of Northeastern University}
+\newcommand{\neu@authorcnraw}{作者姓名}
+\newcommand{\neu@authorenraw}{Author Name}
+\newcommand{\neu@collegecn}{学院名称}
+\newcommand{\neu@majorcn}{学科专业名称}
+\newcommand{\neu@majoren}{Discipline}
+\newcommand{\neu@degreelevel}{博士}
+\newcommand{\neu@discipline}{工学}
+\newcommand{\neu@supervisorcnraw}{导师姓名}
+\newcommand{\neu@supervisortitlecn}{教授}
+\newcommand{\neu@supervisoraffiliationcn}{东北大学}
+\newcommand{\neu@supervisorenraw}{Professor Supervisor}
+\newcommand{\neu@cosupervisorcnraw}{}
+\newcommand{\neu@cosupervisortitlecn}{}
+\newcommand{\neu@cosupervisoraffiliationcn}{}
+\newcommand{\neu@cosupervisorenraw}{}
+\newcommand{\neu@submitdate}{20xx年6月}
+\newcommand{\neu@defensedate}{20xx年6月}
+\newcommand{\neu@degreedate}{20xx年7月}
+\newcommand{\neu@defensechair}{答辩委员会主席}
+\newcommand{\neu@coverdatecn}{20xx年7月}
+\newcommand{\neu@coverdateen}{July 20xx}
+\newcommand{\neu@onlinerelease}{两年}
+\newcommand{\neu@signaturedate}{}
+\newcommand{\neu@authorsignature}{}
+\newcommand{\neu@supervisorsignature}{}
+\newcommand{\neu@signatureheight}{8mm}
+\newif\ifneu@header@twentysix
+\neu@header@twentysixtrue
 
-\newcommand\campusname[1]{\renewcommand\@campusname{#1}}
-\newcommand\@campusname{}
-\newcommand\encampusname[1]{\renewcommand\@encampusname{#1}}
-\newcommand\@encampusname{}
+\define@key{neudissertation}{classification}{\renewcommand{\neu@classification}{#1}}
+\define@key{neudissertation}{security-level}{\renewcommand{\neu@securitylevel}{#1}}
+\define@key{neudissertation}{udc}{\renewcommand{\neu@udc}{#1}}
+\define@key{neudissertation}{student-id}{\renewcommand{\neu@studentid}{#1}}
+\define@key{neudissertation}{title-cn}{\renewcommand{\neu@titlecn}{#1}}
+\define@key{neudissertation}{title-en}{\renewcommand{\neu@titleen}{#1}}
+\define@key{neudissertation}{author-cn}{\renewcommand{\neu@authorcnraw}{#1}}
+\define@key{neudissertation}{author-en}{\renewcommand{\neu@authorenraw}{#1}}
+\define@key{neudissertation}{college-cn}{\renewcommand{\neu@collegecn}{#1}}
+\define@key{neudissertation}{major-cn}{\renewcommand{\neu@majorcn}{#1}}
+\define@key{neudissertation}{major-en}{\renewcommand{\neu@majoren}{#1}}
+\define@key{neudissertation}{degree-level}{\renewcommand{\neu@degreelevel}{#1}}
+\define@key{neudissertation}{discipline}{\renewcommand{\neu@discipline}{#1}}
+\define@key{neudissertation}{supervisor-cn}{\renewcommand{\neu@supervisorcnraw}{#1}}
+\define@key{neudissertation}{supervisor-title-cn}{\renewcommand{\neu@supervisortitlecn}{#1}}
+\define@key{neudissertation}{supervisor-affiliation-cn}{\renewcommand{\neu@supervisoraffiliationcn}{#1}}
+\define@key{neudissertation}{supervisor-en}{\renewcommand{\neu@supervisorenraw}{#1}}
+\define@key{neudissertation}{cosupervisor-cn}{\renewcommand{\neu@cosupervisorcnraw}{#1}}
+\define@key{neudissertation}{cosupervisor-title-cn}{\renewcommand{\neu@cosupervisortitlecn}{#1}}
+\define@key{neudissertation}{cosupervisor-affiliation-cn}{\renewcommand{\neu@cosupervisoraffiliationcn}{#1}}
+\define@key{neudissertation}{cosupervisor-en}{\renewcommand{\neu@cosupervisorenraw}{#1}}
+\define@key{neudissertation}{submit-date}{\renewcommand{\neu@submitdate}{#1}}
+\define@key{neudissertation}{defense-date}{\renewcommand{\neu@defensedate}{#1}}
+\define@key{neudissertation}{degree-date}{\renewcommand{\neu@degreedate}{#1}}
+\define@key{neudissertation}{defense-chair}{\renewcommand{\neu@defensechair}{#1}}
+\define@key{neudissertation}{cover-date-cn}{\renewcommand{\neu@coverdatecn}{#1}}
+\define@key{neudissertation}{cover-date-en}{\renewcommand{\neu@coverdateen}{#1}}
+\define@key{neudissertation}{online-release}{\renewcommand{\neu@onlinerelease}{#1}}
+\define@key{neudissertation}{signature-date}{\renewcommand{\neu@signaturedate}{#1}}
+\define@key{neudissertation}{author-signature}{\renewcommand{\neu@authorsignature}{#1}}
+\define@key{neudissertation}{supervisor-signature}{\renewcommand{\neu@supervisorsignature}{#1}}
+\define@key{neudissertation}{signature-height}{\renewcommand{\neu@signatureheight}{#1}}
+\define@key{neudissertation}{header-2026}[true]{%
+  \edef\neu@headerflag{#1}%
+  \ifdefstring{\neu@headerflag}{true}{%
+    \neu@header@twentysixtrue
+  }{%
+    \ifdefstring{\neu@headerflag}{false}{%
+      \neu@header@twentysixfalse
+    }{%
+      \ClassError{neudissertation}{Invalid value for `header-2026': #1}{Use `true' or `false'.}%
+    }%
+  }%
+}
+% 注意：`header-2026` 为首选配置键（保留）。
+% 旧的 `header-style` 与 `header-2026` 功能等价且会导致重复键名，
+% 因此在本模板中移除 `header-style` 的声明。请使用：
+%   \neudisetup{header-2026=true}
+% 或
+%   \neudisetup{header-2026=false}
+% 来控制页眉样式（true 为 2026 新样式，false 为 legacy）。
+\newcommand{\neudisetup}[1]{\setkeys{neudissertation}{#1}}
 
-\newcommand\classification[1]{\renewcommand\@classification{#1}}
-\newcommand\@classification{}
-\newcommand\serialno[1]{\renewcommand\@serialno{#1}}
-\newcommand\@serialno{}
-\newcommand\udc[1]{\renewcommand\@udc{#1}}
-\newcommand\@udc{}
-\newcommand\zhtitle[1]{\renewcommand\@zhtitle{#1}}
-\newcommand\@zhtitle{}
-\newcommand\entitle[1]{\renewcommand\@entitle{#1}}
-\newcommand\@entitle{}
-\newcommand\zhauthor[1]{\renewcommand\@zhauthor{#1}}
-\newcommand\@zhauthor{}
-\newcommand\enauthor[1]{\renewcommand\@enauthor{#1}}
-\newcommand\@enauthor{}
-\newcommand\zhdegreetype[1]{\renewcommand\@zhdegreetype{#1}}
-\newcommand\@zhdegreetype{}
-\newcommand\zhmajortype[1]{\renewcommand\@zhmajortype{#1}}
-\newcommand\@zhmajortype{}
-\newcommand\zhmajor[1]{\renewcommand\@zhmajor{#1}}
-\newcommand\@zhmajor{}
-\newcommand\enmajor[1]{\renewcommand\@enmajor{#1}}
-\newcommand\@enmajor{}
-\newcommand\zhsubmissiondate[1]{\renewcommand\@zhsubmissiondate{#1}}
-\newcommand\@zhsubmissiondate{}
-\newcommand\zhdefensedate[1]{\renewcommand\@zhdefensedate{#1}}
-\newcommand\@zhdefensedate{}
-\newcommand\zhdegreegivendate[1]{\renewcommand\@zhdegreegivendate{#1}}
-\newcommand\@zhdegreegivendate{}
-\newcommand\zhdefensechairmen[1]{\renewcommand\@zhdefensechairmen{#1}}
-\newcommand\@zhdefensechairmen{}
-\newcommand\zhreviewers[1]{\renewcommand\@zhreviewers{#1}}
-\newcommand\@zhreviewers{}
-\newcommand\zhthesisdate[1]{\renewcommand\@zhthesisdate{#1}}
-\newcommand\@zhthesisdate{}
-\newcommand\enthesisdate[1]{\renewcommand\@enthesisdate{#1}}
-\newcommand\@enthesisdate{}
+\newcommand{\neu@authorcn}{\ifneuclass@blindreview 第一作者\else \neu@authorcnraw\fi}
+\newcommand{\neu@authoren}{\ifneuclass@blindreview Author\else \neu@authorenraw\fi}
+\newcommand{\neu@supervisorcn}{\ifneuclass@blindreview 导师\else \neu@supervisorcnraw\fi}
+\newcommand{\neu@supervisoren}{\ifneuclass@blindreview Supervisor\else \neu@supervisorenraw\fi}
+\newcommand{\neu@cosupervisorcn}{\ifneuclass@blindreview 协助指导教师\else \neu@cosupervisorcnraw\fi}
+\newcommand{\neu@cosupervisoren}{\ifneuclass@blindreview Co-supervisor\else \neu@cosupervisorenraw\fi}
 
-% Document Organization Settings
-\RequirePackage[center]{titlesec}
+\newcommand{\neu@entry}[2]{\underline{\makebox[#1][c]{#2}}}
+\newcommand{\neu@spreadbox}[2]{{\hbadness=10000\makebox[#1][s]{#2}}}
+\newcommand{\neu@coverlabel}[1]{\neu@spreadbox{42mm}{#1}}
+\newcommand{\neu@coverlabelbox}[1]{\neu@spreadbox{37mm}{#1}}
+\newcommand{\neu@coverleftline}[3]{%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (32.2,#1)
+    {\song\sihao \neu@coverlabelbox{#2}\hspace{2.1mm}#3};
+}
+\newcommand{\neu@coverpairline}[5]{%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (32.2,#1)
+    {\song\sihao \neu@coverlabelbox{#2}\hspace{2.1mm}#3};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (96.8,#1)
+    {\song\sihao \neu@coverlabelbox{#4}\hspace{2.1mm}#5};
+}
+\newcommand{\neu@blankpage}{%
+  \clearpage
+  \thispagestyle{empty}
+  \null
+  \clearpage
+}
 
-\linespread{1.55}
-%% Document Structure Settings: Headers and Footers
-\RequirePackage{fancyhdr}
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-\fancypagestyle{plain}{}
-
-% for declaration page
-\fancypagestyle{frontmatternohead}{%
+% Headers and footers.
+\newcommand{\neu@legacyheadtitle}{东北大学\neu@degreelevel 学位论文}
+\newcommand{\neu@setheaderfields}{%
+  \fancyheadoffset[LE,LO,RE,RO]{0pt}%
+  \ifneu@header@twentysix
+    \fancyhead[C]{\wuhao\kai\nouppercase{\leftmark}}%
+  \else
+    \fancyhead[L]{\wuhao\kai \neu@legacyheadtitle}%
+    \fancyhead[R]{\wuhao\kai\nouppercase{\leftmark}}%
+  \fi
+}
+\newcommand{\neu@headrule}{%
+  \hrule width\textwidth height\headrulewidth \vskip 1pt
+}
+\pagestyle{fancy}
+\fancyhf{}
+\neu@setheaderfields
+\fancyfoot[C]{\xiaowu -\thepage-}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\neu@headrule}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
   \fancyhf{}
-  \fancyfoot[C]{\xiaowu \thepage}
-  \setlength{\parskip}{0pt}
-\renewcommand{\headrulewidth}{0pt}}
-
-\ExplSyntaxOn
-\tl_new:N \neu@LeftTitle
-\tl_new:N \neu@headrule
-
-\str_case:VnF \g_neudissertation_type_tl
-{
-  {Bachelor}
-  {
-    \tl_gset:Nn \neu@LeftTitle {东北大学本科学位论文}
-    \tl_gset:Nn \neu@headrule {
-      \hrule width\headwidth height0.5pt \vskip 1pt
-    }
-  }
-  {Master}
-  {
-    \tl_gset:Nn \neu@LeftTitle {东北大学硕士学位论文}
-    \tl_gset:Nn \neu@headrule {
-      \hrule width\headwidth height0.5pt \vskip 1pt
-    }
-  }
-  {Doctor}
-  {
-    \tl_gset:Nn \neu@LeftTitle {东北大学博士学位论文}
-    \tl_gset:Nn \neu@headrule {
-      \hrule width\headwidth height1pt \vskip 1pt
-      \hrule width\headwidth height0.5pt \vskip 0pt
-    }
-  }
-}
-{
-  \tl_gset:Nn \neu@LeftTitle {未知文档类型}
-}
-\ExplSyntaxOff
-
-\fancypagestyle{zhabstract}{%
-  \fancyhead[L] {%
-    \xiaowu \kai
-    \neu@LeftTitle
-  }
-  \fancyhead[R] {\xiaowu \kai 摘\quad 要}
-  \fancyfoot[C]{\xiaowu \thepage}
-  \titleformat{\chapter}{\vspace{-1cm}\center \erhao \hei}{~}{0em}{{\vspace{-0.5cm}\hei\sanhao \@zhtitle }\vspace{0.5cm} \\ }
-  \titlespacing{\chapter}{0pt}{*1}{0.7cm}
-  \linespread{1.625}
-  \setlength{\parskip}{0pt}
-  \xiaosi
-\renewcommand{\headrule}{\neu@headrule}}
-
-\fancypagestyle{enabstract}{%
-  \fancyhead[L] {\xiaowu \kai \neu@LeftTitle}
-  \fancyhead[R] {\xiaowu \kai Abstract }
-  \fancyfoot[C]{\xiaowu \thepage}
-  \titleformat{\chapter}{\vspace{-1.5cm}\center \erhao \hei}{~}{1em}{{\sanhao \@entitle }\\ }
-  \titlespacing{\chapter}{0pt}{*1}{0.7cm}
-  \linespread{1.4375}
-  \setlength{\parskip}{0pt}
-  \xiaosi
-\renewcommand{\headrule}{\neu@headrule}}
-
-\fancypagestyle{tableofcontents}{%
-  \fancyhead[L] {\xiaowu \kai \neu@LeftTitle}
-  \fancyhead[R] {\xiaowu \kai 目\quad 录}
-  \fancyfoot[C]{\xiaowu \thepage}
-  \titleformat{\chapter}[hang]{\vspace{-1cm}\center \erhao \hei}{~}{1em}{}
-  \titlespacing{\chapter}{0pt}{*1}{0.7cm}
-  \xiaosi
-  \linespread{1.625}
-  \setlength{\parskip}{0pt}
-\renewcommand{\headrule}{\neu@headrule}}
-
-\fancypagestyle{mainbody}{%
-  \fancyhead[L] {\xiaowu \kai \neu@LeftTitle}
-  \fancyhead[R] {\xiaowu \kai 第\thechapter 章\ \leftmark}
+  \neu@setheaderfields
   \fancyfoot[C]{\xiaowu -\thepage-}
-  \linespread{1.625}
-  \setlength{\parskip}{0pt}
-  \titleformat{\chapter}[hang]{\vspace{-1cm}\center \erhao \hei}{第\thechapter 章}{1em}{\hei}
-  \titlespacing{\chapter}{0pt}{*1}{0.7cm}
-  \titleformat{\section}{\sanhao \hei}{\thesection}{0.5em}{}
-  \titlespacing{\section}{0pt}{*1.5}{*1.5}
-  \titleformat{\subsection}{\sihao \hei}{\thesubsection}{0.5em}{}
-  \titlespacing{\subsection}{0pt}{*0}{*1}
-  \xiaosi
-  \renewcommand{\headrule}{\neu@headrule}%
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\headrule}{\neu@headrule}
+  \renewcommand{\footrulewidth}{0pt}
+}
+\fancypagestyle{neunumberonly}{%
+  \fancyhf{}
+  \fancyfoot[C]{\xiaowu -\thepage-}
+  \renewcommand{\headrule}{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+\fancypagestyle{neuempty}{%
+  \fancyhf{}
+  \renewcommand{\headrule}{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
 }
 
-\fancypagestyle{backmatternochapter}{%
-  \fancyhead[L] {\xiaowu \kai \neu@LeftTitle}
-  \fancyhead[R] {\xiaowu \kai \leftmark }
-  \linespread{1.625}
-  \setlength{\parskip}{0pt}
-  \titleformat{\chapter}[hang]{\vspace{-1cm}\center \erhao \hei}{~}{1em}{}
-  \titlespacing{\chapter}{0pt}{*1}{0.7cm}
-  \xiaosi
-
-\fancyfoot[C]{\xiaowu -\thepage-}}
-
-\renewcommand\frontmatter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \@mainmatterfalse
-  \pagenumbering{Roman}
-\pagestyle{frontmatternohead}}
-
-\newcommand\zhabstractmatter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \@mainmatterfalse
-\pagestyle{zhabstract}}
-
-\newcommand\enabstractmatter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \@mainmatterfalse
-\pagestyle{enabstract}}
-
-\newcommand\tableofcontentsmatter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \@mainmatterfalse
-\pagestyle{tableofcontents}}
-
-\renewcommand\mainmatter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \@mainmattertrue
-  \pagenumbering{arabic}
-\pagestyle{mainbody}}
-
-\renewcommand\backmatter{%
-  \if@openright\cleardoublepage\else\clearpage\fi
-  \@mainmatterfalse
-\pagestyle{backmatternochapter}}
-
-\newcommand\lastmatter{%
-  \if@openright\clearpage\else\cleardoublepage\fi
-  \@mainmatterfalse
-\pagestyle{empty}}
-
-%% Setting for the empty page after the chapters with odd end
-\renewcommand\cleardoublepage{\clearpage\if@openright \ifodd\c@page\else
-  \newpage{}
-  \thispagestyle{empty}
-  \vspace*{\fill}
-  \begin{center}
-  \end{center}
-  \vspace*{\fill}
-\clearpage\fi\fi}
-
-\RequirePackage{graphicx}
-\RequirePackage[config]{subfig}
-\RequirePackage{float}
-\RequirePackage{array}
-\RequirePackage{longtable}
-\RequirePackage{booktabs}
-\RequirePackage{multirow}
-\RequirePackage{tabularx}
-\RequirePackage{enumitem}
-\RequirePackage{xcolor}
-\RequirePackage{amsmath}
-\RequirePackage{amssymb}
-\RequirePackage[Symbolsmallscale]{upgreek}
-\interdisplaylinepenalty=2500
-\RequirePackage{bm}
-\RequirePackage[amsmath,thmmarks,hyperref]{ntheorem}
-\RequirePackage{zhnumber}
-\RequirePackage{indentfirst}
-\RequirePackage{xunicode-addon}
-\RequirePackage{cite}
-\RequirePackage{multicol}
-\RequirePackage{makecell}
-\newcommand{\entry}[3]{\multicolumn{#1}{l}{\underline{\hbox to #2{\hfil#3\hfil}}}}
-
-% Define Contents of Table
-\RequirePackage{titletoc}
-\CTEXsetup[name={,}, number=\arabic{chapter}]{chapter}
-
-\titlecontents{chapter}[0cm]{\bf}{\hei 第 \contentslabel{0cm} \hspace*{0.1cm} 章 \hspace*{0.2cm} }%
-{}{\titlerule*[0.4pc]{$\cdot$}\contentspage}%
-
-\titlecontents{section}[2cm]{\bf}%
-{\contentslabel{2.5em}}%
-{}%
-{\titlerule*[0.4pc]{$\cdots$}\contentspage}
-
-\titlecontents{subsection}[3cm]{}%
-{\contentslabel{2.5em}}%
-{}%
-{\titlerule*[0.4pc]{$\cdots$}\contentspage}
-
-\newcommand{\neu@bachelor@maketitle}{
-  \newpage
-  \thispagestyle{empty}
-  \begin{tikzpicture}[remember picture,overlay]
-    \node at (current page.center) {
-      \includegraphics[width=21cm, height=29.7cm]{Figures/neucover}
-    };
-  \end{tikzpicture}
-
-  \vspace{13.5cm}
-  \hspace{0.9cm}
-  \begin{tabular}{lp{10cm}}
-    \makebox[3.5cm][s]{\xiaosan 论文题目:} & \xiaosan \@zhtitle      \\[3mm]
-    \makebox[3.5cm][s]{\xiaosan 学院名称:} & \xiaosan \@campusname   \\[3mm]
-    \makebox[3.5cm][s]{\xiaosan 专业名称:} & \xiaosan \@zhmajor      \\[3mm]
-    \makebox[3.5cm][s]{\xiaosan 学生姓名:} & \xiaosan \@zhauthor     \\[3mm]
-    \makebox[3.5cm][s]{\xiaosan 指导老师:} & \xiaosan \@zhsupervisor
-    \ifx\@zhsupervisortwo\@empty
+\renewcommand{\chaptermark}[1]{%
+  \ifnum\value{chapter}>0
+    \ifneu@header@twentysix
+      \markboth{第~\thechapter~章\quad #1}{}
     \else
-    \quad \@zhsupervisortwo
-    \fi                                                          \\
-  \end{tabular}
-
-  \newpage
-  \thispagestyle{empty}
-
-  ~
-
-  \newpage
-  \thispagestyle{empty}
-  \vspace{5mm}
-  \begin{center}
-    \hei \wuhao %
-    \begin{tabular}{llcll}
-      \wuhao 学号 & \entry{1}{5cm}{\@studentid} & \hspace*{1cm} %
-      \wuhao 密级 & \entry{1}{5cm}{\@serialno}                  \\    %
-    \end{tabular}
-  \end{center}%
-
-  \vspace{18mm}
-  \begin{center}
-    \song \yihao 东北大学本科毕业论文
-  \end{center}
-
-  \vspace{24mm}
-  \begin{center}
-    \hei \erhao \@zhtitle
-  \end{center}
-
-  \vspace{29mm}
-  \begin{center}
-    \begin{tabular}{ll}
-      \makebox[3.5cm][s]{\xiaosan 学院名称:} & \xiaosan \@campusname                                 \\[3mm]
-      \makebox[3.5cm][s]{\xiaosan 专业名称:} & \xiaosan \@zhmajor                                    \\[3mm]
-      \makebox[3.5cm][s]{\xiaosan 作者姓名:} & \xiaosan \@zhauthor                                   \\[3mm]
-      \makebox[3.5cm][s]{\xiaosan 指导老师:} & \xiaosan \@zhsupervisor\quad \@zhsupervisortitle      \\[3mm]
-      \ifcsvoid{@zhsupervisortwo}{}{
-        & \xiaosan \@zhsupervisortwo\quad\@zhsupervisortwotitle \\[3mm]
-      }
-    \end{tabular}
-  \end{center}
-
-  \vspace{24mm}
-  \begin{center}
-    \xiaoer \@zhthesisdate
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
-  \thispagestyle{empty}
-
-  \vspace*{20mm}
-  \begin{center}
-    \hei \erhao \@zhtitle
-  \end{center}
-
-  \vspace{60mm}
-  \begin{center}
-    \begin{tabular}{p{3.5cm}l}
-      \xiaosan 作者姓名:   & \xiaosan \@zhauthor        \\
-      \xiaosan 校内指导老师: & \xiaosan \@zhsupervisor    \\
-      \ifcsvoid{@zhsupervisortwo}{}{
-        \xiaosan 校外指导老师: & \xiaosan \@zhsupervisortwo \\
-      }
-      \xiaosan 单位名称:   & \xiaosan \@campusname      \\
-      \xiaosan 专业名称:   & \xiaosan \@zhmajor         \\
-    \end{tabular}
-  \end{center}
-
-  \vspace{45mm}
-  \begin{center}
-    {\sihao \song 东\ 北\ 大\ 学}
-
-    {\sihao \song \@zhthesisdate}
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
-  \thispagestyle{empty}
-
-  \vspace*{20mm}
-  \begin{center}
-    % \begin{spacing}{1.2}%%行间距变为double-space
-    %
-    %\end{spacing}
-    \erhao\textbf{\@entitle}
-  \end{center}
-
-  \vspace{35mm}
-  \begin{center}
-    \sihao
-    By \@enauthor
-  \end{center}
-
-  \vspace{35mm}
-  \begin{center}
-    \sihao
-    \begin{tabular}{p{5.5cm}l}
-      \sihao
-      Supervisor:           & \sihao \@ensupervisor    \\[2mm]
-      \ifcsvoid{@ensupervisortwo}{}{
-        \sihao Associate Supervisor: & \sihao \@ensupervisortwo \\
-      }
-    \end{tabular}
-  \end{center}
-
-  \vspace{35mm}
-  \begin{center}
-    {\sihao \centering Northeastern University}
-
-    {\sihao \centering \@enthesisdate}
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
+      \markboth{第\thechapter 章\quad #1}{}
+    \fi
+  \else
+    \markboth{#1}{}
+  \fi
 }
 
-\newcommand{\neu@master@maketitle}{
-  \thispagestyle{empty}
-
-  \vspace*{0.15cm}
-  \begin{center}
-    \hei \sihao
-    \begin{tabular}{llcll}
-      \sihao \bf 分类号      & \entry{1}{5cm}{\@classification} & \hspace*{1cm}   %
-      \sihao \bf 密级       & \entry{1}{5cm}{\@serialno}                         \\    %
-      \sihao \bf UDC\quad & \entry{1}{5cm}{\@udc}            & \hspace*{1cm} &
-    \end{tabular}
-  \end{center}
-
-  \vspace{45pt}
-  \begin{center}
-    \vspace{20pt}
-    {\hei  \erhao 学\ 位\ 论\ 文}
-
-    \vspace{35pt}
-    {\hei \xiaoer \@zhtitle}
-  \end{center}
-
-  \vspace{5pt}
-  \begin{center}
-    \sihao
-    \begin{tabular}{lllll}
-      \makebox[3.5cm][s]{\sihao 作者姓名:}   & \sihao \@zhauthor                         &  &                                     &                            \\[2mm]
-
-      \ifcsvoid{@zhsupervisortwo}{
-        \makebox[3.5cm][s]{\sihao 指导教师:}   & \multicolumn{4}{l}{\sihao \@zhsupervisor \quad \@zhsupervisortitle \qquad  \@zhsupervisorwork}                                                                                        \\[2mm]
-      }
-      {
-        \makecell[l]{\makebox[3.5cm][s]{\sihao 指导教师:} \\ ~}   & \multicolumn{4}{l}{\makecell[l]{\sihao \@zhsupervisor \quad \@zhsupervisortitle \qquad  \@zhsupervisorwork                                                                       \\ \sihao \@zhsupervisortwo \quad \@zhsupervisortwotitle \qquad \@zhsupervisortwowork}} \\[2mm]
-      }
-      \makebox[3.5cm][s]{\sihao 申请学位级别:} & \sihao \@zhdegreetype                     &  & \makebox[3.5cm][s]{\sihao 学科类别:}    & \sihao \@zhmajortype       \\[2mm]
-      \makebox[3.5cm][s]{\sihao 学科专业名称:} & \multicolumn{4}{l}{\sihao \@zhmajor   }                                                                         \\[2mm]
-      \makebox[3.5cm][s]{\sihao 论文提交日期:} & \sihao \@zhsubmissiondate                 &  & \makebox[3.5cm][s]{\sihao 论文答辩日期:}  & \sihao \@zhdefensedate     \\[2mm]
-      \makebox[3.5cm][s]{\sihao 学位授予日期:} & \sihao \@zhdegreegivendate                &  & \makebox[3.5cm][s]{\sihao 答辩委员会主席:} & \sihao \@zhdefensechairmen \\[2mm]
-      \makebox[3.5cm][s]{\sihao 评阅人:}    & \multicolumn{4}{l}{\sihao \@zhreviewers }
-    \end{tabular}
-  \end{center}
-
-  \vspace{50pt}
-  \begin{center}
-    \sihao
-    东\quad 北\quad 大\quad 学
-  \end{center}
-
-  \vspace{15pt}
-  \begin{center}
-    \sihao \@zhthesisdate
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
-  \thispagestyle{empty}
-
-  \vspace{20pt}
-  \textbf{A Thesis in \@enmajor}
-
-  \vspace{100pt}
-  \begin{center}
-    {\erhao \textbf{\@entitle}}
-  \end{center}
-
-  \vspace{40pt}
-  \begin{center}
-    \sihao
-    By \@enauthor
-  \end{center}
-
-  \vspace{70pt}
-  \begin{center}
-    \sihao \@ensupervisor
-
-    \ifcsvoid{@zhsupervisortwo}{}{
-      \sihao \@ensupervisortwo
-    }
-  \end{center}
-
-  \vspace{200pt}
-  \begin{center}
-    {\sanhao \centering \textbf{Northeastern University}}
-
-    {\sanhao \centering  \textbf{\@enthesisdate}}
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
-}
-
-\newcommand{\neu@doctor@maketitle}{
-  \thispagestyle{empty}
-
-  \vspace*{0.15cm}
-  \begin{center}
-    \hei \sihao
-    \begin{tabular}{llcll}
-      \sihao \bf 分类号      & \entry{1}{5cm}{\@classification} & \hspace*{1cm}   %
-      \sihao \bf 密级       & \entry{1}{5cm}{\@serialno}                         \\    %
-      \sihao \bf UDC\quad & \entry{1}{5cm}{\@udc}            & \hspace*{1cm} &
-    \end{tabular}
-  \end{center}
-
-  \vspace{45pt}
-  \begin{center}
-    \vspace{20pt}
-    {\hei  \erhao 学\ 位\ 论\ 文}
-
-    \vspace{35pt}
-    {\hei \xiaoer \@zhtitle}
-  \end{center}
-
-  \vspace{5pt}
-  \begin{center}
-    \sihao
-    \begin{tabular}{lllll}
-      \makebox[3.5cm][s]{\sihao 作者姓名:}   & \sihao \@zhauthor                         &  &                                     &                            \\[2mm]
-
-      \ifcsvoid{@zhsupervisortwo}{
-        \makebox[3.5cm][s]{\sihao 指导教师:}   & \multicolumn{4}{l}{\sihao \@zhsupervisor \quad \@zhsupervisortitle \qquad  \@zhsupervisorwork}                                                                                        \\[2mm]
-      }
-      {
-        \makecell[l]{\makebox[3.5cm][s]{\sihao 指导教师:} \\ ~}   & \multicolumn{4}{l}{\makecell[l]{\sihao \@zhsupervisor \quad \@zhsupervisortitle \qquad  \@zhsupervisorwork                                                                       \\ \sihao \@zhsupervisortwo \quad \@zhsupervisortwotitle \qquad \@zhsupervisortwowork}} \\[2mm]
-      }
-      \makebox[3.5cm][s]{\sihao 申请学位级别:} & \sihao \@zhdegreetype                     &  & \makebox[3.5cm][s]{\sihao 学科类别:}    & \sihao \@zhmajortype       \\[2mm]
-      \makebox[3.5cm][s]{\sihao 学科专业名称:} & \multicolumn{4}{l}{\sihao \@zhmajor   }                                                                         \\[2mm]
-      \makebox[3.5cm][s]{\sihao 论文提交日期:} & \sihao \@zhsubmissiondate                 &  & \makebox[3.5cm][s]{\sihao 论文答辩日期:}  & \sihao \@zhdefensedate     \\[2mm]
-      \makebox[3.5cm][s]{\sihao 学位授予日期:} & \sihao \@zhdegreegivendate                &  & \makebox[3.5cm][s]{\sihao 答辩委员会主席:} & \sihao \@zhdefensechairmen \\[2mm]
-      %      \makebox[3.5cm][s]{\sihao 评阅人:}    & \multicolumn{4}{l}{\sihao \@zhreviewers }
-    \end{tabular}
-  \end{center}
-
-  \vspace{50pt}
-  \begin{center}
-    \sihao
-    东\quad 北\quad 大\quad 学
-  \end{center}
-
-  \vspace{15pt}
-  \begin{center}
-    \sihao \@zhthesisdate
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
-  \thispagestyle{empty}
-
-  \vspace{20pt}
-  \textbf{A Dissertation in \@enmajor}
-
-  \vspace{100pt}
-  \begin{center}
-    {\erhao \textbf{\@entitle}}
-  \end{center}
-
-  \vspace{40pt}
-  \begin{center}
-    \sihao
-    By \@enauthor
-  \end{center}
-
-  \vspace{70pt}
-  \begin{center}
-    \sihao \@ensupervisor
-
-    \ifcsvoid{@zhsupervisortwo}{}{
-      \sihao \@ensupervisortwo
-    }
-  \end{center}
-
-  \vspace{200pt}
-  \begin{center}
-    {\sanhao \centering \textbf{Northeastern University}}
-
-    {\sanhao \centering  \textbf{\@enthesisdate}}
-  \end{center}
-
-  \newpage
-  \thispagestyle{empty}
-  ~
-
-  \newpage
-}
-
-\ExplSyntaxOn
-\str_case:Vn \g_neudissertation_type_tl
-{
-  {Bachelor} {
-    \let\maketitle\neu@bachelor@maketitle
-  }
-  {Master} {
-    \let\maketitle\neu@master@maketitle
-  }
-  {Doctor} {
-    \let\maketitle\neu@doctor@maketitle
-  }
-  { default } {
-    \let\maketitle\neu@bachelor@maketitle
+% Chapter and section titles.
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{2}
+\ctexset{
+  chapter = {
+    name = {第~,~章},
+    number = \arabic{chapter},
+    aftername = \quad
+  },
+  section = {
+    format = \sanhao\hei\raggedright,
+    number = \thesection
+  },
+  subsection = {
+    format = \sihao\hei\raggedright,
+    number = \thesubsection
+  },
+  subsubsection = {
+    format = \xiaosi\hei\raggedright,
+    number = \thesubsubsection
   }
 }
+\titleformat{\chapter}[block]
+  {\centering\erhao\hei}
+  {第~\thechapter~章}
+  {1em}
+  {}
+\titleformat{name=\chapter,numberless}[block]
+  {\centering\erhao\hei}
+  {}
+  {0pt}
+  {}
+\titlespacing*{\chapter}{0pt}{0pt}{23pt}
+\titleformat{\section}{\sanhao\hei}{\thesection}{0.75em}{}
+\titlespacing*{\section}{0pt}{20pt}{13pt}
+\titleformat{\subsection}{\sihao\hei}{\thesubsection}{0.75em}{}
+\titlespacing*{\subsection}{0pt}{16pt}{14.5pt}
+\titleformat{\subsubsection}{\xiaosi\hei}{\thesubsubsection}{0.75em}{}
+\titlespacing*{\subsubsection}{0pt}{10pt}{6pt}
+\titleformat{\paragraph}[hang]{\xiaosi\hei}{\theparagraph}{0.75em}{}
+\titlespacing*{\paragraph}{0pt}{6pt}{0.75em}
 
-\ExplSyntaxOff
+\renewcommand{\contentsname}{目\quad 录}
+\renewcommand{\bibname}{参考文献}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\appendixname}{附录}
 
-\newcommand{\china}{中华人民共和国}
-\newcommand{\pozhehao}{\kern0.2em\rule[0.8ex]{1.6em}{0.1ex}\kern0.2em}
-\newcommand{\xiaopozhe}{\kern0.2em\rule[0.8ex]{0.6em}{0.1ex}\kern0.2em}
-\renewcommand\contentsname{目\hspace{1em}录}
-\newcommand\equationname{公式}
-\renewcommand\bibname{参考文献}
-\renewcommand\indexname{索引}
-\renewcommand\figurename{图}
-\renewcommand\tablename{表}
-\renewcommand\appendixname{附录}
-\newcommand{\figref}[1]{图\ref{#1}}
-\newcommand{\tabref}[1]{表\ref{#1}}
-\newcommand{\equref}[1]{式\ref{#1}}
+\titlecontents{chapter}
+  [0em]{\hei}
+  {\thecontentslabel\quad}
+  {}
+  {\titlerule*[0.5pc]{.}\contentspage}
+\titlecontents{section}
+  [2em]{}
+  {\thecontentslabel\quad}
+  {}
+  {\titlerule*[0.5pc]{.}\contentspage}
+\titlecontents{subsection}
+  [4em]{}
+  {\thecontentslabel\quad}
+  {}
+  {\titlerule*[0.5pc]{.}\contentspage}
+\titlecontents{subsubsection}
+  [6em]{}
+  {\thecontentslabel\quad}
+  {}
+  {\titlerule*[0.5pc]{.}\contentspage}
 
-\AtBeginEnvironment{table}{\wuhao}
-\AtBeginEnvironment{tabular}{\wuhao}
-\AtBeginEnvironment{figure}{\linespread{1}}
-\RequirePackage{caption}
-\renewcommand{\captionfont}{\wuhao }
+% Matter transitions.
+\renewcommand{\frontmatter}{%
+  \cleardoublepage
+  \pagenumbering{Roman}
+  \setcounter{page}{1}
+  \@mainmatterfalse
+  \pagestyle{fancy}
+}
+\renewcommand{\mainmatter}{%
+  \cleardoublepage
+  \pagenumbering{arabic}
+  \setcounter{page}{1}
+  \@mainmattertrue
+  \pagestyle{fancy}
+}
+\renewcommand{\backmatter}{%
+  \cleardoublepage
+  \@mainmatterfalse
+  \pagestyle{fancy}
+}
+\renewcommand{\cleardoublepage}{%
+  \clearpage
+  \if@twoside
+    \ifodd\c@page\else
+      \thispagestyle{neuempty}
+      \hbox{}\newpage
+    \fi
+  \fi
+}
 
-\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
-\newcommand{\twofigcaption}[3]{\caption{#2}\label{#1}\vspace{-0.4cm}\caption*{Figure~\ref{#1}:~#3}}
-\newcommand{\twotabcaption}[3]{{\linespread{1}\caption{#2}\label{#1}\vspace{-0.3cm}\caption*{Table~\ref{#1}:~#3}\vspace{-0.3cm}}}
+% Covers.
+\newcommand{\makeneucovers}{%
+  \begingroup
+  \pagestyle{neuempty}
+  \thispagestyle{neuempty}
+  \AddToShipoutPictureFG*{%
+    \AtPageUpperLeft{%
+      \begin{tikzpicture}[x=1mm,y=-1mm]
+    \begin{scope}
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,28.4)
+        {\song\sihao 分类号};
+      \draw[line width=0.4pt,line cap=butt] (44.9,33.5) -- (89.4,33.5);
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (96.9,28.4)
+        {\song\sihao 密级};
+      \draw[line width=0.4pt,line cap=butt] (109.0,33.5) -- (133.8,33.5);
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,40.4)
+        {\song\sihao UDC};
+      \draw[line width=0.4pt,line cap=butt] (42.8,44.5) -- (89.8,44.5);
 
-\setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=0pt}
-\setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=0pt}
-\setlist[enumerate]{leftmargin=\parindent}
-\setlist[itemize]{leftmargin=\parindent}
-\RequirePackage[hidelinks]{hyperref}
-\RequirePackage[numbers, sort&compress, square]{natbib}
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,54.9)
+        {\song\erhao \neu@spreadbox{54.3mm}{学位论文}};
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.2,72.0)
+        {\hei\xiaoer \neu@titlecn};
 
-\ExplSyntaxOn
-\tl_if_eq:NnTF \g_neudissertation_type_tl {Bachelor}
-{
-  \AtEndDocument{
-    \lastmatter
-    \begin{tikzpicture}[remember~picture, overlay]
-      \node ~ at ~ (current ~ page.center) {
-        \includegraphics[width=21cm, height=29.7cm]{Figures/neubackcover}
-      };
-    \end{tikzpicture}
-  }
+      \neu@coverleftline{100.2}{作者姓名：}{\neu@authorcn}
+      \neu@coverleftline{111.3}{作者学号：}{\neu@studentid}
+      \ifdefempty{\neu@cosupervisorcnraw}{%
+        \neu@coverleftline{122.2}{指导教师：}{\neu@supervisorcn\quad \neu@supervisortitlecn}
+        \node[anchor=north,inner sep=0pt,outer sep=0pt] at (103.3,133.2)
+          {\song\sihao \neu@supervisoraffiliationcn};
+      }{%
+        \neu@coverleftline{122.2}{指导教师：}{\neu@supervisorcn\quad \neu@supervisortitlecn\qquad \neu@supervisoraffiliationcn}
+        \neu@coverleftline{133.2}{}{\neu@cosupervisorcn\quad \neu@cosupervisortitlecn\qquad \neu@cosupervisoraffiliationcn}
+      }
+      \neu@coverpairline{144.2}{申请学位级别：}{\neu@degreelevel}{学科类别：}{\neu@discipline}
+      \neu@coverleftline{155.2}{学科专业名称：}{\neu@majorcn}
+      \neu@coverpairline{166.2}{论文提交日期：}{\neu@submitdate}{论文答辩日期：}{\neu@defensedate}
+      \neu@coverpairline{177.2}{学位授予日期：}{\neu@degreedate}{答辩委员会主席：}{\neu@defensechair}
+
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.1,221.3)
+        {\song\sihao \neu@spreadbox{34.7mm}{东北大学}};
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.1,232.4)
+        {\song\sihao \neu@coverdatecn};
+    \end{scope}
+      \end{tikzpicture}%
+    }%
+  }%
+  \null
+  \cleardoublepage
+  \thispagestyle{neuempty}
+  \AddToShipoutPictureFG*{%
+    \AtPageUpperLeft{%
+      \begin{tikzpicture}[x=1mm,y=-1mm]
+    \begin{scope}
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (82.0,29.4)
+        {\sihao\bfseries A Dissertation in \neu@majoren};
+
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,55.9)
+        {\begin{minipage}{160mm}
+          \centering\erhao\bfseries\linespread{1.2}\selectfont \neu@titleen
+        \end{minipage}};
+
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,95.3)
+        {\sihao by \neu@authoren};
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,122.8)
+        {\sihao Supervisor: \neu@supervisoren};
+      \ifdefempty{\neu@cosupervisorenraw}{}{%
+        \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,133.4)
+          {\sihao Co-supervisor: \neu@cosupervisoren};
+      }
+
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,232.7)
+        {\sanhao\bfseries Northeastern University};
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,243.8)
+        {\sanhao\bfseries \neu@coverdateen};
+    \end{scope}
+      \end{tikzpicture}%
+    }%
+  }%
+  \null
+  \cleardoublepage
+  \endgroup
+}
+\let\maketitle\makeneucovers
+
+% Declaration and authorization.
+\newcommand{\neu@releasebox}[1]{%
+  #1\ \ifdefstring{\neu@onlinerelease}{#1}{$\mbox{\ooalign{$\checkmark$\cr\hidewidth$\square$\hidewidth\cr}}$}{$\square$}
+}
+\newcommand{\neu@declarationsigndate}{%
+  \ifdefempty{\neu@signaturedate}{\neu@coverdatecn}{\neu@signaturedate}%
+}
+\newcommand{\neu@signaturegraphic}[2]{%
+  \ifdefempty{#1}{}{%
+    \IfFileExists{#1}{%
+      \raisebox{-0.35\height}{\includegraphics[height=#2,keepaspectratio]{#1}}%
+    }{%
+      \ClassWarning{neudissertation}{Signature file `#1' not found}%
+    }%
+  }%
+}
+\newcommand{\neu@authorsignaturegraphic}{\neu@signaturegraphic{\neu@authorsignature}{\neu@signatureheight}}
+\newcommand{\neu@supervisorsignaturegraphic}{\neu@signaturegraphic{\neu@supervisorsignature}{\neu@signatureheight}}
+\newcommand{\makeneudeclaration}{%
+  \cleardoublepage
+  \markboth{}{}
+  \addcontentsline{toc}{chapter}{独创性声明}
+  \thispagestyle{neunumberonly}
+  \AddToShipoutPictureFG*{%
+    \AtPageUpperLeft{%
+      \begin{tikzpicture}[x=1mm,y=-1mm]
+    \begin{scope}
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,27.3)
+        {\hei\erhao 独创性声明};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (40.0,45.1)
+        {\song\sihao\makebox[139.7mm][s]{本人声明，所呈交的学位论文是在导师的指导下完成的。论文中取}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,56.1)
+        {\song\sihao\makebox[149.5mm][s]{得的研究成果除加以标注和致谢的地方外，不包含其他人已经发表或}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,67.1)
+        {\song\sihao\makebox[149.3mm][s]{撰写过的研究成果，也不包括本人为获得其他学位而使用过的材料。与}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,78.1)
+        {\song\sihao\makebox[149.4mm][s]{我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,89.2)
+        {\song\sihao 说明并表示谢意。};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (107.6,102.9)
+        {\song\sihao 学位论文作者签名：\neu@authorsignaturegraphic};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (106.6,117.5)
+        {\song\sihao 日\quad\quad 期：\neu@declarationsigndate};
+
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,133.5)
+        {\hei\erhao 学位论文版权使用授权书};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (40.0,151.3)
+        {\song\sihao\makebox[139.7mm][s]{本学位论文作者和指导教师完全了解学校有关保留、使用学位论}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,162.3)
+        {\song\sihao\makebox[149.2mm][s]{文的规定：即学校有权保留并向国家有关部门或机构送交论文的复印}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,173.3)
+        {\song\sihao\makebox[149.6mm][s]{件和磁盘，允许论文被查阅和借阅。本人同意学校可以将学位论文的全}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.2,184.3)
+        {\song\sihao 部或部分内容编入有关数据库进行检索、交流。};
+
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (39.9,206.3)
+        {\song\sihao 作者和导师同意网上交流的时间为作者获得学位后：};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (39.9,222.8)
+        {\song\sihao \neu@releasebox{半年}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (72.0,222.8)
+        {\song\sihao \neu@releasebox{一年}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (104.0,222.8)
+        {\song\sihao \neu@releasebox{一年半}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (136.0,222.8)
+        {\song\sihao \neu@releasebox{两年}};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.0,239.4)
+        {\song\sihao 学位论文作者签名：\neu@authorsignaturegraphic};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (108.0,239.4)
+        {\song\sihao 导师签名：\neu@supervisorsignaturegraphic};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.0,250.4)
+        {\song\sihao 签字日期：\neu@declarationsigndate};
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (108.0,250.4)
+        {\song\sihao 签字日期：\neu@declarationsigndate};
+    \end{scope}
+      \end{tikzpicture}%
+    }%
+  }%
+  \null
+}
+
+% Abstract environments.
+\newcommand{\neuabstracttitle}[1]{%
+  \par\vspace*{6bp}%
+  {\centering \hei\bfseries\fontsize{22bp}{24bp}\selectfont #1\par}%
+  \vspace{18bp}%
+}
+
+\newcommand{\cnkeywords}[1]{%
+  \par\vspace{1em}%
+  \noindent{\hei 关键词：}\song #1\par
+}
+
+\newcommand{\enkeywords}[1]{%
+  \par\vspace{1em}%
+  \noindent{\bfseries Key words:} #1\par
+}
+
+% ---------- 中文摘要环境 ----------
+% 命名规范：中文相关环境/宏统一使用 "-cn" 后缀，这里使用 `abstract-cn`。
+\newenvironment{abstract-cn}{%
+  \cleardoublepage
+  \markboth{摘\quad 要}{}
+  \addcontentsline{toc}{chapter}{摘\quad 要}
+  \thispagestyle{plain}
+  \neuabstracttitle{摘\hspace{1em}要}
+  \thesisbodyfont
+  \thesisparagraphsetup
+}{%
+  \par
+}
+\newenvironment{enabstract}{%
+  \cleardoublepage
+  \markboth{Abstract}{}
+  \addcontentsline{toc}{chapter}{Abstract}
+  \thispagestyle{plain}
+  \neuabstracttitle{Abstract}
 }{}
 
-\ExplSyntaxOff
+% Caption, reference, list, and bibliography helpers.
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+\DeclareCaptionFont{neuwuhao}{\wuhao}
+\captionsetup{font=neuwuhao,labelsep=space,skip=3bp}
+\captionsetup[figure]{position=bottom,aboveskip=3bp,belowskip=0bp}
+\captionsetup[table]{position=top,aboveskip=0bp,belowskip=3bp}
+\newcommand{\neufigcaption}[3]{%
+  \caption{#2\label{#1}}%
+  {\centering\wuhao Fig.~\ref{#1}\quad #3\par}%
+}
+\newcommand{\neutabcaption}[3]{%
+  \caption{#2\label{#1}}%
+  {\centering\wuhao Table~\ref{#1}\quad #3\par}%
+  \vspace{3bp}%
+}
+\newcommand{\neufigref}[1]{图~\ref{#1}}
+\newcommand{\neutabref}[1]{表~\ref{#1}}
+\newcommand{\neueqref}[1]{式（\ref{#1}）}
+\@namedef{bibstyle@gbt7714-unsrt}{\bibstyle@super}
+\NewDocumentCommand{\upcite}{om}{%
+  \IfNoValueTF{#1}{\citep{#2}}{\citep[#1]{#2}}%
+}
+\NewDocumentCommand{\inlinecite}{om}{%
+  \begingroup
+  \citestyle{inline}%
+  \IfNoValueTF{#1}{\citep{#2}}{\citep[#1]{#2}}%
+  \endgroup
+}
+\let\twofigcaption\neufigcaption
+\let\twotabcaption\neutabcaption
+\let\figref\neufigref
+\let\tabref\neutabref
+\let\equref\neueqref
+
+\AtBeginEnvironment{thebibliography}{%
+  \thesisbodyfont
+  \thesisparagraphsetup
+  \setlength{\itemsep}{0bp}%
+  \setlength{\parsep}{0bp}%
+  \setlength{\topsep}{0bp}%
+  \setlength{\partopsep}{0bp}%
+}
+
+\setlist{nosep}
+\setlist[enumerate]{leftmargin=2em}
+\setlist[itemize]{leftmargin=2em}
+\bibliographystyle{gbt7714-unsrt}
+
+\makeatother
 
 \endinput
