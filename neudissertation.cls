@@ -637,15 +637,24 @@
 \let\tabref\neutabref
 \let\equref\neueqref
 
+% Bibliography: keep the same font size and line spacing as the main text.
+\AtBeginDocument{%
+  \renewcommand{\bibfont}{%
+    \thesisbodyfont
+    \thesisparagraphsetup
+  }%
+  \setlength{\bibsep}{0bp}%
+}
+
 \AtBeginEnvironment{thebibliography}{%
   \thesisbodyfont
   \thesisparagraphsetup
+  \setlength{\bibsep}{0bp}%
   \setlength{\itemsep}{0bp}%
   \setlength{\parsep}{0bp}%
   \setlength{\topsep}{0bp}%
   \setlength{\partopsep}{0bp}%
 }
-
 \setlist{nosep}
 \setlist[enumerate]{leftmargin=2em}
 \setlist[itemize]{leftmargin=2em}
