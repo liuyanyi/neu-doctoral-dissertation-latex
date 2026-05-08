@@ -27,14 +27,14 @@
   \twotabcaption{tab:ch0-fonts}{字体与强调样例}{Examples of Fonts and Emphasis}
   \begin{tabular}{lll}
     \toprule
-    命令 & 显示效果 & 使用建议 \\
+    命令             & 显示效果                         & 使用建议               \\
     \midrule
-    \verb|\song| & {\song 宋体文字示例} & 正文默认字体 \\
-    \verb|\hei| & {\hei 黑体文字示例} & 标题或强调场景 \\
-    \verb|\kai| & {\kai 楷体文字示例} & 摘要、题签或引用语 \\
-    \verb|\fs| & {\fs 仿宋文字示例} & 特殊文书类内容 \\
-    \verb|\textbf| & \textbf{加粗文字示例} & 主要用于英文、数字或有粗体字重的字体 \\
-    \verb|\textit| & \textit{Italic text example} & 英文斜体或变量说明 \\
+    \verb|\song|   & {\song 宋体文字示例}               & 正文默认字体             \\
+    \verb|\hei|    & {\hei 黑体文字示例}                & 标题或强调场景            \\
+    \verb|\kai|    & {\kai 楷体文字示例}                & 摘要、题签或引用语          \\
+    \verb|\fs|     & {\fs 仿宋文字示例}                 & 特殊文书类内容            \\
+    \verb|\textbf| & \textbf{加粗文字示例}              & 主要用于英文、数字或有粗体字重的字体 \\
+    \verb|\textit| & \textit{Italic text example} & 英文斜体或变量说明          \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -112,10 +112,10 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
   \twotabcaption{tab:ch0-booktabs}{三线表样例}{Example of a Three-Line Table}
   \begin{tabular}{lccc}
     \toprule
-    方法 & 准确率（\%） & 召回率（\%） & F1 值 \\
+    方法       & 准确率（\%）       & 召回率（\%）       & F1 值           \\
     \midrule
-    Baseline & 85.2 & 84.1 & 0.846 \\
-    Method A & 89.7 & 88.9 & 0.893 \\
+    Baseline & 85.2          & 84.1          & 0.846          \\
+    Method A & 89.7          & 88.9          & 0.893          \\
     Proposed & \textbf{92.1} & \textbf{91.5} & \textbf{0.918} \\
     \bottomrule
   \end{tabular}
@@ -130,13 +130,13 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
   \twotabcaption{tab:ch0-complex}{合并单元格与自动换行表格样例}{Example of Merged Cells and Auto-Wrapping Columns}
   \begin{tabularx}{\textwidth}{llXc}
     \toprule
-    类别 & 指标 & 说明 & 是否必需 \\
+    类别                  & 指标  & 说明                               & 是否必需 \\
     \midrule
-    \multirow{2}{*}{图形} & 分辨率 & 位图图片应保证在最终 PDF 中清晰可辨。 & 是 \\
-    & 题名 & 图题使用中英文双语标题，并位于图片下方。 & 是 \\
+    \multirow{2}{*}{图形} & 分辨率 & 位图图片应保证在最终 PDF 中清晰可辨。            & 是    \\
+                        & 题名  & 图题使用中英文双语标题，并位于图片下方。             & 是    \\
     \midrule
-    \multirow{2}{*}{表格} & 宽度 & 宽表格可使用 \texttt{tabularx} 自动分配列宽。 & 否 \\
-    & 表注 & 表内说明应简明，必要时可在正文中解释。 & 否 \\
+    \multirow{2}{*}{表格} & 宽度  & 宽表格可使用 \texttt{tabularx} 自动分配列宽。 & 否    \\
+                        & 表注  & 表内说明应简明，必要时可在正文中解释。              & 否    \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -162,8 +162,8 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
 \subsection{多行公式}
 循环模型中的状态更新和输出计算可写为
 \begin{align}
-  h_t &= \sigma(W_x x_t + W_h h_{t-1} + b), \label{eq:ch0-state} \\
-  \hat{y}_t &= \operatorname{softmax}(W_o h_t). \label{eq:ch0-output}
+  h_t       & = \sigma(W_x x_t + W_h h_{t-1} + b), \label{eq:ch0-state} \\
+  \hat{y}_t & = \operatorname{softmax}(W_o h_t). \label{eq:ch0-output}
 \end{align}
 
 \equref{eq:ch0-state} 和 \equref{eq:ch0-output} 展示了多行公式的编号方式。
@@ -174,7 +174,7 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
 \begin{equation}
   g(x)=
   \begin{cases}
-    0, & x < 0, \\
+    0, & x < 0,       \\
     x, & 0 \le x < 1, \\
     1, & x \ge 1,
   \end{cases}
@@ -202,9 +202,9 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
     \ENSURE Model parameters $\theta$
     \STATE Initialize parameters $\theta$
     \FOR{$t = 1$ to $T$}
-      \STATE Sample a mini-batch $\mathcal{B}$ from $\mathcal{D}$
-      \STATE Compute loss $\mathcal{L}(\theta)$ by \equref{eq:ch0-loss}
-      \STATE Update $\theta \leftarrow \theta - \eta \nabla_{\theta}\mathcal{L}(\theta)$
+    \STATE Sample a mini-batch $\mathcal{B}$ from $\mathcal{D}$
+    \STATE Compute loss $\mathcal{L}(\theta)$ by \equref{eq:ch0-loss}
+    \STATE Update $\theta \leftarrow \theta - \eta \nabla_{\theta}\mathcal{L}(\theta)$
     \ENDFOR
     \RETURN $\theta$
   \end{algorithmic}

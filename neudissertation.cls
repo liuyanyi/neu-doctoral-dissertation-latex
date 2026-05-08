@@ -580,7 +580,7 @@
 
 % ---------- 中文摘要环境 ----------
 % 命名规范：中文相关环境/宏统一使用 "-cn" 后缀，这里使用 `abstract-cn`。
-\newenvironment{abstract-cn}{%
+\newenvironment{abstractcn}{%
   \cleardoublepage
   \markboth{摘\quad 要}{}
   \addcontentsline{toc}{chapter}{摘\quad 要}
@@ -591,7 +591,7 @@
 }{%
   \par
 }
-\newenvironment{enabstract}{%
+\newenvironment{abstracten}{%
   \cleardoublepage
   \markboth{Abstract}{}
   \addcontentsline{toc}{chapter}{Abstract}
