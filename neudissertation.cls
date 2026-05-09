@@ -35,8 +35,9 @@
 \RequirePackage{bm}
 \RequirePackage{indentfirst}
 \RequirePackage{caption}
+\RequirePackage{xstring}
 \RequirePackage[sort&compress]{gbt7714}
-\RequirePackage[hidelinks]{hyperref}
+\RequirePackage[hidelinks,hypertexnames=false]{hyperref}
 \usetikzlibrary{calc}
 \pdfstringdefDisableCommands{%
   \def\quad{ }%
@@ -73,6 +74,8 @@
 ]{SimHei}
 \setCJKfamilyfont{kai}{KaiTi}
 \setCJKfamilyfont{fs}{FangSong}
+\setCJKfamilyfont{stzhongsong}{STZhongsong}
+\newfontfamily\stzhongsonglatin{STZhongsong}
 \xeCJKsetup{
   % CJKecglue = {},
   PunctStyle = CCT
@@ -82,6 +85,8 @@
 \newcommand{\hei}{\CJKfamily{hei}}
 \newcommand{\kai}{\CJKfamily{kai}}
 \newcommand{\fs}{\CJKfamily{fs}}
+\newcommand{\stzhongsong}{\CJKfamily{stzhongsong}}
+\newcommand{\stzhongsongtext}{\stzhongsonglatin\CJKfamily{stzhongsong}}
 \newcommand{\cusong}{\bfseries}
 
 % Chinese font sizes.
@@ -161,8 +166,12 @@
 \newcommand{\neu@authorsignature}{}
 \newcommand{\neu@supervisorsignature}{}
 \newcommand{\neu@signatureheight}{8mm}
+\newcommand{\neu@finalcoverlogo}{Figures/neu/title_page_logo.pdf}
+\newcommand{\neu@finalcoverdate}{}
 \newif\ifneu@header@twentysix
 \neu@header@twentysixtrue
+\newif\ifneu@finalcover
+\neu@finalcoverfalse
 
 \define@key{neudissertation}{classification}{\renewcommand{\neu@classification}{#1}}
 \define@key{neudissertation}{security-level}{\renewcommand{\neu@securitylevel}{#1}}
@@ -196,6 +205,20 @@
 \define@key{neudissertation}{author-signature}{\renewcommand{\neu@authorsignature}{#1}}
 \define@key{neudissertation}{supervisor-signature}{\renewcommand{\neu@supervisorsignature}{#1}}
 \define@key{neudissertation}{signature-height}{\renewcommand{\neu@signatureheight}{#1}}
+\define@key{neudissertation}{final-cover-logo}{\renewcommand{\neu@finalcoverlogo}{#1}}
+\define@key{neudissertation}{final-cover-date}{\renewcommand{\neu@finalcoverdate}{#1}}
+\define@key{neudissertation}{final-cover}[true]{%
+  \edef\neu@finalcoverflag{#1}%
+  \ifdefstring{\neu@finalcoverflag}{true}{%
+    \neu@finalcovertrue
+  }{%
+    \ifdefstring{\neu@finalcoverflag}{false}{%
+      \neu@finalcoverfalse
+    }{%
+      \ClassError{neudissertation}{Invalid value for `final-cover': #1}{Use `true' or `false'.}%
+    }%
+  }%
+}
 \define@key{neudissertation}{header-2026}[true]{%
   \edef\neu@headerflag{#1}%
   \ifdefstring{\neu@headerflag}{true}{%
@@ -440,10 +463,158 @@
   \end{tikzpicture}%
 }
 
+\newcommand{\neu@finalcoverlabel}[1]{%
+  \ifstrequal{#1}{作者}{作\hspace{11.2mm}者}{%
+    \ifstrequal{#1}{学号}{学\hspace{11.2mm}号}{%
+      \ifstrequal{#1}{学院}{学\hspace{11.2mm}院}{%
+        \ifstrequal{#1}{专业}{专\hspace{11.2mm}业}{#1}%
+      }%
+    }%
+  }%
+}
+\newcommand{\neu@finalcoverfield}[1]{%
+  \begin{minipage}[t]{105.9mm}
+    \stzhongsongtext\sanhao
+    \setlength{\parindent}{0pt}%
+    \renewcommand{\CJKglue}{\hskip 0pt plus 0.22mm}%
+    #1%
+  \end{minipage}%
+}
+\newcommand{\neu@finalcoverline}[3]{%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.0,#1)
+  {\stzhongsongtext\sanhao \neu@finalcoverlabel{#2}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (74.34,#1)
+  {\neu@finalcoverfield{#3}};
+}
+\newcommand{\neu@finalcoverdatetext}{%
+  \ifdefempty{\neu@finalcoverdate}{%
+    \neu@formatfinalcoverdate{\neu@coverdatecn}%
+  }{%
+    \neu@formatfinalcoverdate{\neu@finalcoverdate}%
+  }%
+}
+\newcount\neu@finalcoverspreadindex
+\newcount\neu@finalcoverspreadlength
+\newcommand{\neu@finalcoverspreadchars}[1]{%
+  \StrLen{#1}[\neu@finalcoverspreadstrlen]%
+  \neu@finalcoverspreadindex=1\relax
+  \neu@finalcoverspreadlength=\neu@finalcoverspreadstrlen\relax
+  \loop
+    \StrChar{#1}{\the\neu@finalcoverspreadindex}%
+    \ifnum\neu@finalcoverspreadindex<\neu@finalcoverspreadlength
+      \hspace{0.9bp}%
+      \advance\neu@finalcoverspreadindex by 1\relax
+  \repeat
+}
+\newcommand{\neu@finalcovermonth}[1]{%
+  \ifstrequal{#1}{1}{01}{%
+    \ifstrequal{#1}{2}{02}{%
+      \ifstrequal{#1}{3}{03}{%
+        \ifstrequal{#1}{4}{04}{%
+          \ifstrequal{#1}{5}{05}{%
+            \ifstrequal{#1}{6}{06}{%
+              \ifstrequal{#1}{7}{07}{%
+                \ifstrequal{#1}{8}{08}{%
+                  \ifstrequal{#1}{9}{09}{#1}%
+                }%
+              }%
+            }%
+          }%
+        }%
+      }%
+    }%
+  }%
+}
+\newcommand{\neu@finalcovermonthspread}[1]{%
+  \ifstrequal{#1}{1}{\neu@finalcoverspreadchars{01}}{%
+    \ifstrequal{#1}{2}{\neu@finalcoverspreadchars{02}}{%
+      \ifstrequal{#1}{3}{\neu@finalcoverspreadchars{03}}{%
+        \ifstrequal{#1}{4}{\neu@finalcoverspreadchars{04}}{%
+          \ifstrequal{#1}{5}{\neu@finalcoverspreadchars{05}}{%
+            \ifstrequal{#1}{6}{\neu@finalcoverspreadchars{06}}{%
+              \ifstrequal{#1}{7}{\neu@finalcoverspreadchars{07}}{%
+                \ifstrequal{#1}{8}{\neu@finalcoverspreadchars{08}}{%
+                  \ifstrequal{#1}{9}{\neu@finalcoverspreadchars{09}}{\neu@finalcoverspreadchars{#1}}%
+                }%
+              }%
+            }%
+          }%
+        }%
+      }%
+    }%
+  }%
+}
+\newcommand{\neu@formatfinalcoverdate}[1]{%
+  \IfSubStr{#1}{年}{%
+    \IfSubStr{#1}{月}{%
+      \StrBefore{#1}{年}[\neu@finalcoverdateyear]%
+      \StrBetween{#1}{年}{月}[\neu@finalcoverdatemonth]%
+      \neu@finalcoverspreadchars{\neu@finalcoverdateyear}\hspace{0.9bp}年\hspace{0.9bp}\hspace{20.6mm}\hspace{0.9bp}\neu@finalcovermonthspread{\neu@finalcoverdatemonth}\hspace{0.9bp}月%
+    }{#1}%
+  }{#1}%
+}
+\newcommand{\neu@finalcovermaintitle}{%
+  博\hspace{4bp}士\hspace{4bp}学\hspace{4bp}位\hspace{4bp}论\hspace{4bp}文%
+}
+\newcommand{\neu@finalcoverentitle}{%
+  D\hspace{2.52bp}O\hspace{2.52bp}C\hspace{2.52bp}T\hspace{2.52bp}O\hspace{2.52bp}R\hspace{2.52bp}A\hspace{2.52bp}L\hspace{17.4bp}%
+  D\hspace{2.52bp}I\hspace{2.52bp}S\hspace{2.52bp}S\hspace{2.52bp}E\hspace{2.52bp}R\hspace{2.52bp}T\hspace{2.52bp}A\hspace{2.52bp}T\hspace{2.52bp}I\hspace{2.52bp}O\hspace{2.52bp}N%
+}
+\newcommand{\neu@finalcovertitlebox}{%
+  \begin{minipage}[t]{105.9mm}
+    \stzhongsong\sanhao\linespread{1.62}\selectfont
+    \setlength{\parindent}{0pt}%
+    \renewcommand{\CJKglue}{\hskip 0pt plus 0.22mm}%
+    \neu@titlecn
+  \end{minipage}%
+}
+\newcommand{\neu@makefinalcover}{%
+  \begingroup
+  \pagestyle{neuempty}%
+  \thispagestyle{neuempty}%
+  \null
+  \neu@pagecoordinatepicture{%
+    \IfFileExists{\neu@finalcoverlogo}{%
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (104.44,28.5)
+      {\includegraphics[width=89.61mm,height=15.71mm]{\neu@finalcoverlogo}};
+    }{%
+      \ClassWarning{neudissertation}{Final cover logo file `\neu@finalcoverlogo' not found}%
+      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,28.0)
+      {\begin{minipage}{86mm}\centering\song\sihao 东北大学\quad NORTHEASTERN UNIVERSITY\end{minipage}};
+    }%
+
+    \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.3,71.6)
+    {\song\fontsize{54bp}{64bp}\selectfont \neu@finalcovermaintitle};
+    \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.5,96.7)
+    {{\fontspec{SimSun}\xiaoyi \neu@finalcoverentitle}};
+
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.0,130.2)
+    {\stzhongsong\sanhao 论文题目};
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (74.34,130.2)
+    {\neu@finalcovertitlebox};
+
+    \neu@finalcoverline{174.1}{作者}{\neu@authorcn}
+    \neu@finalcoverline{188.1}{学号}{\neu@studentid}
+    \neu@finalcoverline{202.1}{学院}{\neu@collegecn}
+    \neu@finalcoverline{216.1}{专业}{\neu@majorcn}
+    \neu@finalcoverline{230.1}{指导教师}{\neu@supervisorcn\hspace{3mm}\neu@supervisortitlecn}
+
+    \node[anchor=north,inner sep=0pt,outer sep=0pt] at (119.75,259.1)
+    {\stzhongsongtext\sanhao \neu@finalcoverdatetext};
+  }%
+  \null
+  \cleardoublepage
+  \endgroup
+}
+
 \newcommand{\makeneucovers}{%
   \begingroup
   \pagestyle{neuempty}%
   \thispagestyle{neuempty}%
+  \ifneu@finalcover
+    \neu@makefinalcover
+    \thispagestyle{neuempty}%
+  \fi
   \null
   \neu@pagecoordinatepicture{%
     \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,28.4)

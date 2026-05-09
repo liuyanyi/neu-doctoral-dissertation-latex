@@ -10,6 +10,8 @@
 latexmk -xelatex main.tex
 ```
 
+模板目标兼容 TeX Live 2023--2026。最终版封面中的日期、字距和对齐宏避免依赖较新的 LaTeX3 接口，以便在 TeX Live 2023 环境下正常编译。
+
 如果根目录已有旧辅助文件被编辑器占用，可临时输出到 `build/`：
 
 ```powershell
@@ -49,7 +51,8 @@ latexmk -xelatex -outdir=build -jobname=neu2026 main.tex
   signature-date = {},
   author-signature = {},
   supervisor-signature = {},
-  signature-height = {8mm}
+  signature-height = {8mm},
+  final-cover = true
 }
 
 注意：选项 `header-style` 已移除，使用 `header-2026` 来控制页眉样式：
@@ -60,6 +63,15 @@ latexmk -xelatex -outdir=build -jobname=neu2026 main.tex
 ```
 
 `author-signature` 和 `supervisor-signature` 支持 `png`、`jpg`、`pdf` 等 `\includegraphics` 可读取的签名文件；为空时声明页签名处留空。`signature-date` 为空时默认使用 `cover-date-cn`，`signature-height` 用于调整签名图片高度。
+
+`final-cover` 用于控制是否在现有中英文题名页之前增加一页 TeX 化的 2026 最终版博士学位论文封面：
+
+```latex
+\neudisetup{final-cover=true}  % 增加最终版封面
+\neudisetup{final-cover=false} % 不增加最终版封面
+```
+
+该封面默认复用 `title-cn`、`author-cn`、`student-id`、`college-cn`、`major-cn`、`supervisor-cn`、`supervisor-title-cn` 和 `cover-date-cn`，并自动把 `2016年7月` 排成封面所需的 `2016 年    07 月` 样式。如需单独调整封面底部日期，可设置 `final-cover-date = {2016年7月}`；如需替换顶部校名校徽图片，可设置 `final-cover-logo = {path/to/logo.pdf}`。
 
 可选第二导师字段为空时不会占位：
 
