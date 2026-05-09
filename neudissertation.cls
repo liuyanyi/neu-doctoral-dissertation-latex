@@ -951,6 +951,18 @@
   \par
 }
 
+\newenvironment{acknowledgementscn}{%
+  \cleardoublepage
+  \chapter*{致\hspace{1em}谢}%
+  \phantomsection
+  \addcontentsline{toc}{chapter}{致\hspace{1em}谢}%
+  \markboth{致\hspace{1em}谢}{}%
+  \thesisbodyfont
+  \thesisparagraphsetup
+}{%
+  \par
+}
+
 % Caption, reference, list, and bibliography helpers.
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
