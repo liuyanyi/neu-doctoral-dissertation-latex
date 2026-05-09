@@ -56,11 +56,11 @@
 }
 
 % Font families.
-% All fonts are loaded from the local fonts/ directory for consistent compilation.
+% All fonts are loaded from the local style/fonts/ directory for consistent compilation.
 
 % English fonts
 \setmainfont[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   UprightFont = times.ttf,
   BoldFont = timesbd.ttf,
   ItalicFont = timesi.ttf,
@@ -70,7 +70,7 @@
 % Chinese fonts
 % Note: .ttc files require FontIndex parameter (0 = first font in collection)
 \setCJKmainfont[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttc,
   BoldFont = simhei.ttf,
   ItalicFont = simkai.ttf,
@@ -79,7 +79,7 @@
 ]{simsun}
 
 \setCJKsansfont[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf,
   BoldFont = *,
   ItalicFont = *,
@@ -87,19 +87,19 @@
 ]{simhei}
 
 \setCJKmonofont[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf
 ]{simfang}
 
 \setCJKfamilyfont{song}[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttc,
   AutoFakeBold = false,
   FontIndex = 0
 ]{simsun}
 
 \setCJKfamilyfont{hei}[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf,
   BoldFont = *,
   ItalicFont = *,
@@ -107,22 +107,22 @@
 ]{simhei}
 
 \setCJKfamilyfont{kai}[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf
 ]{simkai}
 
 \setCJKfamilyfont{fs}[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf
 ]{simfang}
 
 \setCJKfamilyfont{stzhongsong}[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf
 ]{stzhongs}
 
 \newfontfamily\stzhongsonglatin[
-  Path = fonts/otf/,
+  Path = style/fonts/otf/,
   Extension = .ttf
 ]{stzhongs}
 \xeCJKsetup{
@@ -223,7 +223,7 @@
 \newcommand{\neu@authorsignature}{}
 \newcommand{\neu@supervisorsignature}{}
 \newcommand{\neu@signatureheight}{8mm}
-\newcommand{\neu@finalcoverlogo}{Figures/neu/title_page_logo.pdf}
+\newcommand{\neu@finalcoverlogo}{style/title_page_logo.pdf}
 \newcommand{\neu@finalcoverdate}{}
 \newcommand{\neu@finalcoverdateyear}{}
 \newcommand{\neu@finalcoverdatemonth}{}
@@ -983,7 +983,8 @@
 \newcommand{\neufigref}[1]{图~\ref{#1}}
 \newcommand{\neutabref}[1]{表~\ref{#1}}
 \newcommand{\neueqref}[1]{式（\ref{#1}）}
-\@namedef{bibstyle@gbt7714-unsrt}{\bibstyle@super}
+% Use superscript numbers for citations, as required by the standard.
+\citestyle{super}
 
 \DeclareDocumentCommand{\upcite}{om}{%
   \IfNoValueTF{#1}{\citep{#2}}{\citep[#1]{#2}}%
@@ -1022,7 +1023,7 @@
 \setlist{nosep}
 \setlist[enumerate]{leftmargin=2em}
 \setlist[itemize]{leftmargin=2em}
-\bibliographystyle{gbt7714-unsrt}
+\bibliographystyle{style/gbt7714-unsrt}
 
 \makeatother
 
