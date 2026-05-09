@@ -56,26 +56,75 @@
 }
 
 % Font families.
-\setmainfont{Times New Roman}
-\setsansfont{Arial}
-\setmonofont{Courier New}
-\setCJKmainfont[BoldFont=SimHei,ItalicFont=KaiTi]{SimSun}
+% All fonts are loaded from the local fonts/ directory for consistent compilation.
+
+% English fonts
+\setmainfont[
+  Path = fonts/otf/,
+  UprightFont = times.ttf,
+  BoldFont = timesbd.ttf,
+  ItalicFont = timesi.ttf,
+  BoldItalicFont = timesbi.ttf
+]{Times New Roman}
+
+% Chinese fonts
+% Note: .ttc files require FontIndex parameter (0 = first font in collection)
+\setCJKmainfont[
+  Path = fonts/otf/,
+  Extension = .ttc,
+  BoldFont = simhei.ttf,
+  ItalicFont = simkai.ttf,
+  AutoFakeBold = false,
+  FontIndex = 0
+]{simsun}
+
 \setCJKsansfont[
-  BoldFont=SimHei,
-  ItalicFont=SimHei,
-  BoldItalicFont=SimHei
-]{SimHei}
-\setCJKmonofont{FangSong}
-\setCJKfamilyfont{song}{SimSun}
+  Path = fonts/otf/,
+  Extension = .ttf,
+  BoldFont = *,
+  ItalicFont = *,
+  BoldItalicFont = *
+]{simhei}
+
+\setCJKmonofont[
+  Path = fonts/otf/,
+  Extension = .ttf
+]{simfang}
+
+\setCJKfamilyfont{song}[
+  Path = fonts/otf/,
+  Extension = .ttc,
+  AutoFakeBold = false,
+  FontIndex = 0
+]{simsun}
+
 \setCJKfamilyfont{hei}[
-  BoldFont=SimHei,
-  ItalicFont=SimHei,
-  BoldItalicFont=SimHei
-]{SimHei}
-\setCJKfamilyfont{kai}{KaiTi}
-\setCJKfamilyfont{fs}{FangSong}
-\setCJKfamilyfont{stzhongsong}{STZhongsong}
-\newfontfamily\stzhongsonglatin{STZhongsong}
+  Path = fonts/otf/,
+  Extension = .ttf,
+  BoldFont = *,
+  ItalicFont = *,
+  BoldItalicFont = *
+]{simhei}
+
+\setCJKfamilyfont{kai}[
+  Path = fonts/otf/,
+  Extension = .ttf
+]{simkai}
+
+\setCJKfamilyfont{fs}[
+  Path = fonts/otf/,
+  Extension = .ttf
+]{simfang}
+
+\setCJKfamilyfont{stzhongsong}[
+  Path = fonts/otf/,
+  Extension = .ttf
+]{stzhongs}
+
+\newfontfamily\stzhongsonglatin[
+  Path = fonts/otf/,
+  Extension = .ttf
+]{stzhongs}
 \xeCJKsetup{
   % CJKecglue = {},
   PunctStyle = CCT
@@ -155,12 +204,20 @@
 \newcommand{\neu@cosupervisortitlecn}{}
 \newcommand{\neu@cosupervisoraffiliationcn}{}
 \newcommand{\neu@cosupervisorenraw}{}
-\newcommand{\neu@submitdate}{20xx年6月}
-\newcommand{\neu@defensedate}{20xx年6月}
-\newcommand{\neu@degreedate}{20xx年7月}
+\newcommand{\neu@submitdateyear}{20xx}
+\newcommand{\neu@submitdatemonth}{6}
+\newcommand{\neu@submitdateraw}{}
+\newcommand{\neu@defensedateyear}{20xx}
+\newcommand{\neu@defensedatemonth}{6}
+\newcommand{\neu@defensedateraw}{}
+\newcommand{\neu@degreedateyear}{20xx}
+\newcommand{\neu@degreedatemonth}{7}
+\newcommand{\neu@degreedateraw}{}
 \newcommand{\neu@defensechair}{答辩委员会主席}
-\newcommand{\neu@coverdatecn}{20xx年7月}
-\newcommand{\neu@coverdateen}{July 20xx}
+\newcommand{\neu@coverdateyear}{20xx}
+\newcommand{\neu@coverdatemonth}{7}
+\newcommand{\neu@coverdatecnraw}{}
+\newcommand{\neu@coverdateenraw}{}
 \newcommand{\neu@onlinerelease}{两年}
 \newcommand{\neu@signaturedate}{}
 \newcommand{\neu@authorsignature}{}
@@ -168,6 +225,8 @@
 \newcommand{\neu@signatureheight}{8mm}
 \newcommand{\neu@finalcoverlogo}{Figures/neu/title_page_logo.pdf}
 \newcommand{\neu@finalcoverdate}{}
+\newcommand{\neu@finalcoverdateyear}{}
+\newcommand{\neu@finalcoverdatemonth}{}
 \newif\ifneu@header@twentysix
 \neu@header@twentysixtrue
 \newif\ifneu@finalcover
@@ -194,18 +253,28 @@
 \define@key{neudissertation}{cosupervisor-title-cn}{\renewcommand{\neu@cosupervisortitlecn}{#1}}
 \define@key{neudissertation}{cosupervisor-affiliation-cn}{\renewcommand{\neu@cosupervisoraffiliationcn}{#1}}
 \define@key{neudissertation}{cosupervisor-en}{\renewcommand{\neu@cosupervisorenraw}{#1}}
-\define@key{neudissertation}{submit-date}{\renewcommand{\neu@submitdate}{#1}}
-\define@key{neudissertation}{defense-date}{\renewcommand{\neu@defensedate}{#1}}
-\define@key{neudissertation}{degree-date}{\renewcommand{\neu@degreedate}{#1}}
+\define@key{neudissertation}{submit-year}{\renewcommand{\neu@submitdateyear}{#1}\renewcommand{\neu@submitdateraw}{}}
+\define@key{neudissertation}{submit-month}{\renewcommand{\neu@submitdatemonth}{#1}\renewcommand{\neu@submitdateraw}{}}
+\define@key{neudissertation}{submit-date}{\renewcommand{\neu@submitdateraw}{#1}}
+\define@key{neudissertation}{defense-year}{\renewcommand{\neu@defensedateyear}{#1}\renewcommand{\neu@defensedateraw}{}}
+\define@key{neudissertation}{defense-month}{\renewcommand{\neu@defensedatemonth}{#1}\renewcommand{\neu@defensedateraw}{}}
+\define@key{neudissertation}{defense-date}{\renewcommand{\neu@defensedateraw}{#1}}
+\define@key{neudissertation}{degree-year}{\renewcommand{\neu@degreedateyear}{#1}\renewcommand{\neu@degreedateraw}{}}
+\define@key{neudissertation}{degree-month}{\renewcommand{\neu@degreedatemonth}{#1}\renewcommand{\neu@degreedateraw}{}}
+\define@key{neudissertation}{degree-date}{\renewcommand{\neu@degreedateraw}{#1}}
 \define@key{neudissertation}{defense-chair}{\renewcommand{\neu@defensechair}{#1}}
-\define@key{neudissertation}{cover-date-cn}{\renewcommand{\neu@coverdatecn}{#1}}
-\define@key{neudissertation}{cover-date-en}{\renewcommand{\neu@coverdateen}{#1}}
+\define@key{neudissertation}{cover-year}{\renewcommand{\neu@coverdateyear}{#1}\renewcommand{\neu@coverdatecnraw}{}\renewcommand{\neu@coverdateenraw}{}}
+\define@key{neudissertation}{cover-month}{\renewcommand{\neu@coverdatemonth}{#1}\renewcommand{\neu@coverdatecnraw}{}\renewcommand{\neu@coverdateenraw}{}}
+\define@key{neudissertation}{cover-date-cn}{\renewcommand{\neu@coverdatecnraw}{#1}}
+\define@key{neudissertation}{cover-date-en}{\renewcommand{\neu@coverdateenraw}{#1}}
 \define@key{neudissertation}{online-release}{\renewcommand{\neu@onlinerelease}{#1}}
 \define@key{neudissertation}{signature-date}{\renewcommand{\neu@signaturedate}{#1}}
 \define@key{neudissertation}{author-signature}{\renewcommand{\neu@authorsignature}{#1}}
 \define@key{neudissertation}{supervisor-signature}{\renewcommand{\neu@supervisorsignature}{#1}}
 \define@key{neudissertation}{signature-height}{\renewcommand{\neu@signatureheight}{#1}}
 \define@key{neudissertation}{final-cover-logo}{\renewcommand{\neu@finalcoverlogo}{#1}}
+\define@key{neudissertation}{final-cover-year}{\renewcommand{\neu@finalcoverdateyear}{#1}\renewcommand{\neu@finalcoverdate}{}}
+\define@key{neudissertation}{final-cover-month}{\renewcommand{\neu@finalcoverdatemonth}{#1}\renewcommand{\neu@finalcoverdate}{}}
 \define@key{neudissertation}{final-cover-date}{\renewcommand{\neu@finalcoverdate}{#1}}
 \define@key{neudissertation}{final-cover}[true]{%
   \edef\neu@finalcoverflag{#1}%
@@ -246,6 +315,52 @@
 \newcommand{\neu@supervisoren}{\ifneuclass@blindreview Supervisor\else \neu@supervisorenraw\fi}
 \newcommand{\neu@cosupervisorcn}{\ifneuclass@blindreview 协助指导教师\else \neu@cosupervisorcnraw\fi}
 \newcommand{\neu@cosupervisoren}{\ifneuclass@blindreview Co-supervisor\else \neu@cosupervisorenraw\fi}
+
+\newcommand{\neu@datecn}[2]{#1年#2月}
+\newcommand{\neu@monthen}[1]{%
+  \ifcase#1\relax
+    \ClassError{neudissertation}{Invalid month `#1'}{Month must be an integer from 1 to 12.}%
+  \or January%
+  \or February%
+  \or March%
+  \or April%
+  \or May%
+  \or June%
+  \or July%
+  \or August%
+  \or September%
+  \or October%
+  \or November%
+  \or December%
+  \else
+    \ClassError{neudissertation}{Invalid month `#1'}{Month must be an integer from 1 to 12.}%
+  \fi
+}
+\newcommand{\neu@submitdate}{%
+  \ifdefempty{\neu@submitdateraw}{%
+    \neu@datecn{\neu@submitdateyear}{\neu@submitdatemonth}%
+  }{\neu@submitdateraw}%
+}
+\newcommand{\neu@defensedate}{%
+  \ifdefempty{\neu@defensedateraw}{%
+    \neu@datecn{\neu@defensedateyear}{\neu@defensedatemonth}%
+  }{\neu@defensedateraw}%
+}
+\newcommand{\neu@degreedate}{%
+  \ifdefempty{\neu@degreedateraw}{%
+    \neu@datecn{\neu@degreedateyear}{\neu@degreedatemonth}%
+  }{\neu@degreedateraw}%
+}
+\newcommand{\neu@coverdatecn}{%
+  \ifdefempty{\neu@coverdatecnraw}{%
+    \neu@datecn{\neu@coverdateyear}{\neu@coverdatemonth}%
+  }{\neu@coverdatecnraw}%
+}
+\newcommand{\neu@coverdateen}{%
+  \ifdefempty{\neu@coverdateenraw}{%
+    \neu@monthen{\neu@coverdatemonth}\space \neu@coverdateyear%
+  }{\neu@coverdateenraw}%
+}
 
 \newcommand{\neu@entry}[2]{\underline{\makebox[#1][c]{#2}}}
 \newcommand{\neu@spreadbox}[2]{{\hbadness=10000\makebox[#1][s]{#2}}}
@@ -488,7 +603,19 @@
 }
 \newcommand{\neu@finalcoverdatetext}{%
   \ifdefempty{\neu@finalcoverdate}{%
-    \neu@formatfinalcoverdate{\neu@coverdatecn}%
+    \ifdefempty{\neu@finalcoverdateyear}{%
+      \ifdefempty{\neu@finalcoverdatemonth}{%
+        \neu@formatfinalcoverdateym{\neu@coverdateyear}{\neu@coverdatemonth}%
+      }{%
+        \neu@formatfinalcoverdateym{\neu@coverdateyear}{\neu@finalcoverdatemonth}%
+      }%
+    }{%
+      \ifdefempty{\neu@finalcoverdatemonth}{%
+        \neu@formatfinalcoverdateym{\neu@finalcoverdateyear}{\neu@coverdatemonth}%
+      }{%
+        \neu@formatfinalcoverdateym{\neu@finalcoverdateyear}{\neu@finalcoverdatemonth}%
+      }%
+    }%
   }{%
     \neu@formatfinalcoverdate{\neu@finalcoverdate}%
   }%
@@ -547,11 +674,14 @@
 \newcommand{\neu@formatfinalcoverdate}[1]{%
   \IfSubStr{#1}{年}{%
     \IfSubStr{#1}{月}{%
-      \StrBefore{#1}{年}[\neu@finalcoverdateyear]%
-      \StrBetween{#1}{年}{月}[\neu@finalcoverdatemonth]%
-      \neu@finalcoverspreadchars{\neu@finalcoverdateyear}\hspace{0.9bp}年\hspace{0.9bp}\hspace{20.6mm}\hspace{0.9bp}\neu@finalcovermonthspread{\neu@finalcoverdatemonth}\hspace{0.9bp}月%
+      \StrBefore{#1}{年}[\neu@finalcoverdateparsedyear]%
+      \StrBetween{#1}{年}{月}[\neu@finalcoverdateparsedmonth]%
+      \neu@formatfinalcoverdateym{\neu@finalcoverdateparsedyear}{\neu@finalcoverdateparsedmonth}%
     }{#1}%
   }{#1}%
+}
+\newcommand{\neu@formatfinalcoverdateym}[2]{%
+  \neu@finalcoverspreadchars{#1}\hspace{0.9bp}年\hspace{0.9bp}\hspace{20.6mm}\hspace{0.9bp}\neu@finalcovermonthspread{#2}\hspace{0.9bp}月%
 }
 \newcommand{\neu@finalcovermaintitle}{%
   博\hspace{4bp}士\hspace{4bp}学\hspace{4bp}位\hspace{4bp}论\hspace{4bp}文%
@@ -586,7 +716,7 @@
     \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.3,71.6)
     {\song\fontsize{54bp}{64bp}\selectfont \neu@finalcovermaintitle};
     \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.5,96.7)
-    {{\fontspec{SimSun}\xiaoyi \neu@finalcoverentitle}};
+    {{\song\xiaoyi \neu@finalcoverentitle}};
 
     \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.0,130.2)
     {\stzhongsong\sanhao 论文题目};
@@ -797,6 +927,29 @@
   \thispagestyle{plain}
   \neuabstracttitle{Abstract}
 }{}
+
+% Back-matter environments.
+\newenvironment{referencescn}{%
+  \renewcommand{\bibsection}{%
+    \chapter*{\bibname\@mkboth{\MakeUppercase{\bibname}}{\MakeUppercase{\bibname}}}%
+    \phantomsection
+    \addcontentsline{toc}{chapter}{\bibname}%
+  }%
+}{%
+  \par
+}
+
+\newenvironment{achievementscn}[1][攻读博士学位期间取得的学术成果]{%
+  \cleardoublepage
+  \chapter*{#1}%
+  \phantomsection
+  \addcontentsline{toc}{chapter}{#1}%
+  \markboth{#1}{}%
+  \thesisbodyfont
+  \thesisparagraphsetup
+}{%
+  \par
+}
 
 % Caption, reference, list, and bibliography helpers.
 \numberwithin{equation}{chapter}
