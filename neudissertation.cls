@@ -1,16 +1,32 @@
+%% ===========================================================================
+%%  neudissertation.cls —— 东北大学研究生学位论文 LaTeX 模板
+%%  2026 (v2.0) 修订版，基于 Word 模板格式规范
+%% ===========================================================================
 %%
 %% Northeastern University doctoral dissertation template, 2026 edition.
 %%
+%% ---------------------------------------------------------------------------
+%% 文档类标识：模板名称、版本号、发布日期
+%% ---------------------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[2022/11/01]
 \ProvidesClass{neudissertation}[2026/05/07 v2.0 NEU doctoral dissertation template]
 
+%% ---------------------------------------------------------------------------
+%% 选项处理：声明模板选项（如 blindreview 盲审模式）
+%% ---------------------------------------------------------------------------
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{family=neuclass,prefix=neuclass@}
 \DeclareBoolOption[false]{blindreview}
 \ProcessKeyvalOptions*
 
+%% ---------------------------------------------------------------------------
+%% 基类：基于 ctexbook，A4 纸张、小四号字、无预置字体、双面右开
+%% ---------------------------------------------------------------------------
 \LoadClass[a4paper,zihao=-4,fontset=none,openright,twoside]{ctexbook}
 
+%% ---------------------------------------------------------------------------
+%% 必需宏包：排版、字体、图表、颜色、数学、超链接等基础功能宏包
+%% ---------------------------------------------------------------------------
 \RequirePackage{xkeyval}
 \RequirePackage{etoolbox}
 \RequirePackage{fontspec}
@@ -38,13 +54,18 @@
 \RequirePackage{xstring}
 \RequirePackage[sort&compress]{gbt7714}
 \RequirePackage[hidelinks,hypertexnames=false,bookmarksnumbered=true]{hyperref}
+%% tikz calc 库：用于封面坐标计算
 \usetikzlibrary{calc}
+%% PDF 书签兼容：禁用 \quad 以避免书签字符串警告
 \pdfstringdefDisableCommands{%
   \def\quad{ }%
 }
 
 % PDF bookmark formatting: chapters show "第 1 章 xxx", sections stay as "1.1 xxx"
 \makeatletter
+%% ---------------------------------------------------------------------------
+%% PDF 书签编号格式：章显示为「第 X 章 xxx」，节保持「1.1 xxx」
+%% ---------------------------------------------------------------------------
 \def\Hy@numberline#1{%
   \@ifundefined{Hy@level}{%
     #1\quad
@@ -60,6 +81,9 @@
 
 % Add "目 录" bookmark for PDF outline
 \makeatletter
+%% ---------------------------------------------------------------------------
+%% 目录 PDF 书签：插入「目  录」书签，确保目录页有超链接锚点
+%% ---------------------------------------------------------------------------
 \let\neu@origtableofcontents\tableofcontents
 \renewcommand{\tableofcontents}{%
   \cleardoublepage
@@ -70,6 +94,9 @@
 \makeatother
 
 % Base page layout matched to the Word template.
+%% ---------------------------------------------------------------------------
+%% 页面布局：A4 纸张、2.54 cm 页边距、页眉/页脚位置匹配 Word 模板
+%% ---------------------------------------------------------------------------
 \geometry{
   a4paper,
   left=2.54cm,
@@ -104,6 +131,7 @@
   FontIndex = 0
 ]{simsun}
 
+%% 无衬线中文字体：黑体 SimHei
 \setCJKsansfont[
   Path = style/fonts/otf/,
   Extension = .ttf,
@@ -112,11 +140,15 @@
   BoldItalicFont = *
 ]{simhei}
 
+%% 等宽中文字体：仿宋 SimFang
 \setCJKmonofont[
   Path = style/fonts/otf/,
   Extension = .ttf
 ]{simfang}
 
+%% ---------------------------------------------------------------------------
+%% CJK 字族定义：song(宋体) hei(黑体) kai(楷体) fs(仿宋) stzhongsong(华文中宋)
+%% ---------------------------------------------------------------------------
 \setCJKfamilyfont{song}[
   Path = style/fonts/otf/,
   Extension = .ttc,
@@ -148,6 +180,10 @@
   Extension = .ttf
 ]{stzhongs}
 
+%% ---------------------------------------------------------------------------
+%% 拉丁文配套字体：为中文字族配合同风格西文字体
+%% stzhongsonglatin / songlatin / neuenglishlogofont
+%% ---------------------------------------------------------------------------
 \newfontfamily\stzhongsonglatin[
   Path = style/fonts/otf/,
   Extension = .ttf
@@ -166,11 +202,18 @@
   BoldFont = {SimSun},
   BoldFeatures = {FakeBold = 2.4}
 ]{simsun}
+%% ---------------------------------------------------------------------------
+%% CJK 排版设置：CCT 标点压缩风格
+%% ---------------------------------------------------------------------------
 \xeCJKsetup{
   % CJKecglue = {},
   PunctStyle = CCT
 }
 
+%% ---------------------------------------------------------------------------
+%% 中文字体快捷命令：\song \hei \kai \fs \stzhongsong
+%% \songtext \stzhongsongtext 为中西文混排优化版本
+%% ---------------------------------------------------------------------------
 \newcommand{\song}{\CJKfamily{song}}
 \newcommand{\hei}{\CJKfamily{hei}}
 \newcommand{\kai}{\CJKfamily{kai}}
@@ -181,6 +224,9 @@
 \newcommand{\cusong}{\bfseries}
 
 % Chinese font sizes.
+%% ---------------------------------------------------------------------------
+%% 中文字号命令：初号(0) ~ 小五号(-5)，对应 Word 模板字号
+%% ---------------------------------------------------------------------------
 \newcommand{\chuhao}{\zihao{0}}
 \newcommand{\xiaochu}{\zihao{-0}}
 \newcommand{\yihao}{\zihao{1}}
@@ -196,16 +242,23 @@
 
 % Base body style matched to the Word template:
 % SimSun + Times New Roman, 12 bp text with fixed 22 bp leading.
+%% ---------------------------------------------------------------------------
+%% 正文默认样式：宋体 + Times New Roman，12bp 字号 + 22bp 固定行距
+%% ---------------------------------------------------------------------------
 \newcommand{\thesisbodyfont}{%
   \renewcommand{\baselinestretch}{1}%
   \song
   \rmfamily
   \fontsize{12bp}{22bp}\selectfont
 }
+%% 段落格式：首行缩进 2em，段间距 0bp
 \newcommand{\thesisparagraphsetup}{%
   \setlength{\parindent}{2em}%
   \setlength{\parskip}{0bp}%
 }
+%% ---------------------------------------------------------------------------
+%% 浮动体与数学公式间距：图表与正文间的垂直间距
+%% ---------------------------------------------------------------------------
 \newcommand{\thesisfloatsetup}{%
   \setlength{\floatsep}{6bp plus 2bp minus 2bp}%
   \setlength{\textfloatsep}{6bp plus 2bp minus 2bp}%
@@ -215,6 +268,9 @@
   \setlength{\abovedisplayshortskip}{4bp plus 2bp minus 1bp}%
   \setlength{\belowdisplayshortskip}{8bp plus 2bp minus 2bp}%
 }
+%% ---------------------------------------------------------------------------
+%% 文档初始化钩子：应用正文样式、段落格式和浮动间距
+%% ---------------------------------------------------------------------------
 \AtBeginDocument{%
   \thesisbodyfont
   \thesisparagraphsetup
@@ -278,6 +334,11 @@
 \newif\ifneu@finalcover
 \neu@finalcoverfalse
 
+%% ---------------------------------------------------------------------------
+%% \neudisetup 配置键定义
+%% 将所有元数据变量注册为键值对接口。
+%% 使用方式：\neudisetup{title-cn={...}, author-cn={...}, ...}
+%% ---------------------------------------------------------------------------
 \define@key{neudissertation}{classification}{\renewcommand{\neu@classification}{#1}}
 \define@key{neudissertation}{security-level}{\renewcommand{\neu@securitylevel}{#1}}
 \define@key{neudissertation}{udc}{\renewcommand{\neu@udc}{#1}}
@@ -368,8 +429,15 @@
 % 或
 %   \neudisetup{header-2026=false}
 % 来控制页眉样式（true 为 2026 新样式，false 为 legacy）。
+%% ---------------------------------------------------------------------------
+%% \neudisetup：用户配置总入口
+%% 用法：\neudisetup{key=value, key=value, ...}
+%% ---------------------------------------------------------------------------
 \newcommand{\neudisetup}[1]{\setkeys{neudissertation}{#1}}
 
+%% ---------------------------------------------------------------------------
+%% 盲审替换：blindreview=true 时用通用称谓替换真实姓名/名称
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@authorcn}{\ifneuclass@blindreview 第一作者\else \neu@authorcnraw\fi}
 \newcommand{\neu@authoren}{\ifneuclass@blindreview Author\else \neu@authorenraw\fi}
 \newcommand{\neu@supervisorcn}{\ifneuclass@blindreview 导师\else \neu@supervisorcnraw\fi}
@@ -377,6 +445,9 @@
 \newcommand{\neu@cosupervisorcn}{\ifneuclass@blindreview 协助指导教师\else \neu@cosupervisorcnraw\fi}
 \newcommand{\neu@cosupervisoren}{\ifneuclass@blindreview Co-supervisor\else \neu@cosupervisorenraw\fi}
 
+%% ---------------------------------------------------------------------------
+%% 日期格式化：中文「X年X月」、英文月份名、各日期支持 raw 覆盖
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@datecn}[2]{#1年#2月}
 \newcommand{\neu@monthen}[1]{%
   \ifcase#1\relax
@@ -423,6 +494,14 @@
   }{\neu@coverdateenraw}%
 }
 
+%% ---------------------------------------------------------------------------
+%% 封面排版辅助命令
+%%   \neu@entry{宽度}{内容}    -- 下划线居中框
+%%   \neu@spreadbox{宽度}{内容} -- 分散对齐
+%%   \neu@coverleftline          -- 封面左侧信息行
+%%   \neu@coverpairline          -- 封面左右成对信息行
+%%   \neu@nametitlecn            -- 姓名+职称排版
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@entry}[2]{\underline{\makebox[#1][c]{#2}}}
 \newcommand{\neu@spreadbox}[2]{{\hbadness=10000\makebox[#1][s]{#2}}}
 \newcommand{\neu@coverlabel}[1]{\neu@spreadbox{42mm}{#1}}
@@ -487,6 +566,13 @@
 }
 
 % Headers and footers.
+%% ===========================================================================
+%% 第 2 节：页眉页脚样式
+%% ===========================================================================
+%% header-2026=true（新）：居中显示章名
+%% header-2026=false（旧）：左学校名+右章名
+%% 页脚居中：-页码-
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@legacyheadtitle}{东北大学\neu@degreelevel 学位论文}
 \newcommand{\neu@setheaderfields}{%
   \fancyheadoffset[LE,LO,RE,RO]{0pt}%
@@ -529,6 +615,7 @@
   \renewcommand{\footrulewidth}{0pt}
 }
 
+%% 章标记：页眉显示「第 X 章 章名」（摘要等无编号章不显示编号）
 \renewcommand{\chaptermark}[1]{%
   \ifnum\value{chapter}>0
     \ifneu@header@twentysix
@@ -542,6 +629,12 @@
 }
 
 % Chapter and section titles.
+%% ===========================================================================
+%% 第 3 节：章、节、小节标题格式与目录样式
+%% ===========================================================================
+%% secnumdepth=4（编号到 paragraph）, tocdepth=2（目录到 subsection）
+%% 使用 ctexset + titlesec 双机制控制
+%% ---------------------------------------------------------------------------
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{2}
 \ctexset{
@@ -583,12 +676,16 @@
 \titleformat{\paragraph}[hang]{\xiaosi\hei}{\theparagraph}{0.75em}{}
 \titlespacing*{\paragraph}{0pt}{6pt}{0.75em}
 
+%% 重命名：目录、参考文献、图、表、附录的中文标题词
 \renewcommand{\contentsname}{目\quad 录}
 \renewcommand{\bibname}{参考文献}
 \renewcommand{\figurename}{图}
 \renewcommand{\tablename}{表}
 \renewcommand{\appendixname}{附录}
 
+%% ---------------------------------------------------------------------------
+%% 目录条目格式：章标题黑体，节/小节逐级缩进，点线引导至页码
+%% ---------------------------------------------------------------------------
 \titlecontents{chapter}
 [0em]{\hei}
 {\thecontentslabel\quad}
@@ -611,6 +708,13 @@
 {\titlerule*[0.5pc]{.}\contentspage}
 
 % Matter transitions.
+%% ===========================================================================
+%% 第 4 节：文档结构切换（frontmatter / mainmatter / backmatter）
+%% ===========================================================================
+%% frontmatter：罗马数字页码，无章编号
+%% mainmatter：阿拉伯数字页码，有章编号
+%% backmatter：无章编号
+%% ---------------------------------------------------------------------------
 \renewcommand{\frontmatter}{%
   \cleardoublepage
   \pagenumbering{Roman}
@@ -630,6 +734,7 @@
   \@mainmatterfalse
   \pagestyle{fancy}
 }
+%% 双面兼容：偶数页末尾自动插入空白页，下一章从奇数页开始
 \renewcommand{\cleardoublepage}{%
   \clearpage
   \if@twoside
@@ -645,6 +750,13 @@
 % physical upper-left corner of the A4 page.  Do not put the TikZ picture into
 % an eso-pic box: the result depends on the TikZ box baseline/depth and may shift
 % or clip at the top.  Use TikZ's current-page overlay instead.
+%% ===========================================================================
+%% 第 5 节：封面与声明页排版（TikZ 绝对坐标定位）
+%% ===========================================================================
+%% 原点为 A4 纸张物理左上角（x 向右，y 向下，单位 mm）
+%% 通过 current-page.north-west 锚点定位
+%% 不使用 eso-pic 以避免基线偏移导致的顶部裁切
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@pagecoordinatepicture}[1]{%
   \begin{tikzpicture}[remember picture,overlay,x=1mm,y=-1mm]
     \begin{scope}[shift={(current page.north west)}]
@@ -653,6 +765,9 @@
   \end{tikzpicture}%
 }
 
+%% ---------------------------------------------------------------------------
+%% 精装封面辅助命令
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@finalcoverlabel}[1]{%
   \ifstrequal{#1}{作者}{作\hspace{11.2mm}者}{%
     \ifstrequal{#1}{学号}{学\hspace{11.2mm}号}{%
@@ -881,6 +996,12 @@
   \endgroup
 }
 
+%% ---------------------------------------------------------------------------
+%% \makeneucovers（即 \maketitle）：生成全部封面页
+%% 1. 若 final-cover=true，先生成精装封面
+%% 2. 生成中文封面（分类号、题名、作者信息等）
+%% 3. 生成英文封面（A Dissertation in ...）
+%% ---------------------------------------------------------------------------
 \newcommand{\makeneucovers}{%
   \begingroup
   \pagestyle{neuempty}%
@@ -961,9 +1082,15 @@
   \cleardoublepage
   \endgroup
 }
+%% 将 \maketitle 映射为 \makeneucovers，兼容标准 LaTeX 用法
 \let\maketitle\makeneucovers
 
 % Declaration and authorization.
+%% ---------------------------------------------------------------------------
+%% \makeneudeclaration：独创性声明 + 版权使用授权书
+%% 包含：声明正文、作者签名、授权书正文、
+%% 网络发布时段选择（半年/一年/一年半/两年，勾选）、导师签名
+%% ---------------------------------------------------------------------------
 \newcommand{\neu@releasebox}[1]{%
   #1\ \ifdefstring{\neu@onlinerelease}{#1}{$\mbox{\ooalign{$\checkmark$\cr\hidewidth$\square$\hidewidth\cr}}$}{$\square$}%
 }
@@ -1039,6 +1166,14 @@
 }
 
 % Abstract environments.
+%% ===========================================================================
+%% 第 6 节：摘要环境与关键词
+%% ===========================================================================
+%% abstractcn -- 中文摘要（宋体，标题「摘  要」）
+%% abstracten -- 英文摘要（标题「Abstract」）
+%% \cnkeywords -- 中文关键词
+%% \enkeywords -- 英文关键词
+%% ---------------------------------------------------------------------------
 \newcommand{\neuabstracttitle}[1]{%
   \par\vspace*{6bp}%
   {\centering \hei\bfseries\fontsize{22bp}{24bp}\selectfont #1\par}%
@@ -1077,6 +1212,13 @@
 }{}
 
 % Back-matter environments.
+%% ===========================================================================
+%% 第 7 节：后文环境（参考文献/学术成果/致谢）
+%% ===========================================================================
+%% referencescn       -- 参考文献
+%% achievementscn     -- 攻读博士学位期间取得的学术成果
+%% acknowledgementscn -- 致  谢
+%% ---------------------------------------------------------------------------
 \newenvironment{referencescn}{%
   \renewcommand{\bibsection}{%
     \chapter*{\bibname\@mkboth{\MakeUppercase{\bibname}}{\MakeUppercase{\bibname}}}%
@@ -1112,6 +1254,13 @@
 }
 
 % Caption, reference, list, and bibliography helpers.
+%% ===========================================================================
+%% 第 8 节：图表编号、题注与引用格式
+%% ===========================================================================
+%% 编号规则：公式(1.1)、图1.1、表1.1（按章编号）
+%% 题注字体：五号
+%% 引用：上标数字（GB/T 7714 标准）
+%% ---------------------------------------------------------------------------
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
 \numberwithin{table}{chapter}
@@ -1168,6 +1317,7 @@
   \setlength{\topsep}{0bp}%
   \setlength{\partopsep}{0bp}%
 }
+%% 列表间距：全局关闭额外间距
 \setlist{nosep}
 \setlist[enumerate]{leftmargin=2em}
 \setlist[itemize]{leftmargin=2em}
@@ -1175,4 +1325,7 @@
 
 \makeatother
 
+%% ===========================================================================
+%% 文件结束
+%% ===========================================================================
 \endinput

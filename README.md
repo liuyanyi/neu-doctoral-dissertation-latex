@@ -80,6 +80,8 @@ latexmk -xelatex main.tex
 \neudisetup{header-2026=true} % 使用 2026 风格页眉
 ```
 
+根据2026-06-24的最新版本，专业学位和学术学位的模板在封面上有所差异，所以新增了 `professional-degree` 设置用于调整。
+
 `professional-degree` 用于控制中文题名页右侧字段标签，默认为 `false`，表示学术学位并显示“学科门类：”；设置为 `true` 时表示专业学位并显示“专业学位类别：”。字段值仍通过 `discipline` 填写：
 
 ```latex
@@ -231,7 +233,8 @@ uv run dev\compare_pdf_visual.py .\template_reference\word_page\declear.pdf main
 
 ## 模板构建来源和参考信息
 
-格式参考自 [东北大学研究生院-下载专区-申请博士学位相关表格材料（2026年版）](http://www.graduate.neu.edu.cn/_upload/article/files/13/40/aaeb638d41dc8f73ad0ac07c1cce/5884da82-cb8d-4323-96d9-9ab4b6f92932.zip)，模板相关的文件也包含在 `template_reference/` 目录下。
+~~格式参考自 [东北大学研究生院-下载专区-申请博士学位相关表格材料（2026年版）](http://www.graduate.neu.edu.cn/_upload/article/files/13/40/aaeb638d41dc8f73ad0ac07c1cce/5884da82-cb8d-4323-96d9-9ab4b6f92932.zip)，模板相关的文件也包含在 `template_reference/` 目录下。~~
+最新版格式参考自 [东北大学研究生院-下载专区-申请博士学位相关表格材料（2026年6月版）](http://www.graduate.neu.edu.cn/_upload/article/files/6d/66/f7fcab86409eb9ad3aca3852594b/4ec51440-f4e4-40ed-a7c2-4efbc7755b9d.zip)模板相关的文件也包含在 `template_reference/` 目录下。
 
 > [!WARNING]
 > 学校发布的模板中，部分样例与格式要求不符，因此参考了往届论文。为了视觉效果，部分内容经过调整，可能和学校提供的样例略有差异，但整体风格和格式要求保持一致。
