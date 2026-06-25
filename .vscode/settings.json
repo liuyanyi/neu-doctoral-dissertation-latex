@@ -1,29 +1,53 @@
-{
+﻿{
+  // ============================================================
+  // LaTeX Workshop 编译配置（XeLaTeX + latexmk）
+  // 与项目根目录的 .latexmkrc 协同工作
+  // ============================================================
+
   "latex-workshop.latex.outDir": "%DIR%",
-  "latex-workshop.latex.recipe.default": "first",
+
+  "latex-workshop.latex.recipe.default": "lastUsed",
+
+  // --- 编译工具定义 ---
   "latex-workshop.latex.tools": [
     {
-      "name": "latexmk-xelatex",
+      "name": "xelatexmk",
       "command": "latexmk",
       "args": [
-        "-synctex=1",
-        "-interaction=nonstopmode",
         "-file-line-error",
-        "-xelatex",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "xelatexmk-force",
+      "command": "latexmk",
+      "args": [
+        "-gg",
+        "-file-line-error",
         "%DOC%"
       ]
     }
   ],
+
+  // --- 编译流程（recipe）---
   "latex-workshop.latex.recipes": [
     {
-      "name": "latexmk-xelatex",
-      "tools": [
-        "latexmk-xelatex"
-      ]
+      "name": "▶ XeLaTeXmk（智能增量编译）",
+      "tools": ["xelatexmk"]
+    },
+    {
+      "name": "▶ XeLaTeXmk（强制全量编译）",
+      "tools": ["xelatexmk-force"]
     }
   ],
+
+  // --- PDF 预览 ---
   "latex-workshop.view.pdf.viewer": "tab",
+
+  // --- 智能提示 ---
   "latex-workshop.intellisense.package.enabled": true,
+
+  // --- 消息提示 ---
   "latex-workshop.message.error.show": true,
   "latex-workshop.message.warning.show": false
 }
