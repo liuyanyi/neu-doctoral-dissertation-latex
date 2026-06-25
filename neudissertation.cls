@@ -98,9 +98,9 @@
 \setCJKmainfont[
   Path = style/fonts/otf/,
   Extension = .ttc,
-  BoldFont = simhei.ttf,
+  BoldFont = {SimSun},
+  BoldFeatures = {FakeBold = 2.5},
   ItalicFont = simkai.ttf,
-  AutoFakeBold = false,
   FontIndex = 0
 ]{simsun}
 
@@ -120,7 +120,8 @@
 \setCJKfamilyfont{song}[
   Path = style/fonts/otf/,
   Extension = .ttc,
-  AutoFakeBold = false,
+  BoldFont = {SimSun},
+  BoldFeatures = {FakeBold = 2.5},
   FontIndex = 0
 ]{simsun}
 
@@ -151,6 +152,20 @@
   Path = style/fonts/otf/,
   Extension = .ttf
 ]{stzhongs}
+\newfontfamily\songlatin[
+  Path = style/fonts/otf/,
+  Extension = .ttc,
+  BoldFont = {SimSun},
+  BoldFeatures = {FakeBold = 2.5},
+  FontIndex = 0
+]{simsun}
+\newfontfamily\neuenglishlogofont[
+  Path = style/fonts/otf/,
+  Extension = .ttc,
+  FontIndex = 0,
+  BoldFont = {SimSun},
+  BoldFeatures = {FakeBold = 2.4}
+]{simsun}
 \xeCJKsetup{
   % CJKecglue = {},
   PunctStyle = CCT
@@ -162,6 +177,7 @@
 \newcommand{\fs}{\CJKfamily{fs}}
 \newcommand{\stzhongsong}{\CJKfamily{stzhongsong}}
 \newcommand{\stzhongsongtext}{\stzhongsonglatin\CJKfamily{stzhongsong}}
+\newcommand{\songtext}{\songlatin\CJKfamily{song}}
 \newcommand{\cusong}{\bfseries}
 
 % Chinese font sizes.
@@ -222,6 +238,8 @@
 \newcommand{\neu@majoren}{Discipline}
 \newcommand{\neu@degreelevel}{博士}
 \newcommand{\neu@discipline}{工学}
+\newif\ifneu@professionaldegree
+\neu@professionaldegreefalse
 \newcommand{\neu@supervisorcnraw}{导师姓名}
 \newcommand{\neu@supervisortitlecn}{教授}
 \newcommand{\neu@supervisoraffiliationcn}{东北大学}
@@ -240,6 +258,7 @@
 \newcommand{\neu@degreedatemonth}{7}
 \newcommand{\neu@degreedateraw}{}
 \newcommand{\neu@defensechair}{答辩委员会主席}
+\newcommand{\neu@defensechairtitle}{教授}
 \newcommand{\neu@coverdateyear}{20xx}
 \newcommand{\neu@coverdatemonth}{7}
 \newcommand{\neu@coverdatecnraw}{}
@@ -249,7 +268,8 @@
 \newcommand{\neu@authorsignature}{}
 \newcommand{\neu@supervisorsignature}{}
 \newcommand{\neu@signatureheight}{8mm}
-\newcommand{\neu@finalcoverlogo}{style/title_page_logo.pdf}
+\newcommand{\neu@finalcoverlogo}{style/logo.pdf}
+\newcommand{\neu@finalcoverlogotext}{style/logo_text.pdf}
 \newcommand{\neu@finalcoverdate}{}
 \newcommand{\neu@finalcoverdateyear}{}
 \newcommand{\neu@finalcoverdatemonth}{}
@@ -271,6 +291,19 @@
 \define@key{neudissertation}{major-en}{\renewcommand{\neu@majoren}{#1}}
 \define@key{neudissertation}{degree-level}{\renewcommand{\neu@degreelevel}{#1}}
 \define@key{neudissertation}{discipline}{\renewcommand{\neu@discipline}{#1}}
+\newcommand{\neu@setprofessionaldegree}[2]{%
+  \edef\neu@professionaldegreeflag{#1}%
+  \ifdefstring{\neu@professionaldegreeflag}{true}{%
+    \neu@professionaldegreetrue
+  }{%
+    \ifdefstring{\neu@professionaldegreeflag}{false}{%
+      \neu@professionaldegreefalse
+    }{%
+      \ClassError{neudissertation}{Invalid value for `#2': #1}{Use `true' or `false'.}%
+    }%
+  }%
+}
+\define@key{neudissertation}{professional-degree}[false]{\neu@setprofessionaldegree{#1}{professional-degree}}
 \define@key{neudissertation}{supervisor-cn}{\renewcommand{\neu@supervisorcnraw}{#1}}
 \define@key{neudissertation}{supervisor-title-cn}{\renewcommand{\neu@supervisortitlecn}{#1}}
 \define@key{neudissertation}{supervisor-affiliation-cn}{\renewcommand{\neu@supervisoraffiliationcn}{#1}}
@@ -289,6 +322,7 @@
 \define@key{neudissertation}{degree-month}{\renewcommand{\neu@degreedatemonth}{#1}\renewcommand{\neu@degreedateraw}{}}
 \define@key{neudissertation}{degree-date}{\renewcommand{\neu@degreedateraw}{#1}}
 \define@key{neudissertation}{defense-chair}{\renewcommand{\neu@defensechair}{#1}}
+\define@key{neudissertation}{defense-chair-title}{\renewcommand{\neu@defensechairtitle}{#1}}
 \define@key{neudissertation}{cover-year}{\renewcommand{\neu@coverdateyear}{#1}\renewcommand{\neu@coverdatecnraw}{}\renewcommand{\neu@coverdateenraw}{}}
 \define@key{neudissertation}{cover-month}{\renewcommand{\neu@coverdatemonth}{#1}\renewcommand{\neu@coverdatecnraw}{}\renewcommand{\neu@coverdateenraw}{}}
 \define@key{neudissertation}{cover-date-cn}{\renewcommand{\neu@coverdatecnraw}{#1}}
@@ -299,6 +333,7 @@
 \define@key{neudissertation}{supervisor-signature}{\renewcommand{\neu@supervisorsignature}{#1}}
 \define@key{neudissertation}{signature-height}{\renewcommand{\neu@signatureheight}{#1}}
 \define@key{neudissertation}{final-cover-logo}{\renewcommand{\neu@finalcoverlogo}{#1}}
+\define@key{neudissertation}{final-cover-logo-text}{\renewcommand{\neu@finalcoverlogotext}{#1}}
 \define@key{neudissertation}{final-cover-year}{\renewcommand{\neu@finalcoverdateyear}{#1}\renewcommand{\neu@finalcoverdate}{}}
 \define@key{neudissertation}{final-cover-month}{\renewcommand{\neu@finalcoverdatemonth}{#1}\renewcommand{\neu@finalcoverdate}{}}
 \define@key{neudissertation}{final-cover-date}{\renewcommand{\neu@finalcoverdate}{#1}}
@@ -400,6 +435,11 @@
 \newcommand{\neu@coverrightdatelabel}[7]{%
   #1\hspace{0.22mm}#2\hspace{0.22mm}#3\hspace{0.22mm}#4\hspace{0.22mm}#5\hspace{0.22mm}#6\hspace{0.22mm}#7%
 }
+\newcommand{\neu@coverprofessionaldegreelabel}{%
+  \makebox[31.8mm][l]{%
+    专\hspace{0.20mm}业\hspace{0.20mm}学\hspace{0.20mm}位\hspace{0.20mm}类\hspace{0.20mm}别\hspace{0.20mm}：%
+  }%
+}
 \newcommand{\neu@coverleftlabelbox}[1]{%
   \ifstrequal{#1}{作者姓名：}{\neu@coverleftfivecharlabel{作}{者}{姓}{名}{：}}{%
     \ifstrequal{#1}{作者学号：}{\neu@coverleftfivecharlabel{作}{者}{学}{号}{：}}{%
@@ -408,17 +448,26 @@
       }}}%
 }
 \newcommand{\neu@coverrightentry}[2]{%
-  \ifstrequal{#1}{学科类别：}{%
-    \neu@coverrightfivecharlabel{学}{科}{类}{别}{：}\hspace{2.0mm}#2%
+  \ifstrequal{#1}{学科门类：}{%
+    \neu@coverrightfivecharlabel{学}{科}{门}{类}{：}\hspace{2.0mm}#2%
   }{%
-    \ifstrequal{#1}{答辩委员会主席：}{%
-      \makebox[37.55mm][l]{\scalebox{0.95}[1]{#1}}\hspace{0.3mm}#2%
+    \ifstrequal{#1}{专业学位类别：}{%
+      \makebox[35.8mm][l]{\neu@coverprofessionaldegreelabel}\hspace{2.0mm}#2%
     }{%
-      \ifstrequal{#1}{论文答辩日期：}{%
-        \neu@coverrightdatelabel{论}{文}{答}{辩}{日}{期}{：}\hspace{3.5mm}#2%
+      \ifstrequal{#1}{答辩委员会主席：}{%
+        \makebox[37.55mm][l]{\scalebox{0.95}[1]{#1}}\hspace{0.3mm}#2%
       }{%
-        #1\hspace{1.7mm}#2%
-      }}}%
+        \ifstrequal{#1}{论文答辩日期：}{%
+          \neu@coverrightdatelabel{论}{文}{答}{辩}{日}{期}{：}\hspace{3.5mm}#2%
+        }{%
+          #1\hspace{1.7mm}#2%
+        }%
+      }%
+    }%
+  }%
+}
+\newcommand{\neu@nametitlecn}[2]{%
+  #1\ifdefempty{#2}{}{\hspace{2.6mm}#2}%
 }
 \newcommand{\neu@coverleftline}[3]{%
   \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (31.87,#1)
@@ -427,7 +476,7 @@
 \newcommand{\neu@coverpairline}[5]{%
   \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (31.87,#1)
   {\song\sihao \neu@coverleftlabelbox{#2}\hspace{2.0mm}#3};
-  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (96.47,#1)
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (107.0,#1)
   {\song\sihao \neu@coverrightentry{#4}{#5}};
 }
 \newcommand{\neu@blankpage}{%
@@ -653,22 +702,23 @@
   \neu@finalcoverspreadindex=1\relax
   \neu@finalcoverspreadlength=\neu@finalcoverspreadstrlen\relax
   \loop
-    \StrChar{#1}{\the\neu@finalcoverspreadindex}%
-    \ifnum\neu@finalcoverspreadindex<\neu@finalcoverspreadlength
-      \hspace{0.9bp}%
-      \advance\neu@finalcoverspreadindex by 1\relax
+  \StrChar{#1}{\the\neu@finalcoverspreadindex}%
+  \ifnum\neu@finalcoverspreadindex<\neu@finalcoverspreadlength
+  \hspace{0.9bp}%
+  \advance\neu@finalcoverspreadindex by 1\relax
   \repeat
 }
 \newcommand{\neu@finalcovermonth}[1]{%
-  \ifstrequal{#1}{1}{01}{%
-    \ifstrequal{#1}{2}{02}{%
-      \ifstrequal{#1}{3}{03}{%
-        \ifstrequal{#1}{4}{04}{%
-          \ifstrequal{#1}{5}{05}{%
-            \ifstrequal{#1}{6}{06}{%
-              \ifstrequal{#1}{7}{07}{%
-                \ifstrequal{#1}{8}{08}{%
-                  \ifstrequal{#1}{9}{09}{#1}%
+  \edef\neu@finalcovermonthvalue{#1}%
+  \ifdefstring{\neu@finalcovermonthvalue}{1}{01}{%
+    \ifdefstring{\neu@finalcovermonthvalue}{2}{02}{%
+      \ifdefstring{\neu@finalcovermonthvalue}{3}{03}{%
+        \ifdefstring{\neu@finalcovermonthvalue}{4}{04}{%
+          \ifdefstring{\neu@finalcovermonthvalue}{5}{05}{%
+            \ifdefstring{\neu@finalcovermonthvalue}{6}{06}{%
+              \ifdefstring{\neu@finalcovermonthvalue}{7}{07}{%
+                \ifdefstring{\neu@finalcovermonthvalue}{8}{08}{%
+                  \ifdefstring{\neu@finalcovermonthvalue}{9}{09}{\neu@finalcovermonthvalue}%
                 }%
               }%
             }%
@@ -679,15 +729,16 @@
   }%
 }
 \newcommand{\neu@finalcovermonthspread}[1]{%
-  \ifstrequal{#1}{1}{\neu@finalcoverspreadchars{01}}{%
-    \ifstrequal{#1}{2}{\neu@finalcoverspreadchars{02}}{%
-      \ifstrequal{#1}{3}{\neu@finalcoverspreadchars{03}}{%
-        \ifstrequal{#1}{4}{\neu@finalcoverspreadchars{04}}{%
-          \ifstrequal{#1}{5}{\neu@finalcoverspreadchars{05}}{%
-            \ifstrequal{#1}{6}{\neu@finalcoverspreadchars{06}}{%
-              \ifstrequal{#1}{7}{\neu@finalcoverspreadchars{07}}{%
-                \ifstrequal{#1}{8}{\neu@finalcoverspreadchars{08}}{%
-                  \ifstrequal{#1}{9}{\neu@finalcoverspreadchars{09}}{\neu@finalcoverspreadchars{#1}}%
+  \edef\neu@finalcovermonthspreadvalue{#1}%
+  \ifdefstring{\neu@finalcovermonthspreadvalue}{1}{\neu@finalcoverspreadchars{01}}{%
+    \ifdefstring{\neu@finalcovermonthspreadvalue}{2}{\neu@finalcoverspreadchars{02}}{%
+      \ifdefstring{\neu@finalcovermonthspreadvalue}{3}{\neu@finalcoverspreadchars{03}}{%
+        \ifdefstring{\neu@finalcovermonthspreadvalue}{4}{\neu@finalcoverspreadchars{04}}{%
+          \ifdefstring{\neu@finalcovermonthspreadvalue}{5}{\neu@finalcoverspreadchars{05}}{%
+            \ifdefstring{\neu@finalcovermonthspreadvalue}{6}{\neu@finalcoverspreadchars{06}}{%
+              \ifdefstring{\neu@finalcovermonthspreadvalue}{7}{\neu@finalcoverspreadchars{07}}{%
+                \ifdefstring{\neu@finalcovermonthspreadvalue}{8}{\neu@finalcoverspreadchars{08}}{%
+                  \ifdefstring{\neu@finalcovermonthspreadvalue}{9}{\neu@finalcoverspreadchars{09}}{\neu@finalcoverspreadchars{\neu@finalcovermonthspreadvalue}}%
                 }%
               }%
             }%
@@ -707,14 +758,86 @@
   }{#1}%
 }
 \newcommand{\neu@formatfinalcoverdateym}[2]{%
-  \neu@finalcoverspreadchars{#1}\hspace{0.9bp}年\hspace{0.9bp}\hspace{20.6mm}\hspace{0.9bp}\neu@finalcovermonthspread{#2}\hspace{0.9bp}月%
+  \neu@finalcoverspreadchars{#1}\hspace{1.85mm}年\hspace{2.3mm}\neu@finalcovermonthspread{#2}\hspace{1.85mm}月%
 }
 \newcommand{\neu@finalcovermaintitle}{%
   博\hspace{4bp}士\hspace{4bp}学\hspace{4bp}位\hspace{4bp}论\hspace{4bp}文%
 }
-\newcommand{\neu@finalcoverentitle}{%
-  D\hspace{2.52bp}O\hspace{2.52bp}C\hspace{2.52bp}T\hspace{2.52bp}O\hspace{2.52bp}R\hspace{2.52bp}A\hspace{2.52bp}L\hspace{17.4bp}%
-  D\hspace{2.52bp}I\hspace{2.52bp}S\hspace{2.52bp}S\hspace{2.52bp}E\hspace{2.52bp}R\hspace{2.52bp}T\hspace{2.52bp}A\hspace{2.52bp}T\hspace{2.52bp}I\hspace{2.52bp}O\hspace{2.52bp}N%
+\newcommand{\neu@finalcoverenword}[2]{\makebox[0pt][l]{\scalebox{#1}[1]{#2}}}
+% \newlength{\neu@finalcoverenglishlinewidth}
+% \newcommand{\neu@finalcoverenglishlogo}{%
+%   \begingroup
+%   \neuenglishlogofont\bfseries
+%   \setlength{\parindent}{0pt}%
+%   \settowidth{\neu@finalcoverenglishlinewidth}{%
+%     \scalebox{0.985}[1]{%
+%       \addfontfeatures{LetterSpace=1.4}\fontsize{13.55bp}{13.55bp}\selectfont NORTHEASTERN}%
+%   }%
+%   \begin{minipage}[t][29.45mm][t]{45.8mm}
+%     \centering
+%     {\makebox[45.8mm][c]{\scalebox{0.985}[1]{%
+%       \addfontfeatures{LetterSpace=1.4}\fontsize{13.55bp}{13.55bp}\selectfont NORTHEASTERN}}\par}%
+%     \vspace{2.50mm}%
+%     {\fontsize{13.55bp}{13.55bp}\selectfont
+%       \makebox[45.8mm][c]{%
+%         \makebox[\neu@finalcoverenglishlinewidth]{%
+%           U\hfil N\hfil I\hfil V\hfil E\hfil R\hfil S\hfil I\hfil T\hfil Y%
+%         }%
+%       }\par}%
+%   \end{minipage}%
+%   \endgroup
+% }
+\newlength{\neu@finalcoverenglishlinewidth}
+
+\newcommand{\neu@finalcoverenglishlogo}{%
+  \begingroup
+  \neuenglishlogofont\bfseries
+  \setlength{\parindent}{0pt}%
+  %
+  % 第一行真实宽度：第二行就严格对齐这个宽度
+  \settowidth{\neu@finalcoverenglishlinewidth}{%
+    \scalebox{0.985}[1]{%
+      \addfontfeatures{LetterSpace=1.4}%
+      \fontsize{13.55bp}{13.55bp}\selectfont NORTHEASTERN%
+    }%
+  }%
+  %
+  \begin{minipage}[t][29.45mm][t]{45.8mm}
+    \centering
+    \makebox[45.8mm][c]{%
+      \begin{minipage}[t]{\neu@finalcoverenglishlinewidth}
+        \centering
+        {\scalebox{0.985}[1]{%
+            \addfontfeatures{LetterSpace=1.4}%
+            \fontsize{13.55bp}{13.55bp}\selectfont NORTHEASTERN%
+          }\par}%
+        \vspace{2.50mm}%
+        {\fontsize{13.55bp}{13.55bp}\selectfont
+          \makebox[\neu@finalcoverenglishlinewidth][s]{%
+            U\hfil N\hfil I\hfil V\hfil E\hfil R\hfil S\hfil I\hfil T\hfil Y%
+          }%
+          \par
+        }%
+      \end{minipage}%
+    }%
+  \end{minipage}%
+  \endgroup
+}
+\newcommand{\neu@finalcoverheader}{%
+  \IfFileExists{\neu@finalcoverlogotext}{%
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (59.70,29.15)
+    {\includegraphics[height=13.85mm,keepaspectratio]{\neu@finalcoverlogotext}};%
+  }{%
+    \ClassWarning{neudissertation}{Final cover logo text file `\neu@finalcoverlogotext' not found}%
+  }%
+  \IfFileExists{\neu@finalcoverlogo}{%
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (97.95,28.70)
+    {\includegraphics[height=15.25mm,keepaspectratio]{\neu@finalcoverlogo}};%
+  }{%
+    \ClassWarning{neudissertation}{Final cover logo file `\neu@finalcoverlogo' not found}%
+  }%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (109.25,31.65)
+  {\neu@finalcoverenglishlogo};%
 }
 \newcommand{\neu@finalcovertitlebox}{%
   \begin{minipage}[t]{105.9mm}
@@ -730,19 +853,14 @@
   \thispagestyle{neuempty}%
   \null
   \neu@pagecoordinatepicture{%
-    \IfFileExists{\neu@finalcoverlogo}{%
-      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (104.44,28.5)
-      {\includegraphics[width=89.61mm,height=15.71mm]{\neu@finalcoverlogo}};
-    }{%
-      \ClassWarning{neudissertation}{Final cover logo file `\neu@finalcoverlogo' not found}%
-      \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.0,28.0)
-      {\begin{minipage}{86mm}\centering\song\sihao 东北大学\quad NORTHEASTERN UNIVERSITY\end{minipage}};
-    }%
+    \neu@finalcoverheader
 
     \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.3,71.6)
     {\song\fontsize{54bp}{64bp}\selectfont \neu@finalcovermaintitle};
-    \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.5,96.7)
-    {{\song\xiaoyi \neu@finalcoverentitle}};
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (51.99,96.67)
+    {\songtext\xiaoyi \neu@finalcoverenword{1.1833}{DOCTORAL}};
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (98.10,96.67)
+    {\songtext\xiaoyi \neu@finalcoverenword{1.1923}{DISSERTATION}};
 
     \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.0,130.2)
     {\stzhongsong\sanhao 论文题目};
@@ -755,7 +873,7 @@
     \neu@finalcoverline{216.1}{专业}{\neu@majorcn}
     \neu@finalcoverline{230.1}{指导教师}{\neu@supervisorcn\hspace{3mm}\neu@supervisortitlecn}
 
-    \node[anchor=north,inner sep=0pt,outer sep=0pt] at (119.75,259.1)
+    \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.75,259.1)
     {\stzhongsongtext\sanhao \neu@finalcoverdatetext};
   }%
   \null
@@ -773,13 +891,13 @@
   \fi
   \null
   \neu@pagecoordinatepicture{%
-    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,28.4)
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,28.65)
     {\song\sihao 分类号};
     \draw[line width=0.4pt,line cap=butt] (44.9,33.5) -- (89.4,33.5);
-    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (96.9,28.4)
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (96.73,28.65)
     {\song\sihao 密级};
     \draw[line width=0.4pt,line cap=butt] (109.0,33.5) -- (133.8,33.5);
-    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,40.4)
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt] at (30.1,40.31)
     {\song\sihao UDC};
     \draw[line width=0.4pt,line cap=butt] (42.8,44.5) -- (89.8,44.5);
 
@@ -791,17 +909,21 @@
     \neu@coverleftline{100.2}{作者姓名：}{\neu@authorcn}
     \neu@coverleftline{111.3}{作者学号：}{\neu@studentid}
     \ifdefempty{\neu@cosupervisorcnraw}{%
-      \neu@coverleftline{122.2}{指导教师：}{\neu@supervisorcn\quad \neu@supervisortitlecn}
+      \neu@coverleftline{122.2}{指导教师：}{\neu@nametitlecn{\neu@supervisorcn}{\neu@supervisortitlecn}}
       \node[anchor=north,inner sep=0pt,outer sep=0pt] at (103.3,133.2)
       {\song\sihao \neu@supervisoraffiliationcn};
     }{%
-      \neu@coverleftline{122.2}{指导教师：}{\neu@supervisorcn\quad \neu@supervisortitlecn\qquad \neu@supervisoraffiliationcn}
-      \neu@coverleftline{133.2}{}{\neu@cosupervisorcn\quad \neu@cosupervisortitlecn\qquad \neu@cosupervisoraffiliationcn}
+      \neu@coverleftline{122.2}{指导教师：}{\neu@nametitlecn{\neu@supervisorcn}{\neu@supervisortitlecn}\qquad \neu@supervisoraffiliationcn}
+      \neu@coverleftline{133.2}{}{\neu@nametitlecn{\neu@cosupervisorcn}{\neu@cosupervisortitlecn}\qquad \neu@cosupervisoraffiliationcn}
     }
-    \neu@coverpairline{144.2}{申请学位级别：}{\neu@degreelevel}{学科类别：}{\neu@discipline}
+    \ifneu@professionaldegree
+      \neu@coverpairline{144.2}{申请学位级别：}{\neu@degreelevel}{专业学位类别：}{\neu@discipline}
+    \else
+      \neu@coverpairline{144.2}{申请学位级别：}{\neu@degreelevel}{学科门类：}{\neu@discipline}
+    \fi
     \neu@coverleftline{155.2}{学科专业名称：}{\neu@majorcn}
     \neu@coverpairline{166.2}{论文提交日期：}{\neu@submitdate}{论文答辩日期：}{\neu@defensedate}
-    \neu@coverpairline{177.2}{学位授予日期：}{\neu@degreedate}{答辩委员会主席：}{\neu@defensechair}
+    \neu@coverpairline{177.2}{学位授予日期：}{\neu@degreedate}{答辩委员会主席：}{\neu@nametitlecn{\neu@defensechair}{\neu@defensechairtitle}}
 
     \node[anchor=north,inner sep=0pt,outer sep=0pt] at (105.1,221.3)
     {\song\sihao \neu@spreadbox{34.7mm}{东北大学}};

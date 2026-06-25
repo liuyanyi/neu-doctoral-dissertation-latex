@@ -49,7 +49,8 @@ latexmk -xelatex main.tex
   major-cn = {计算机软件与理论},
   major-en = {Computer Software and Theory},
   degree-level = {博士},
-  discipline = {},
+  professional-degree = false,
+  discipline = {工学},
   supervisor-cn = {张某某},
   supervisor-title-cn = {教授},
   supervisor-affiliation-cn = {东北大学计算机科学与工程学院},
@@ -61,6 +62,7 @@ latexmk -xelatex main.tex
   degree-year = {2016},
   degree-month = {7},
   defense-chair = {王某某},
+  defense-chair-title = {教授},
   cover-year = {2016},
   cover-month = {7},
   online-release = {两年},
@@ -76,6 +78,12 @@ latexmk -xelatex main.tex
 
 ```latex
 \neudisetup{header-2026=true} % 使用 2026 风格页眉
+```
+
+`professional-degree` 用于控制中文题名页右侧字段标签，默认为 `false`，表示学术学位并显示“学科门类：”；设置为 `true` 时表示专业学位并显示“专业学位类别：”。字段值仍通过 `discipline` 填写：
+
+```latex
+\neudisetup{professional-degree=true, discipline={电子信息}}
 ```
 
 日期字段使用数字填写年月：`submit-year/month`、`defense-year/month`、`degree-year/month`、`cover-year/month`。模板会自动生成中文日期（如 `2016年7月`）和英文题名页日期（如 `July 2016`），因此通常不需要再填写 `cover-date-en`。旧的 `submit-date`、`defense-date`、`degree-date`、`cover-date-cn`、`cover-date-en` 仍可作为兼容写法使用。
