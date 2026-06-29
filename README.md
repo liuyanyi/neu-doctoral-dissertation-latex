@@ -234,6 +234,7 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 
 - `Build`：只编译 `main.tex`，并上传 `main.pdf`、`main.log` 等构建产物。
 - `PDF Compare`：编译默认专业学位版本，再生成并编译临时学术学位入口，随后按 `dev/pdf_compare_cases.json` 执行 PDF 视觉对比。
+- `Release`：按 `.github/release-include.txt` 打包 TeX 模板、样例内容、`style/`、`Figures/`、README、LICENSE 和 CHANGELOG，并发布到 GitHub Release。
 
 两个 workflow 会复用 `.github/texlive-packages.txt` 中的 TeX Live 包列表，并缓存 apt 下载包；`PDF Compare` 还会缓存 Python pip 依赖。
 

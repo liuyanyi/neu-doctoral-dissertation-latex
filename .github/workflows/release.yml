@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v2026.06.1"
+        required: true
+        type: string
+      release_name:
+        description: "Release name; defaults to the tag"
+        required: false
+        type: string
+      prerelease:
+        description: "Mark this release as a prerelease"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Package and publish release
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare package
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          package_name="neu-dissertation-template-${TAG}"
+          staging_dir="dist/${package_name}"
+          mkdir -p "$staging_dir"
+
+          while IFS= read -r item || [ -n "$item" ]; do
+            [ -z "$item" ] && continue
+            [ "${item#\#}" != "$item" ] && continue
+            if [ ! -e "$item" ]; then
+              echo "Release include path does not exist: $item" >&2
+              exit 1
+            fi
+            mkdir -p "$staging_dir/$(dirname "$item")"
+            cp -R "$item" "$staging_dir/$item"
+          done < .github/release-include.txt
+
+          (cd dist && zip -r "${package_name}.zip" "$package_name")
+          echo "PACKAGE_NAME=$package_name" >> "$GITHUB_ENV"
+          echo "ZIP_PATH=dist/${package_name}.zip" >> "$GITHUB_ENV"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}
+          path: ${{ env.ZIP_PATH }}
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          RELEASE_NAME: ${{ inputs.release_name }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          set -euo pipefail
+          release_name="${RELEASE_NAME:-$TAG}"
+          prerelease_flag=""
+          if [ "$PRERELEASE" = "true" ]; then
+            prerelease_flag="--prerelease"
+          fi
+
+          gh release create "$TAG" "$ZIP_PATH" \
+            --target "$GITHUB_SHA" \
+            --title "$release_name" \
+            --notes "Packaged TeX template source and README." \
+            $prerelease_flag
