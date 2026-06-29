@@ -235,7 +235,10 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 - `Build`：只编译 `main.tex`，并上传 `main.pdf`、`main.log` 等构建产物。
 - `PDF Compare`：编译默认专业学位版本，再生成并编译临时学术学位入口，随后按 `dev/pdf_compare_cases.json` 执行 PDF 视觉对比。
 
+两个 workflow 会复用 `.github/texlive-packages.txt` 中的 TeX Live 包列表，并缓存 apt 下载包；`PDF Compare` 还会缓存 Python pip 依赖。
+
 PDF 对比完成后会上传 `pdf-compare` artifact，包含 `main.pdf`、`main.log`、临时学术学位版本 PDF/log，以及每个 case 的 diff、增强 diff、红蓝 overlay、highlight、Word 渲染页、LaTeX 渲染页和 metrics。`summary.md` 和 `summary.json` 汇总所有 case 的指标。
+对比脚本也会在 workflow 日志末尾输出指标表格，并写入 GitHub Actions 的 Step Summary，便于不下载 artifact 直接检查结果。
 
 `template_reference/compare_result/baseline` 下保留已接受的红蓝 overlay PNG 供人工审阅。CI 的阻断条件只比较 `baseline/diff_metrics.json` 中的指标窗口，不直接以 Word 原始模板的 diff 大小或 PNG 像素级一致性作为失败条件。
 

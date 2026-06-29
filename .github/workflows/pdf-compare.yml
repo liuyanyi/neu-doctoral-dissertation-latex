@@ -21,17 +21,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: .apt-cache
+          key: ${{ runner.os }}-apt-texlive-${{ hashFiles('.github/texlive-packages.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-texlive-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: dev/requirements.txt
+
       - name: Install TeX Live and Python tooling
         run: |
+          mkdir -p .apt-cache/archives/partial
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            latexmk \
-            texlive-bibtex-extra \
-            texlive-fonts-recommended \
-            texlive-lang-chinese \
-            texlive-latex-extra \
-            texlive-science \
-            texlive-xetex
+          xargs sudo apt-get \
+            -o Dir::Cache::archives="$PWD/.apt-cache/archives" \
+            install -y --no-install-recommends \
+            < .github/texlive-packages.txt
+          sudo rm -f .apt-cache/archives/lock
+          sudo rm -rf .apt-cache/archives/partial
+          sudo chown -R "$USER:$USER" .apt-cache
           python -m pip install --upgrade pip
           python -m pip install -r dev/requirements.txt
 

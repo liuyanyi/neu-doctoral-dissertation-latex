@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,16 @@ class CompareCase:
     dpi: int
     threshold: int
     crop_mode: str
+
+
+@dataclass(frozen=True)
+class MetricCheck:
+    metric_name: str
+    actual: float
+    expected: float | None
+    tolerance: float | None
+    delta: float | None
+    passed: bool | None
 
 
 def positive_int(value: str) -> int:
@@ -170,26 +181,131 @@ def check_baseline_metrics(
     return failures
 
 
-def write_summary(
+def load_baseline_metrics(baseline_dir: Path) -> dict[str, Any]:
+    baseline_path = baseline_dir / BASELINE_METRICS_FILENAME
+    if not baseline_path.exists():
+        return {}
+    return json.loads(baseline_path.read_text(encoding="utf-8"))
+
+
+def build_metric_checks(
     *,
-    output_dir: Path,
     metrics_by_case: dict[str, dict[str, Any]],
+    baseline_metrics: dict[str, Any],
+    changed_percent_tolerance: float,
+    mean_abs_diff_tolerance: float,
+) -> dict[str, list[MetricCheck]]:
+    checks_by_case = {}
+    for case_id, actual_metrics in metrics_by_case.items():
+        expected_metrics = baseline_metrics.get(case_id, {})
+        specs = [
+            (
+                "changed_percent",
+                float(actual_metrics["changed_percent"]),
+                expected_metrics.get("changed_percent"),
+                changed_percent_tolerance,
+            ),
+            (
+                "mean_abs_diff",
+                float(actual_metrics["mean_abs_diff"]),
+                expected_metrics.get("mean_abs_diff"),
+                mean_abs_diff_tolerance,
+            ),
+        ]
+
+        checks = []
+        for metric_name, actual, expected_raw, tolerance in specs:
+            if expected_raw is None:
+                checks.append(
+                    MetricCheck(
+                        metric_name=metric_name,
+                        actual=actual,
+                        expected=None,
+                        tolerance=tolerance,
+                        delta=None,
+                        passed=None,
+                    )
+                )
+                continue
+
+            expected = float(expected_raw)
+            delta = actual - expected
+            checks.append(
+                MetricCheck(
+                    metric_name=metric_name,
+                    actual=actual,
+                    expected=expected,
+                    tolerance=tolerance,
+                    delta=delta,
+                    passed=abs(delta) <= tolerance,
+                )
+            )
+
+        checks_by_case[case_id] = checks
+
+    return checks_by_case
+
+
+def format_float(value: float | None, digits: int = 6) -> str:
+    if value is None:
+        return "-"
+    return f"{value:.{digits}f}"
+
+
+def format_status(checks: list[MetricCheck]) -> str:
+    if any(check.passed is False for check in checks):
+        return "FAIL"
+    if any(check.passed is None for check in checks):
+        return "N/A"
+    return "PASS"
+
+
+def build_markdown_summary(
+    *,
+    metrics_by_case: dict[str, dict[str, Any]],
+    metric_checks_by_case: dict[str, list[MetricCheck]],
     failures: list[str],
-) -> None:
+) -> str:
     lines = [
         "# PDF Visual Compare Summary",
         "",
-        "| Case | Changed pixels | Changed percent | Mean abs diff | Max abs diff |",
-        "| :--- | ---: | ---: | ---: | ---: |",
+        "| Case | Status | Changed % | Baseline % | Delta % | Tolerance % | Mean diff | Baseline mean | Delta mean | Tolerance mean | Max diff |",
+        "| :--- | :---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
+
     for case_id, metrics in metrics_by_case.items():
+        checks = {
+            check.metric_name: check
+            for check in metric_checks_by_case.get(case_id, [])
+        }
+        changed_percent = checks.get("changed_percent")
+        mean_abs_diff = checks.get("mean_abs_diff")
         lines.append(
-            "| {case_id} | {changed_pixels} | {changed_percent:.4f}% | "
-            "{mean_abs_diff:.4f} | {max_abs_diff} |".format(
+            "| {case_id} | {status} | {changed_percent} | {baseline_percent} | "
+            "{delta_percent} | {tolerance_percent} | {mean_diff} | "
+            "{baseline_mean} | {delta_mean} | {tolerance_mean} | {max_abs_diff} |".format(
                 case_id=case_id,
-                changed_pixels=metrics["changed_pixels"],
-                changed_percent=metrics["changed_percent"],
-                mean_abs_diff=metrics["mean_abs_diff"],
+                status=format_status(list(checks.values())),
+                changed_percent=format_float(metrics["changed_percent"], 4),
+                baseline_percent=format_float(
+                    changed_percent.expected if changed_percent else None, 4
+                ),
+                delta_percent=format_float(
+                    changed_percent.delta if changed_percent else None, 4
+                ),
+                tolerance_percent=format_float(
+                    changed_percent.tolerance if changed_percent else None, 4
+                ),
+                mean_diff=format_float(metrics["mean_abs_diff"], 4),
+                baseline_mean=format_float(
+                    mean_abs_diff.expected if mean_abs_diff else None, 4
+                ),
+                delta_mean=format_float(
+                    mean_abs_diff.delta if mean_abs_diff else None, 4
+                ),
+                tolerance_mean=format_float(
+                    mean_abs_diff.tolerance if mean_abs_diff else None, 4
+                ),
                 max_abs_diff=metrics["max_abs_diff"],
             )
         )
@@ -198,12 +314,35 @@ def write_summary(
         lines.extend(["", "## Baseline Check Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)
 
+    return "\n".join(lines) + "\n"
+
+
+def write_summary(
+    *,
+    output_dir: Path,
+    metrics_by_case: dict[str, dict[str, Any]],
+    metric_checks_by_case: dict[str, list[MetricCheck]],
+    failures: list[str],
+) -> None:
+    summary = build_markdown_summary(
+        metrics_by_case=metrics_by_case,
+        metric_checks_by_case=metric_checks_by_case,
+        failures=failures,
+    )
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (output_dir / "summary.md").write_text(summary, encoding="utf-8")
     (output_dir / "summary.json").write_text(
         json.dumps(metrics_by_case, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+
+    print(summary)
+
+    github_step_summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if github_step_summary:
+        with Path(github_step_summary).open("a", encoding="utf-8") as summary_file:
+            summary_file.write(summary)
 
 
 def write_baseline_metrics(
@@ -308,9 +447,18 @@ def main() -> None:
             )
         )
 
+    baseline_metrics = load_baseline_metrics(args.baseline_dir)
+    metric_checks_by_case = build_metric_checks(
+        metrics_by_case=metrics_by_case,
+        baseline_metrics=baseline_metrics,
+        changed_percent_tolerance=args.changed_percent_tolerance,
+        mean_abs_diff_tolerance=args.mean_abs_diff_tolerance,
+    )
+
     write_summary(
         output_dir=args.output_dir,
         metrics_by_case=metrics_by_case,
+        metric_checks_by_case=metric_checks_by_case,
         failures=failures,
     )
 

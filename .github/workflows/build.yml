@@ -12,17 +12,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: .apt-cache
+          key: ${{ runner.os }}-apt-texlive-${{ hashFiles('.github/texlive-packages.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-texlive-
+
       - name: Install TeX Live
         run: |
+          mkdir -p .apt-cache/archives/partial
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            latexmk \
-            texlive-bibtex-extra \
-            texlive-fonts-recommended \
-            texlive-lang-chinese \
-            texlive-latex-extra \
-            texlive-science \
-            texlive-xetex
+          xargs sudo apt-get \
+            -o Dir::Cache::archives="$PWD/.apt-cache/archives" \
+            install -y --no-install-recommends \
+            < .github/texlive-packages.txt
+          sudo rm -f .apt-cache/archives/lock
+          sudo rm -rf .apt-cache/archives/partial
+          sudo chown -R "$USER:$USER" .apt-cache
 
       - name: Show TeX environment
         run: |
