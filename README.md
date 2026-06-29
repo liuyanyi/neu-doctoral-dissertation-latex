@@ -222,13 +222,41 @@ uv run dev\compare_pdf_visual.py .\template_reference\word_page\cover_page.pdf m
 
 ### 开发中的比较命令
 
-开发过程中的比较文件保留在 `template_reference/compare_result` 目录下，主要比较了封面页、首页、英文首页和声明页：
+开发过程中的比较文件保留在 `template_reference/compare_result` 目录下，主要比较封面页、声明页、英文题名页、专业学位题名页和学术学位题名页。批量比较配置维护在 `dev/pdf_compare_cases.json` 中：
 
 ```bash
-uv run dev\compare_pdf_visual.py .\template_reference\word_page\cover_page.pdf main.pdf --word-page 1 --latex-page 1 --dpi 300 --output-dir tmp\pdf-diff --prefix cover_page --save-rendered
-uv run dev\compare_pdf_visual.py .\template_reference\word_page\title_page.pdf main.pdf --word-page 1 --latex-page 3 --dpi 300 --output-dir tmp\pdf-diff --prefix title_page --save-rendered
-uv run dev\compare_pdf_visual.py .\template_reference\word_page\en_title_page.pdf main.pdf --word-page 1 --latex-page 5 --dpi 300 --output-dir tmp\pdf-diff --prefix title_page_en --save-rendered
-uv run dev\compare_pdf_visual.py .\template_reference\word_page\declear.pdf main.pdf --word-page 1 --latex-page 7 --dpi 300 --output-dir tmp\pdf-diff --prefix declare --save-rendered
+uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --output-dir tmp/pdf-compare
+```
+
+### CI 编译与 PDF 对比
+
+仓库提供两个手动触发的 GitHub Actions：
+
+- `Build`：只编译 `main.tex`，并上传 `main.pdf`、`main.log` 等构建产物。
+- `PDF Compare`：编译默认专业学位版本，再生成并编译临时学术学位入口，随后按 `dev/pdf_compare_cases.json` 执行 PDF 视觉对比。
+
+PDF 对比完成后会上传 `pdf-compare` artifact，包含 `main.pdf`、`main.log`、临时学术学位版本 PDF/log，以及每个 case 的 diff、增强 diff、红蓝 overlay、highlight、Word 渲染页、LaTeX 渲染页和 metrics。`summary.md` 和 `summary.json` 汇总所有 case 的指标。
+
+`template_reference/compare_result/baseline` 下保留已接受的红蓝 overlay PNG 供人工审阅。CI 的阻断条件只比较 `baseline/diff_metrics.json` 中的指标窗口，不直接以 Word 原始模板的 diff 大小或 PNG 像素级一致性作为失败条件。
+
+默认指标窗口为：
+
+- `changed_percent`: ±0.05
+- `mean_abs_diff`: ±0.1
+
+本地更新 baseline：
+
+```bash
+latexmk -xelatex main.tex
+uv run --with-requirements dev/requirements.txt python dev/make_academic_entry.py
+latexmk -xelatex -jobname=main-academic -outdir=tmp/ci-academic tmp/ci-academic/main-academic.tex
+uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --output-dir tmp/pdf-compare --update-baseline
+```
+
+本地检查 baseline：
+
+```bash
+uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --output-dir tmp/pdf-compare --check-baseline
 ```
 
 ## 模板构建来源和参考信息

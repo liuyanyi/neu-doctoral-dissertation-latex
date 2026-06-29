@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  latex:
+    name: Compile LaTeX
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-bibtex-extra \
+            texlive-fonts-recommended \
+            texlive-lang-chinese \
+            texlive-latex-extra \
+            texlive-science \
+            texlive-xetex
+
+      - name: Show TeX environment
+        run: |
+          xelatex --version
+          latexmk -version
+
+      - name: Compile main.pdf
+        run: latexmk -xelatex main.tex
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: latex-build
+          path: |
+            main.pdf
+            main.log
+            main.blg
+            main.fdb_latexmk
+          if-no-files-found: ignore

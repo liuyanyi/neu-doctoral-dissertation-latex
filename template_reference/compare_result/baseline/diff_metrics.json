@@ -1,0 +1,142 @@
+{
+  "cover_page": {
+    "dpi": 300,
+    "word_page": 1,
+    "latex_page": 1,
+    "word_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "latex_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "compared_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "crop_mode": "min",
+    "changed_pixels": 149050,
+    "changed_percent": 1.712559350723423,
+    "mean_abs_diff": 1.6290427545813404,
+    "max_abs_diff": 255,
+    "diff_bbox": [
+      355,
+      338,
+      2126,
+      3123
+    ]
+  },
+  "declaration": {
+    "dpi": 300,
+    "word_page": 1,
+    "latex_page": 7,
+    "word_image": {
+      "width": 2481,
+      "height": 3509
+    },
+    "latex_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "compared_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "crop_mode": "min",
+    "changed_pixels": 352444,
+    "changed_percent": 4.049522091958175,
+    "mean_abs_diff": 5.653569178205904,
+    "max_abs_diff": 255,
+    "diff_bbox": [
+      356,
+      322,
+      2125,
+      3301
+    ]
+  },
+  "title_page_en": {
+    "dpi": 300,
+    "word_page": 1,
+    "latex_page": 5,
+    "word_image": {
+      "width": 2481,
+      "height": 3509
+    },
+    "latex_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "compared_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "crop_mode": "min",
+    "changed_pixels": 75451,
+    "changed_percent": 0.8669192591172961,
+    "mean_abs_diff": 1.2297521597435837,
+    "max_abs_diff": 255,
+    "diff_bbox": [
+      352,
+      346,
+      2030,
+      2939
+    ]
+  },
+  "title_page_professional": {
+    "dpi": 300,
+    "word_page": 1,
+    "latex_page": 3,
+    "word_image": {
+      "width": 2481,
+      "height": 3509
+    },
+    "latex_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "compared_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "crop_mode": "min",
+    "changed_pixels": 139925,
+    "changed_percent": 1.607714640388963,
+    "mean_abs_diff": 1.8318645882021494,
+    "max_abs_diff": 255,
+    "diff_bbox": [
+      355,
+      338,
+      2031,
+      2799
+    ]
+  },
+  "title_page_academic": {
+    "dpi": 300,
+    "word_page": 1,
+    "latex_page": 3,
+    "word_image": {
+      "width": 2481,
+      "height": 3509
+    },
+    "latex_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "compared_image": {
+      "width": 2481,
+      "height": 3508
+    },
+    "crop_mode": "min",
+    "changed_pixels": 141560,
+    "changed_percent": 1.6265005145146443,
+    "mean_abs_diff": 1.9087914214162183,
+    "max_abs_diff": 255,
+    "diff_bbox": [
+      355,
+      338,
+      2031,
+      2799
+    ]
+  }
+}

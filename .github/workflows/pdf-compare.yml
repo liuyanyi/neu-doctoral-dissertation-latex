@@ -1,0 +1,72 @@
+name: PDF Compare
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_baseline:
+        description: "Generate comparison artifacts without enforcing the committed baseline"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  compare:
+    name: Build and Compare PDFs
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install TeX Live and Python tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-bibtex-extra \
+            texlive-fonts-recommended \
+            texlive-lang-chinese \
+            texlive-latex-extra \
+            texlive-science \
+            texlive-xetex
+          python -m pip install --upgrade pip
+          python -m pip install -r dev/requirements.txt
+
+      - name: Show tool versions
+        run: |
+          xelatex --version
+          latexmk -version
+          python --version
+
+      - name: Compile professional-degree sample
+        run: latexmk -xelatex main.tex
+
+      - name: Prepare academic-degree sample
+        run: python dev/make_academic_entry.py
+
+      - name: Compile academic-degree sample
+        run: latexmk -xelatex -jobname=main-academic -outdir=tmp/ci-academic tmp/ci-academic/main-academic.tex
+
+      - name: Generate PDF comparison artifacts
+        if: ${{ github.event.inputs.update_baseline == 'true' }}
+        run: python dev/run_pdf_compare.py --output-dir tmp/pdf-compare
+
+      - name: Check PDF comparison baseline
+        if: ${{ github.event.inputs.update_baseline != 'true' }}
+        run: python dev/run_pdf_compare.py --output-dir tmp/pdf-compare --check-baseline
+
+      - name: Upload PDF comparison artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-compare
+          path: |
+            tmp/pdf-compare/**
+            main.pdf
+            main.log
+            tmp/ci-academic/main-academic.pdf
+            tmp/ci-academic/main-academic.log
+          if-no-files-found: ignore
