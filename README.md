@@ -1,4 +1,4 @@
-# 东北大学博士学位论文 LaTeX 模板（2026 版）
+﻿# 东北大学博士学位论文 LaTeX 模板（2026 版）
 
 ## 构建
 
@@ -29,7 +29,7 @@ latexmk -xelatex main.tex
 
 ## 模板使用说明
 
-可以直接查看 main.tex 中第一章的示例内容，或参考以下说明来组织自己的论文内容。
+可以直接查看 `main.tex` 中第一章的示例内容，或参考以下说明来组织自己的论文内容。正式写作时，建议先保留 `chapter0-guide.tex` 作为排版对照；定稿前再从 `main.tex` 中删除或注释 `\input{chapter0-guide}`。
 
 ### 基本入口
 
@@ -144,6 +144,66 @@ cosupervisor-en = {},
 
 模板按双面打印组织分页，封面、题名页、声明、摘要、目录和正文章首页会自动从奇数页开始，必要时插入无页眉页脚的空白背面页。
 
+### 正文写作与排版建议
+
+正文从 `\mainmatter` 之后开始，每章建议单独放在 `chapter1.tex`、`chapter2.tex` 等文件中，并在 `main.tex` 中用 `\input{...}` 引入。
+
+模板已经统一设置正文字体、字号、行距、段落首行缩进、页眉页脚和章节标题。一般正文中不需要手动使用 `\zihao`、`\song`、`\hei`、`\vspace` 等命令调版；只有在术语强调、样例展示或特殊页面确有需要时再局部使用。
+
+默认宋体已经配置伪粗体，中文正文中可以使用 `\textbf{...}` 或 `\bfseries` 做局部强调。加粗适合术语、表格重点值或短语级强调，不建议用于整段正文；标题式强调优先交给章节标题层级或黑体命令。
+
+脚注用于补充说明，不宜放置过长正文。LaTeX 的脚注位置跟随当前页的正文排版区：如果某页因为图表浮动、分页或标题避孤行而没有排满，脚注可能看起来没有贴到纸张最底部，这是正常现象。遇到这类页面时，优先检查图表位置、图表大小和是否使用了强制分页，而不是为脚注手动添加垂直空白。
+
+正文中尽量避免随手使用 `\newpage`、`\clearpage`、`\FloatBarrier` 或大量手写 `\vspace`。这些命令会限制 LaTeX 自动分页，容易造成页底大块空白；只有在章节结构、附录或确实需要清空浮动体时再使用。
+
+### 模板命令说明
+
+本节列出模板面向作者提供的主要命令和环境。类文件内部使用的 `\neu@...` 命令不建议在正文中直接调用；正式写作优先使用下表中的公开接口。
+
+#### 入口与页面生成
+
+| 命令或环境 | 用途 | 典型位置 |
+| :--- | :--- | :--- |
+| `\neudisetup{key=value, ...}` | 设置题名、作者、导师、日期、封面和声明页等元数据 | `\begin{document}` 前 |
+| `\makeneucovers` | 生成最终版封面、中文题名页和英文题名页 | `\begin{document}` 后 |
+| `\makeneudeclaration` | 生成独创性声明和版权使用授权书 | `frontmatter` 中 |
+| `abstractcn` | 中文摘要环境，自动加入目录 | `frontmatter` 中 |
+| `abstracten` | 英文摘要环境，自动加入目录 | `frontmatter` 中 |
+| `\cnkeywords{...}` | 中文关键词 | `abstractcn` 环境内 |
+| `\enkeywords{...}` | 英文关键词 | `abstracten` 环境内 |
+| `referencescn` | 参考文献环境，内部放 `\bibliography{...}` | `backmatter` 中 |
+| `achievementscn` | 学术成果环境，自动生成标题并加入目录 | `backmatter` 中 |
+
+#### 图表公式与交叉引用
+
+| 命令或环境 | 用途 | 输出或效果 |
+| :--- | :--- | :--- |
+| `\neufigcaption{label}{中文图题}{English figure title}` | 生成中英文双语图题并设置标签 | 中文图题在图下方，英文图题另起一行 |
+| `\neutabcaption{label}{中文表题}{English table title}` | 生成中英文双语表题并设置标签 | 表题位于表格上方 |
+| `neusubfigure` | 子图环境，用法类似 `subfigure` | 可排布并列子图或 2×2 子图 |
+| `\neusubfigcaption{label}{中文子图题}` | 生成子图题并设置标签 | 子图编号为 `(a)`、`(b)` 等 |
+| `\neufigref{label}` | 引用普通图或总图 | `图 x.y` |
+| `\neusubfigref{label}` | 引用子图 | `图 x.y(a)` |
+| `\neutabref{label}` | 引用表格 | `表 x.y` |
+| `\neueqref{label}` | 引用公式 | `式（x.y）` |
+
+#### 文献引用
+
+| 命令 | 用途 | 示例 |
+| :--- | :--- | :--- |
+| `\upcite{key}` | 上标型文献引用，适合句末说明来源 | `已有研究...\upcite{key}` |
+| `\inlinecite{key}` | 正文型文献引用，适合作为句子成分 | `文献 \inlinecite{key} 指出...` |
+
+#### 字体与字号辅助命令
+
+模板已经统一设置正文、标题、页眉和题注样式，正式论文中通常不需要手动切换字体和字号。确有局部展示或强调需求时，可使用以下辅助命令：
+
+| 命令 | 含义 |
+| :--- | :--- |
+| `\song`、`\hei`、`\kai`、`\fs` | 宋体、黑体、楷体、仿宋 |
+| `\sihao`、`\xiaosi`、`\wuhao`、`\xiaowu` | 四号、小四、五号、小五 |
+| `\textbf{...}` 或 `\bfseries` | 局部加粗强调，适合术语、短语或表格重点值 |
+
 ### 参考文献
 
 参考文献采用 GB/T 7714 顺序编码制，样式文件默认使用项目内的 `gbt7714-unsrt.bst`。
@@ -187,17 +247,134 @@ cosupervisor-en = {},
 
 ### 图表公式
 
-图题在图下方，表题在表上方，均按章编号。
+图题在图下方，表题在表上方，均按章编号。建议使用模板提供的 `\neufigcaption`、`\neutabcaption`、`\neufigref`、`\neutabref` 和 `\neueqref`。
+
+图片示例：
 
 ```latex
-\neufigcaption{fig:demo}{中文图题}{English figure title}
-\neutabcaption{tab:demo}{中文表题}{English table title}
-\neueqref{eq:demo}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth]{Figures/demo.pdf}
+  \neufigcaption{fig:demo}{中文图题}{English figure title}
+\end{figure}
+
+如 \neufigref{fig:demo} 所示，图片应在正文中被引用。
+```
+
+普通并列图片示例：
+
+```latex
+\begin{figure}[!htbp]
+  \centering
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/demo-a.pdf}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/demo-b.pdf}
+  \end{minipage}
+  \neufigcaption{fig:demo-side-by-side}{并列图中文总题名}{English caption for side-by-side figures}
+\end{figure}
+
+如 \neufigref{fig:demo-side-by-side} 所示，普通并列图片只有一个总图号，适合不需要分别引用左右图片的场景。
+```
+
+并列子图示例：
+
+```latex
+\begin{figure}[!htbp]
+  \centering
+  \begin{neusubfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{Figures/demo-a.pdf}
+    \neusubfigcaption{fig:demo-a}{子图中文题名}
+  \end{neusubfigure}
+  \hfill
+  \begin{neusubfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{Figures/demo-b.pdf}
+    \neusubfigcaption{fig:demo-b}{子图中文题名}
+  \end{neusubfigure}
+  \neufigcaption{fig:demo-subfig}{并列图中文总题名}{English caption for subfigures}
+\end{figure}
+
+如 \neufigref{fig:demo-subfig}、\neusubfigref{fig:demo-a} 和 \neusubfigref{fig:demo-b} 所示，总图引用显示为“图 x.y”，子图引用显示为“图 x.y(a)”和“图 x.y(b)”。
+```
+
+二乘二子图示例：
+
+```latex
+\begin{figure}[!htbp]
+  \centering
+  \begin{neusubfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{Figures/demo-2x2-a.pdf}
+    \neusubfigcaption{fig:demo-2x2-a}{子图中文题名}
+  \end{neusubfigure}
+  \hfill
+  \begin{neusubfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{Figures/demo-2x2-b.pdf}
+    \neusubfigcaption{fig:demo-2x2-b}{子图中文题名}
+  \end{neusubfigure}
+
+  \par\vspace{2bp}
+
+  \begin{neusubfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{Figures/demo-2x2-c.pdf}
+    \neusubfigcaption{fig:demo-2x2-c}{子图中文题名}
+  \end{neusubfigure}
+  \hfill
+  \begin{neusubfigure}{0.49\linewidth}
+    \includegraphics[width=\linewidth]{Figures/demo-2x2-d.pdf}
+    \neusubfigcaption{fig:demo-2x2-d}{子图中文题名}
+  \end{neusubfigure}
+  \neufigcaption{fig:demo-2x2}{四幅子图中文总题名}{English caption for two-by-two subfigures}
+\end{figure}
+
+如 \neufigref{fig:demo-2x2} 所示，四幅子图共享一个总图号；如 \neusubfigref{fig:demo-2x2-a} 至 \neusubfigref{fig:demo-2x2-d} 所示，子图可分别引用为“图 x.y(a)”至“图 x.y(d)”。
+```
+
+图形排版建议：
+
+- 单张图片通常使用 `width=0.6\textwidth` 到 `width=0.8\textwidth`；如果图片本身信息密集，可适当放大到 `\textwidth`。
+- 普通并列图片使用 `minipage`，适合多张图共享一个总图题且正文不需要分别引用每张图的场景。
+- 并列子图使用 `neusubfigure` 和 `\neusubfigcaption`，适合需要在正文中引用“图 x.y(a)”、 “图 x.y(b)”的场景。
+- 两列排布时，单个 `minipage` 或 `neusubfigure` 宽度建议取 `0.48\linewidth` 到 `0.49\linewidth`，中间用 `\hfill` 分隔。
+- 多行子图之间可使用少量 `\par\vspace{2bp}` 调整垂直间距；若总图过高导致浮动困难，优先缩小图片宽度或拆成两幅总图。
+- 同组子图的比例、坐标轴范围、字号和线宽应尽量一致；论文中优先使用 PDF 矢量图，照片或截图可使用 PNG/JPG。
+
+表格示例：
+
+```latex
+\begin{table}[!htbp]
+  \centering
+  \neutabcaption{tab:demo}{中文表题}{English table title}
+  \begin{tabular}{lcc}
+    \toprule
+    方法 & 指标一 & 指标二 \\
+    \midrule
+    Baseline & 0.85 & 0.84 \\
+    Proposed & 0.92 & 0.91 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+如 \neutabref{tab:demo} 所示，表格应在正文中被引用。
+```
+
+浮动参数推荐使用 `[!htbp]`。它允许 LaTeX 在当前位置、页顶、页底或浮动页之间选择较合适的位置，通常比 `[H]` 更不容易造成上一页大面积留白。除非必须固定在源码所在位置，否则不建议在正文图表中使用 `[H]`；若图表仍造成空白，优先尝试把图表源码提前到首次引用附近、适当缩小图表，或将过大的表格拆分为多个表格。跨页长表建议使用 `longtable`。
+
+公式示例：
+
+```latex
+\begin{equation}
+  E = mc^2
+  \label{eq:demo}
+\end{equation}
+
+如 \neueqref{eq:demo} 所示，重要公式应设置标签并在正文中引用。
 ```
 
 中文摘要环境统一为 `abstractcn`，旧的 `zhabstract` 已不再提供。现有文档请直接改用 `\begin{abstractcn}` 和 `\end{abstractcn}`。
-
-模板保留旧别名 `\twofigcaption`、`\twotabcaption`、`\figref`、`\tabref`、`\equref`，便于旧示例章节继续编译。
 
 ## 格式比较工具
 

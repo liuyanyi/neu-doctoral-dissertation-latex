@@ -51,6 +51,7 @@
 \RequirePackage{bm}
 \RequirePackage{indentfirst}
 \RequirePackage{caption}
+\RequirePackage{subcaption}
 \RequirePackage{xstring}
 \RequirePackage[sort&compress]{gbt7714}
 \RequirePackage[hidelinks,hypertexnames=false,bookmarksnumbered=true]{hyperref}
@@ -997,7 +998,7 @@
 }
 
 %% ---------------------------------------------------------------------------
-%% \makeneucovers（即 \maketitle）：生成全部封面页
+%% \makeneucovers：生成全部封面页
 %% 1. 若 final-cover=true，先生成精装封面
 %% 2. 生成中文封面（分类号、题名、作者信息等）
 %% 3. 生成英文封面（A Dissertation in ...）
@@ -1082,9 +1083,6 @@
   \cleardoublepage
   \endgroup
 }
-%% 将 \maketitle 映射为 \makeneucovers，兼容标准 LaTeX 用法
-\let\maketitle\makeneucovers
-
 % Declaration and authorization.
 %% ---------------------------------------------------------------------------
 %% \makeneudeclaration：独创性声明 + 版权使用授权书
@@ -1268,9 +1266,23 @@
 \captionsetup{font=neuwuhao,labelsep=space,skip=3bp}
 \captionsetup[figure]{position=bottom,aboveskip=3bp,belowskip=0bp}
 \captionsetup[table]{position=top,aboveskip=0bp,belowskip=3bp}
+\captionsetup[subfigure]{font=neuwuhao,labelformat=simple,labelsep=space,justification=centering,singlelinecheck=true,skip=3bp}
+\renewcommand{\thesubfigure}{(\alph{subfigure})}
+\makeatletter
+\renewcommand{\p@subfigure}{\thefigure}
+\makeatother
 \newcommand{\neufigcaption}[3]{%
   \caption{#2\label{#1}}%
   {\centering\wuhao Fig.~\ref{#1}\quad #3\par}%
+}
+\NewDocumentEnvironment{neusubfigure}{O{t}m}{%
+  \begin{subfigure}[#1]{#2}%
+  \centering
+}{%
+  \end{subfigure}%
+}
+\newcommand{\neusubfigcaption}[2]{%
+  \caption{#2\label{#1}}%
 }
 \newcommand{\neutabcaption}[3]{%
   \caption{#2\label{#1}}%
@@ -1278,6 +1290,7 @@
   \vspace{3bp}%
 }
 \newcommand{\neufigref}[1]{图~\ref{#1}}
+\newcommand{\neusubfigref}[1]{图~\ref{#1}}
 \newcommand{\neutabref}[1]{表~\ref{#1}}
 \newcommand{\neueqref}[1]{式（\ref{#1}）}
 % Use superscript numbers for citations, as required by the standard.
@@ -1293,12 +1306,6 @@
   \IfNoValueTF{#1}{\citep{#2}}{\citep[#1]{#2}}%
   \endgroup
 }
-\let\twofigcaption\neufigcaption
-\let\twotabcaption\neutabcaption
-\let\figref\neufigref
-\let\tabref\neutabref
-\let\equref\neueqref
-
 % Bibliography: keep the same font size and line spacing as the main text.
 \AtBeginDocument{%
   \renewcommand{\bibfont}{%
