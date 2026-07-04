@@ -25,7 +25,15 @@ latexmk -xelatex main.tex
 > [!NOTE]
 > Overleaf 上记得选择 XeLaTeX 编译器。云上版本容易出现编译超时的情况，建议在本地环境编译，或使用 Overleaf 的本地部署版本。
 
-项目内置了 vscode 的 LaTeX Workshop 插件配置，使用 latexmk 进行构建，有需要可以编辑 `.vscode/settings.json` 来调整构建方式。
+项目内置了 VS Code 的 LaTeX Workshop 插件配置，使用 latexmk 进行构建，有需要可以编辑 `.vscode/settings.json` 来调整构建方式。
+
+同时，项目也提供了面向模板使用者的代码提示和 snippets：
+
+- `.vscode/settings.json` 中配置了模板公开命令的 LaTeX Workshop 补全，例如 `\neudisetup`、`\neufigcaption`、`\neutabcaption`、`\neueqref`、`\upcite` 和 `\inlinecite`。
+- `.vscode/neu-template.code-snippets` 中提供了常用结构片段。在 `.tex` 文件中输入 `neu-setup-basic`、`neu-figure`、`neu-subfigures`、`neu-table`、`neu-equation`、`neu-references` 等前缀，再从补全列表选择或按 `Tab`，即可插入对应骨架。
+- 如果补全没有出现，请确认已安装 LaTeX Workshop、以仓库根目录打开 VS Code、当前文件语言模式为 LaTeX，并已信任工作区。
+
+更多说明见 [VS Code 与 LaTeX Workshop 补全](docs/vscode-latex-workshop.md)。这些 snippets 只帮助输入模板接口，不负责论文内容写作。
 
 ## 模板使用说明
 
@@ -210,16 +218,34 @@ cosupervisor-en = {},
 
 #### 引用方式
 
-正文陈述处使用上标引用：
+文献条目写在 `references.bib` 中，正文里通过条目的 key 引用。常用引用命令有两种：
+
+- `\upcite{key}`：上标型引用，适合放在句末或段末，用来说明前面观点、数据或方法的来源。
+- `\inlinecite{key}`：正文型引用，适合把文献作为句子成分使用，例如“文献 [1] 指出……”。
+
+正文陈述处使用 `\upcite`：
 
 ```latex
 已有研究表明...\upcite{guo_2023_research}
 ```
 
-文献作为句子成分时使用正文型引用：
+文献作为句子成分时使用 `\inlinecite`：
 
 ```latex
 文献 \inlinecite{guo_2023_research} 详细讨论了这一问题。
+```
+
+两种命令都支持可选参数，通常用于补充页码或章节信息：
+
+```latex
+已有研究对该问题进行了讨论\upcite[第 12 页]{guo_2023_research}。
+文献 \inlinecite[第 3 章]{guo_2023_research} 给出了相关定义。
+```
+
+多篇文献可以写在同一个引用命令中，key 之间用英文逗号分隔：
+
+```latex
+已有研究讨论了相关问题\upcite{guo_2023_research,thakkar_2018_performance}。
 ```
 
 #### 参考文献环境

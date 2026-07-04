@@ -515,6 +515,8 @@ dmypy.json
 latexmk
 .vscode/*
 !.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/neu-template.code-snippets
 .docx-extract/
 */.venv
 */build

@@ -1,0 +1,162 @@
+{
+  "NEU 基础元数据配置": {
+    "scope": "latex",
+    "prefix": "neu-setup-basic",
+    "body": [
+      "\\neudisetup{",
+      "  classification = {${1:}},",
+      "  security-level = {${2:}},",
+      "  udc = {${3:}},",
+      "  student-id = {${4:学号}},",
+      "  title-cn = {${5:中文题名}},",
+      "  title-en = {${6:English Title}},",
+      "  author-cn = {${7:作者姓名}},",
+      "  author-en = {${8:Author Name}},",
+      "  college-cn = {${9:学院名称}},",
+      "  major-cn = {${10:专业名称}},",
+      "  major-en = {${11:Major Name}},",
+      "  degree-level = {${12:博士}},",
+      "  professional-degree = ${13:false},",
+      "  discipline = {${14:工学}},",
+      "  supervisor-cn = {${15:导师姓名}},",
+      "  supervisor-title-cn = {${16:教授}},",
+      "  supervisor-affiliation-cn = {${17:东北大学}},",
+      "  supervisor-en = {${18:Professor Name}},",
+      "  submit-year = {${19:2026}},",
+      "  submit-month = {${20:4}},",
+      "  defense-year = {${21:2026}},",
+      "  defense-month = {${22:5}},",
+      "  degree-year = {${23:2026}},",
+      "  degree-month = {${24:6}},",
+      "  cover-year = {${25:2026}},",
+      "  cover-month = {${26:6}},",
+      "  final-cover = ${27:true}",
+      "}"
+    ],
+    "description": "插入基础 neudisetup 元数据配置"
+  },
+  "NEU 中文摘要": {
+    "scope": "latex",
+    "prefix": "neu-abstract-cn",
+    "body": [
+      "\\begin{abstractcn}",
+      "  ${1:中文摘要正文}",
+      "",
+      "  \\cnkeywords{${2:关键词一；关键词二；关键词三}}",
+      "\\end{abstractcn}"
+    ],
+    "description": "插入中文摘要环境"
+  },
+  "NEU 英文摘要": {
+    "scope": "latex",
+    "prefix": "neu-abstract-en",
+    "body": [
+      "\\begin{abstracten}",
+      "  ${1:English abstract text}",
+      "",
+      "  \\enkeywords{${2:keyword one; keyword two; keyword three}}",
+      "\\end{abstracten}"
+    ],
+    "description": "插入英文摘要环境"
+  },
+  "NEU 章节引用": {
+    "scope": "latex",
+    "prefix": "neu-chapter-input",
+    "body": [
+      "\\input{chapter${1:1}}"
+    ],
+    "description": "插入章节 input 命令"
+  },
+  "NEU 单图": {
+    "scope": "latex",
+    "prefix": "neu-figure",
+    "body": [
+      "\\begin{figure}[!htbp]",
+      "  \\centering",
+      "  \\includegraphics[width=0.75\\textwidth]{Figures/${1:example.pdf}}",
+      "  \\neufigcaption{fig:${2:label}}{${3:中文图题}}{${4:English Figure Title}}",
+      "\\end{figure}",
+      "",
+      "如 \\neufigref{fig:${2:label}} 所示，${5:正文说明}。"
+    ],
+    "description": "插入带中英文图题的单图结构"
+  },
+  "NEU 并列子图": {
+    "scope": "latex",
+    "prefix": "neu-subfigures",
+    "body": [
+      "\\begin{figure}[!htbp]",
+      "  \\centering",
+      "  \\begin{neusubfigure}{0.49\\linewidth}",
+      "    \\includegraphics[width=\\linewidth]{Figures/${1:example-a.pdf}}",
+      "    \\neusubfigcaption{fig:${2:sub-a}}{${3:子图中文题名}}",
+      "  \\end{neusubfigure}",
+      "  \\hfill",
+      "  \\begin{neusubfigure}{0.49\\linewidth}",
+      "    \\includegraphics[width=\\linewidth]{Figures/${4:example-b.pdf}}",
+      "    \\neusubfigcaption{fig:${5:sub-b}}{${6:子图中文题名}}",
+      "  \\end{neusubfigure}",
+      "  \\neufigcaption{fig:${7:label}}{${8:中文总图题}}{${9:English Figure Title}}",
+      "\\end{figure}",
+      "",
+      "如 \\neufigref{fig:${7:label}}、\\neusubfigref{fig:${2:sub-a}} 和 \\neusubfigref{fig:${5:sub-b}} 所示，${10:正文说明}。"
+    ],
+    "description": "插入带两个子图的图环境"
+  },
+  "NEU 表格": {
+    "scope": "latex",
+    "prefix": "neu-table",
+    "body": [
+      "\\begin{table}[!htbp]",
+      "  \\centering",
+      "  \\neutabcaption{tab:${1:label}}{${2:中文表题}}{${3:English Table Title}}",
+      "  \\begin{tabular}{lcc}",
+      "    \\toprule",
+      "    ${4:项目} & ${5:指标一} & ${6:指标二} \\\\",
+      "    \\midrule",
+      "    ${7:示例} & ${8:0.00} & ${9:0.00} \\\\",
+      "    \\bottomrule",
+      "  \\end{tabular}",
+      "\\end{table}",
+      "",
+      "如 \\neutabref{tab:${1:label}} 所示，${10:正文说明}。"
+    ],
+    "description": "插入带中英文表题的表格结构"
+  },
+  "NEU 公式": {
+    "scope": "latex",
+    "prefix": "neu-equation",
+    "body": [
+      "\\begin{equation}",
+      "  ${1:E = mc^2}",
+      "  \\label{eq:${2:label}}",
+      "\\end{equation}",
+      "",
+      "如 \\neueqref{eq:${2:label}} 所示，${3:正文说明}。"
+    ],
+    "description": "插入带 NEU 公式引用示例的 equation 环境"
+  },
+  "NEU 参考文献": {
+    "scope": "latex",
+    "prefix": "neu-references",
+    "body": [
+      "\\begin{referencescn}",
+      "  \\nocite{${1}}",
+      "  \\bibliography{references}",
+      "\\end{referencescn}"
+    ],
+    "description": "插入参考文献环境"
+  },
+  "NEU 学术成果": {
+    "scope": "latex",
+    "prefix": "neu-achievements",
+    "body": [
+      "\\begin{achievementscn}",
+      "  \\begin{enumerate}",
+      "    \\item ${1:作者. 成果题名[J]. 期刊，年份，卷（期）：页码.}",
+      "  \\end{enumerate}",
+      "\\end{achievementscn}"
+    ],
+    "description": "插入学术成果环境"
+  }
+}

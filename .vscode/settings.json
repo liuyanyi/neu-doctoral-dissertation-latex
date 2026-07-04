@@ -1,11 +1,10 @@
-﻿{
+{
   // ============================================================
   // LaTeX Workshop 编译配置（XeLaTeX + latexmk）
   // 与项目根目录的 .latexmkrc 协同工作
   // ============================================================
 
   "latex-workshop.latex.outDir": "%DIR%",
-
   "latex-workshop.latex.recipe.default": "lastUsed",
 
   // --- 编译工具定义 ---
@@ -33,11 +32,15 @@
   "latex-workshop.latex.recipes": [
     {
       "name": "▶ XeLaTeXmk（智能增量编译）",
-      "tools": ["xelatexmk"]
+      "tools": [
+        "xelatexmk"
+      ]
     },
     {
       "name": "▶ XeLaTeXmk（强制全量编译）",
-      "tools": ["xelatexmk-force"]
+      "tools": [
+        "xelatexmk-force"
+      ]
     }
   ],
 
@@ -46,6 +49,28 @@
 
   // --- 智能提示 ---
   "latex-workshop.intellisense.package.enabled": true,
+  "latex-workshop.intellisense.update.aggressive.enabled": true,
+
+  // 模板公开命令补全：只包含面向论文作者的接口，不包含内部宏。
+  // 更大的结构片段见 .vscode/neu-template.code-snippets。
+  "latex-workshop.intellisense.command.user": {
+    "neudisetup{}": "neudisetup{${1}}",
+    "makeneucovers": "makeneucovers",
+    "makeneudeclaration": "makeneudeclaration",
+    "cnkeywords{}": "cnkeywords{${1:关键词一；关键词二；关键词三}}",
+    "enkeywords{}": "enkeywords{${1:keyword one; keyword two; keyword three}}",
+    "neufigcaption{}{}{}": "neufigcaption{${1:fig:label}}{${2:中文图题}}{${3:English Figure Title}}",
+    "neutabcaption{}{}{}": "neutabcaption{${1:tab:label}}{${2:中文表题}}{${3:English Table Title}}",
+    "neusubfigcaption{}{}": "neusubfigcaption{${1:fig:sub-label}}{${2:中文子图题}}",
+    "neufigref{}": "neufigref{${1:fig:label}}",
+    "neusubfigref{}": "neusubfigref{${1:fig:sub-label}}",
+    "neutabref{}": "neutabref{${1:tab:label}}",
+    "neueqref{}": "neueqref{${1:eq:label}}",
+    "upcite{}": "upcite{${1}}",
+    "upcite[]{}": "upcite[${1}]{${2}}",
+    "inlinecite{}": "inlinecite{${1}}",
+    "inlinecite[]{}": "inlinecite[${1}]{${2}}"
+  },
 
   // --- 消息提示 ---
   "latex-workshop.message.error.show": true,
