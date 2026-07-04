@@ -3,6 +3,7 @@ LICENSE
 CHANGELOG.md
 .latexmkrc
 .vscode/settings.json
+.vscode/neu-template.code-snippets
 .agents
 main.tex
 neudissertation.cls
