@@ -4,11 +4,43 @@
 
 参照 2026 年 3 月，东北大学研究生院网站构建
 
+## 2026-07-04
+
+根据最近几个提交，补充编辑器支持、模板入口选项和发布包内容：
+
+- 新增 VS Code / LaTeX Workshop 使用支持：推荐安装 LaTeX Workshop，并在 `.vscode/settings.json` 中补充模板公开命令的自动补全。
+- 新增 `.vscode/neu-template.code-snippets`，提供 `neu-setup-basic`、`neu-setup-professional`、`neu-setup-blind`、`neu-figure`、`neu-subfigures`、`neu-table`、`neu-equation`、`neu-references` 等常用论文结构片段。
+- 将 `professional-degree` 和 `final-cover` 调整为文档类开关，推荐写法分别为 `\documentclass[professional-degree]{neudissertation}` 和 `\documentclass[final-cover]{neudissertation}`；不再推荐在 `\neudisetup{...}` 中配置这两个全局模式。
+- 更新 `main.tex` 示例、README 和 VS Code 补全文档，使学术学位、专业学位、盲审版和最终版封面的入口写法更加清晰。
+- 更新 release 打包清单，发布包现在包含 `.vscode/neu-template.code-snippets`，便于下载压缩包后直接获得编辑器代码片段。
+- 优化 Windows UTF-8 shell 技能文档，说明 PowerShell UTF-8 预处理脚本应按技能目录动态加载，避免中文内容读写或命令输出出现编码问题。
+
+## 2026-07-03
+
+补充模板使用说明和 Codex/Agents 辅助材料：
+
+- 更新 README 和 `chapter0-guide.tex`，扩展正文写作、排版建议、模板公开命令、参考文献引用、图表公式与交叉引用说明。
+- 新增并列子图支持：提供 `neusubfigure` 环境、`\neusubfigcaption` 和 `\neusubfigref`，支持按“图 x.y(a)”格式引用子图。
+- 在示例章节中加入并列子图和 2x2 子图示例，说明总图题、子图题、浮动位置和图片尺寸的推荐写法。
+- 新增 `.agents` 技能目录，包含快速开始、前置页配置、正文元素使用、编译检查和 Windows UTF-8 shell 等使用辅助说明。
+- 更新 release 打包清单，将 `.agents` 目录纳入发布包。
+
+## 2026-06-29
+
+完善持续集成、PDF 对比和发布流程：
+
+- 新增手动触发的 GitHub Actions：`Build` 用于编译 `main.tex`，`PDF Compare` 用于构建并对比专业学位和学术学位样例页面。
+- 新增 `Release` workflow，按 `.github/release-include.txt` 打包模板源码、样例章节、字体样式、图片、README、LICENSE 和 CHANGELOG，并发布到 GitHub Release。
+- 新增 `dev/run_pdf_compare.py`、`dev/pdf_compare_cases.json` 和 `dev/make_academic_entry.py`，用于批量生成 PDF 视觉对比结果和临时学术学位入口。
+- 改进 CI 缓存：复用 TeX Live 包列表并缓存 apt 下载包，PDF 对比流程同时缓存 Python pip 依赖。
+- 改进 PDF 对比摘要：在 artifact 中输出 diff、overlay、highlight、渲染页和指标文件，并在 GitHub Actions Step Summary 中汇总关键指标。
+- 保留已接受的 PDF 对比 baseline，CI 阻断条件基于 `diff_metrics.json` 的指标窗口，而不是简单要求像素级完全一致。
+
 ## 2026-06-25
 
 根据研究生院最新文件进行更新，共做出以下调整：
 
-- 新增 `professional-degree` 文档类开关：通过 `\documentclass[professional-degree]{neudissertation}` 控制中文题名页右侧的字段标签。开启时显示"专业学位类别："，关闭时显示"学科门类："。
+- 新增 `professional-degree` 配置项：通过 `\neudisetup{professional-degree=true/false}` 控制中文题名页右侧的字段标签。`true` 时显示"专业学位类别："，`false` 时显示"学科门类："。
 - 调整最终版封面的风格并进行精细排版，顶部引入更清晰的图像Logo，下方日期居中
 - 新增 `defense-chair-title` 配置项：可单独设置答辩委员会主席的职称，在封面中显示为"姓名 + 职称"格式
 - 字体改进，通过FakeBold增加宋体的加粗支持
