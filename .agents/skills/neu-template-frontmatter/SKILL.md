@@ -19,7 +19,7 @@ description: 东北大学博士学位论文 LaTeX 模板前置页配置。用于
 
 ## Key files
 
-- `main.tex`：在 `\begin{document}` 前配置 `\documentclass[...]` 和 `\neudisetup{...}`，在文档开始后生成封面、声明、摘要和目录。
+- `main.tex`：在 `\begin{document}` 前配置 `\documentclass[...]` 的全局模式开关和 `\neudisetup{...}` 元数据，在文档开始后生成封面、声明、摘要和目录。
 - `abstract-cn.tex`：中文摘要正文，末尾使用 `\cnkeywords{...}`。
 - `abstract-en.tex`：英文摘要正文，末尾使用 `\enkeywords{...}`。
 - `Figures/signature.jpeg` 或用户自己的签名图片：可通过 `author-signature`、`supervisor-signature` 引用。
@@ -29,20 +29,20 @@ description: 东北大学博士学位论文 LaTeX 模板前置页配置。用于
 
 - 封面、题名页和声明页信息优先通过 `\neudisetup{...}` 配置，不要在生成页面上手写元信息。
 - `\neudisetup{...}` 放在 `\begin{document}` 前。
-- 盲审版通过 `\documentclass[blindreview=true]{neudissertation}` 开启；普通版本使用 `blindreview=false`。
-- `professional-degree=false` 表示学术学位，中文题名页右侧显示“学科门类”；`professional-degree=true` 表示专业学位，右侧显示“专业学位类别”。对应值仍写在 `discipline` 中。
+- 盲审版通过 `\documentclass[blindreview]{neudissertation}` 开启；普通版本不写 `blindreview`。
+- 不写 `professional-degree` 表示学术学位，中文题名页右侧显示“学科门类”；写上 `professional-degree` 表示专业学位，右侧显示“专业学位类别”。必须和 `blindreview` 一样写在 `\documentclass[...]` 中；对应值仍写在 `discipline` 中。
 - 日期优先使用 `submit-year/month`、`defense-year/month`、`degree-year/month`、`cover-year/month` 这类数字字段；模板会自动生成中文和英文日期。
 - `author-signature`、`supervisor-signature` 可为空；为空时声明页签名处留空。
-- `final-cover=true` 会在中英文题名页前增加 2026 最终版博士学位论文封面；是否启用以学校提交要求为准。
+- 写上 `final-cover` 会在中英文题名页前增加 2026 最终版博士学位论文封面；不写则不增加。必须和 `blindreview` 一样写在 `\documentclass[...]` 中；是否启用以学校提交要求为准。
 - 盲审版除了检查模板自动隐藏的作者和导师信息，还要人工检查摘要、致谢、项目来源、图片、文件名、成果列表等是否暴露个人或课题组信息。
 - 摘要环境只负责排版；摘要内容质量不属于本 skill 范围。
 
 ## Workflow
 
-1. 在 `main.tex` 顶部选择文档类模式：盲审用 `blindreview=true`，非盲审用 `blindreview=false`。
+1. 在 `main.tex` 顶部选择文档类模式：需要盲审、专业学位或最终版封面时，分别在 `\documentclass[...]` 中写上 `blindreview`、`professional-degree`、`final-cover`；不需要的开关不写。
 2. 在 `\neudisetup{...}` 中填写论文元数据：分类号、密级、UDC、学号、中文/英文题名、作者、学院、专业、学位层级、导师和日期。
-3. 根据学位类型设置 `professional-degree` 和 `discipline`。
-4. 根据提交版本设置 `final-cover`，必要时设置 `final-cover-year`、`final-cover-month` 或 `final-cover-logo`。
+3. 根据学位类型填写 `discipline`。
+4. 根据最终版封面需求，必要时在 `\neudisetup{...}` 中设置 `final-cover-year`、`final-cover-month` 或 `final-cover-logo`。
 5. 如声明页需要签名图片，放入 `Figures/` 并设置 `author-signature`、`supervisor-signature`、`signature-height`；需要固定签名日期时设置 `signature-date`。
 6. 在 `\begin{document}` 后保持推荐顺序：`\makeneucovers`、`\frontmatter`、`\makeneudeclaration`、中文摘要、英文摘要、目录。
 7. 在 `abstract-cn.tex` 写中文摘要并用 `\cnkeywords{...}` 填关键词；在 `abstract-en.tex` 写英文摘要并用 `\enkeywords{...}` 填关键词。
@@ -53,7 +53,10 @@ description: 东北大学博士学位论文 LaTeX 模板前置页配置。用于
 `main.tex` 中的最小元数据配置：
 
 ```latex
-\documentclass[blindreview=false]{neudissertation}
+\documentclass[
+  professional-degree,
+  final-cover
+]{neudissertation}
 
 \neudisetup{
   classification = {},
@@ -68,7 +71,6 @@ description: 东北大学博士学位论文 LaTeX 模板前置页配置。用于
   major-cn = {计算机技术},
   major-en = {Computer Software and Theory},
   degree-level = {博士},
-  professional-degree = true,
   discipline = {电子信息},
   supervisor-cn = {导师姓名},
   supervisor-title-cn = {教授},
@@ -88,8 +90,7 @@ description: 东北大学博士学位论文 LaTeX 模板前置页配置。用于
   signature-date = {},
   author-signature = {Figures/signature.jpeg},
   supervisor-signature = {Figures/signature.jpeg},
-  signature-height = {8mm},
-  final-cover = true
+  signature-height = {8mm}
 }
 ```
 
@@ -97,16 +98,18 @@ description: 东北大学博士学位论文 LaTeX 模板前置页配置。用于
 
 ```latex
 % 学术学位：题名页显示“学科门类：”
-\neudisetup{professional-degree=false, discipline={工学}}
+\documentclass{neudissertation}
+\neudisetup{discipline={工学}}
 
 % 专业学位：题名页显示“专业学位类别：”
-\neudisetup{professional-degree=true, discipline={电子信息}}
+\documentclass[professional-degree]{neudissertation}
+\neudisetup{discipline={电子信息}}
 ```
 
 盲审版入口：
 
 ```latex
-\documentclass[blindreview=true]{neudissertation}
+\documentclass[blindreview]{neudissertation}
 ```
 
 摘要文件写法：
@@ -149,8 +152,8 @@ Here is the English abstract.
 
 - 在封面 PDF 页面上手工改字：应修改 `\neudisetup{...}` 字段后重新编译。
 - 把 `\neudisetup{...}` 写到 `\begin{document}` 后：元数据可能不会按预期用于前置页。
-- 专业学位只改了 `discipline`，忘记设置 `professional-degree=true`：题名页字段标签会不匹配。
-- 盲审时只依赖 `blindreview=true`：仍需人工检查正文、致谢、成果、项目号、图片和文件名。
+- 专业学位只改了 `discipline`，忘记在 `\documentclass[...]` 中写 `professional-degree`：题名页字段标签会不匹配。
+- 盲审时只依赖 `blindreview`：仍需人工检查正文、致谢、成果、项目号、图片和文件名。
 - 摘要文件里使用旧环境名 `zhabstract`：README 明确中文摘要环境为 `abstractcn`。
 - 关键词写在摘要环境外：应在 `abstract-cn.tex` 或 `abstract-en.tex` 内分别使用 `\cnkeywords{...}`、`\enkeywords{...}`。
 - 签名图片路径写错或文件不存在：把图片放入 `Figures/`，并检查扩展名和大小写。

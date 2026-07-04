@@ -16,7 +16,9 @@ LaTeX Workshop 是编辑器扩展，不是 TeX 引擎。它可以读取常见宏
 
 常用结构片段包括：
 
-- `neu-setup-basic`：插入基础 `\neudisetup{...}` 元数据骨架。
+- `neu-setup-basic`：插入基础 `\documentclass[final-cover]{...}` 和 `\neudisetup{...}` 元数据骨架。
+- `neu-setup-professional`：插入专业学位版本入口，使用 `professional-degree, final-cover` 功能词。
+- `neu-setup-blind`：插入盲审版本入口，使用 `blindreview` 功能词。
 - `neu-abstract-cn`：插入中文摘要环境和 `\cnkeywords{...}`。
 - `neu-abstract-en`：插入英文摘要环境和 `\enkeywords{...}`。
 - `neu-chapter-input`：插入章节 `\input{...}`。

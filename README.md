@@ -30,7 +30,7 @@ latexmk -xelatex main.tex
 同时，项目也提供了面向模板使用者的代码提示和 snippets：
 
 - `.vscode/settings.json` 中配置了模板公开命令的 LaTeX Workshop 补全，例如 `\neudisetup`、`\neufigcaption`、`\neutabcaption`、`\neueqref`、`\upcite` 和 `\inlinecite`。
-- `.vscode/neu-template.code-snippets` 中提供了常用结构片段。在 `.tex` 文件中输入 `neu-setup-basic`、`neu-figure`、`neu-subfigures`、`neu-table`、`neu-equation`、`neu-references` 等前缀，再从补全列表选择或按 `Tab`，即可插入对应骨架。
+- `.vscode/neu-template.code-snippets` 中提供了常用结构片段。在 `.tex` 文件中输入 `neu-setup-basic`、`neu-setup-professional`、`neu-setup-blind`、`neu-figure`、`neu-subfigures`、`neu-table`、`neu-equation`、`neu-references` 等前缀，再从补全列表选择或按 `Tab`，即可插入对应骨架。
 - 如果补全没有出现，请确认已安装 LaTeX Workshop、以仓库根目录打开 VS Code、当前文件语言模式为 LaTeX，并已信任工作区。
 
 更多说明见 [VS Code 与 LaTeX Workshop 补全](docs/vscode-latex-workshop.md)。这些 snippets 只帮助输入模板接口，不负责论文内容写作。
@@ -42,7 +42,9 @@ latexmk -xelatex main.tex
 ### 基本入口
 
 ```latex
-\documentclass[blindreview=false]{neudissertation}
+\documentclass[
+  final-cover
+]{neudissertation}
 
 \neudisetup{
   classification = {},
@@ -57,7 +59,6 @@ latexmk -xelatex main.tex
   major-cn = {计算机软件与理论},
   major-en = {Computer Software and Theory},
   degree-level = {博士},
-  professional-degree = false,
   discipline = {工学},
   supervisor-cn = {张某某},
   supervisor-title-cn = {教授},
@@ -77,10 +78,11 @@ latexmk -xelatex main.tex
   signature-date = {},
   author-signature = {},
   supervisor-signature = {},
-  signature-height = {8mm},
-  final-cover = true
+  signature-height = {8mm}
 }
 ```
+
+`blindreview`、`professional-degree` 和 `final-cover` 是全局模式开关，只写在 `\documentclass[...]` 里，让文件开头就能看出当前版本用途。开关裸写表示开启，例如 `final-cover`；不写表示关闭。
 
 参考研究生院的最新版本，2026新版似乎改变了页眉的样式为居中样式，使用 `header-2026` 可以控制页眉样式，默认为 2026 风格：
 
@@ -90,10 +92,11 @@ latexmk -xelatex main.tex
 
 根据2026-06-24的最新版本，专业学位和学术学位的模板在封面上有所差异，所以新增了 `professional-degree` 设置用于调整。
 
-`professional-degree` 用于控制中文题名页右侧字段标签，默认为 `false`，表示学术学位并显示“学科门类：”；设置为 `true` 时表示专业学位并显示“专业学位类别：”。字段值仍通过 `discipline` 填写：
+`professional-degree` 用于控制中文题名页右侧字段标签。默认不写，表示学术学位并显示“学科门类：”；写上 `professional-degree` 时表示专业学位并显示“专业学位类别：”。字段值仍通过 `discipline` 填写：
 
 ```latex
-\neudisetup{professional-degree=true, discipline={电子信息}}
+\documentclass[professional-degree]{neudissertation}
+\neudisetup{discipline={电子信息}}
 ```
 
 日期字段使用数字填写年月：`submit-year/month`、`defense-year/month`、`degree-year/month`、`cover-year/month`。模板会自动生成中文日期（如 `2016年7月`）和英文题名页日期（如 `July 2016`），因此通常不需要再填写 `cover-date-en`。旧的 `submit-date`、`defense-date`、`degree-date`、`cover-date-cn`、`cover-date-en` 仍可作为兼容写法使用。
@@ -103,8 +106,8 @@ latexmk -xelatex main.tex
 `final-cover` 用于控制是否在现有中英文题名页之前增加一页 TeX 化的 2026 最终版博士学位论文封面：
 
 ```latex
-\neudisetup{final-cover=true}  % 增加最终版封面
-\neudisetup{final-cover=false} % 不增加最终版封面
+\documentclass[final-cover]{neudissertation} % 增加最终版封面
+\documentclass{neudissertation}              % 不增加最终版封面
 ```
 
 该封面默认复用 `title-cn`、`author-cn`、`student-id`、`college-cn`、`major-cn`、`supervisor-cn`、`supervisor-title-cn` 和 `cover-year/month`，并自动排成封面所需的 `2016 年    07 月` 样式。如需单独调整封面底部日期，可设置 `final-cover-year = {2016}`、`final-cover-month = {7}`；如需替换顶部校名校徽图片，可设置 `final-cover-logo = {path/to/logo.pdf}`。
@@ -121,7 +124,7 @@ cosupervisor-en = {},
 双盲评审版使用：
 
 ```latex
-\documentclass[blindreview=true]{neudissertation}
+\documentclass[blindreview]{neudissertation}
 ```
 
 ### 正文结构

@@ -56,7 +56,7 @@ description: 东北大学博士学位论文 LaTeX 模板快速开始。用于普
 `main.tex` 的核心组织方式：
 
 ```latex
-\documentclass[blindreview=false]{neudissertation}
+\documentclass[professional-degree, final-cover]{neudissertation}
 
 \neudisetup{
   title-cn = {论文中文题名},
@@ -67,15 +67,13 @@ description: 东北大学博士学位论文 LaTeX 模板快速开始。用于普
   major-cn = {专业名称},
   major-en = {Major Name},
   degree-level = {博士},
-  professional-degree = true,
   discipline = {电子信息},
   supervisor-cn = {导师姓名},
   supervisor-title-cn = {教授},
   supervisor-affiliation-cn = {东北大学某学院},
   supervisor-en = {Professor Supervisor},
   cover-year = {2026},
-  cover-month = {6},
-  final-cover = true
+  cover-month = {6}
 }
 
 \begin{document}

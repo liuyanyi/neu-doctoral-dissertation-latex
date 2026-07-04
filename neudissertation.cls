@@ -17,6 +17,8 @@
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{family=neuclass,prefix=neuclass@}
 \DeclareBoolOption[false]{blindreview}
+\DeclareBoolOption[false]{professional-degree}
+\DeclareBoolOption[false]{final-cover}
 \ProcessKeyvalOptions*
 
 %% ---------------------------------------------------------------------------
@@ -353,19 +355,11 @@
 \define@key{neudissertation}{major-en}{\renewcommand{\neu@majoren}{#1}}
 \define@key{neudissertation}{degree-level}{\renewcommand{\neu@degreelevel}{#1}}
 \define@key{neudissertation}{discipline}{\renewcommand{\neu@discipline}{#1}}
-\newcommand{\neu@setprofessionaldegree}[2]{%
-  \edef\neu@professionaldegreeflag{#1}%
-  \ifdefstring{\neu@professionaldegreeflag}{true}{%
-    \neu@professionaldegreetrue
-  }{%
-    \ifdefstring{\neu@professionaldegreeflag}{false}{%
-      \neu@professionaldegreefalse
-    }{%
-      \ClassError{neudissertation}{Invalid value for `#2': #1}{Use `true' or `false'.}%
-    }%
-  }%
-}
-\define@key{neudissertation}{professional-degree}[false]{\neu@setprofessionaldegree{#1}{professional-degree}}
+\csname ifneuclass@professional-degree\endcsname
+  \neu@professionaldegreetrue
+\else
+  \neu@professionaldegreefalse
+\fi
 \define@key{neudissertation}{supervisor-cn}{\renewcommand{\neu@supervisorcnraw}{#1}}
 \define@key{neudissertation}{supervisor-title-cn}{\renewcommand{\neu@supervisortitlecn}{#1}}
 \define@key{neudissertation}{supervisor-affiliation-cn}{\renewcommand{\neu@supervisoraffiliationcn}{#1}}
@@ -399,18 +393,11 @@
 \define@key{neudissertation}{final-cover-year}{\renewcommand{\neu@finalcoverdateyear}{#1}\renewcommand{\neu@finalcoverdate}{}}
 \define@key{neudissertation}{final-cover-month}{\renewcommand{\neu@finalcoverdatemonth}{#1}\renewcommand{\neu@finalcoverdate}{}}
 \define@key{neudissertation}{final-cover-date}{\renewcommand{\neu@finalcoverdate}{#1}}
-\define@key{neudissertation}{final-cover}[true]{%
-  \edef\neu@finalcoverflag{#1}%
-  \ifdefstring{\neu@finalcoverflag}{true}{%
-    \neu@finalcovertrue
-  }{%
-    \ifdefstring{\neu@finalcoverflag}{false}{%
-      \neu@finalcoverfalse
-    }{%
-      \ClassError{neudissertation}{Invalid value for `final-cover': #1}{Use `true' or `false'.}%
-    }%
-  }%
-}
+\csname ifneuclass@final-cover\endcsname
+  \neu@finalcovertrue
+\else
+  \neu@finalcoverfalse
+\fi
 \define@key{neudissertation}{header-2026}[true]{%
   \edef\neu@headerflag{#1}%
   \ifdefstring{\neu@headerflag}{true}{%
