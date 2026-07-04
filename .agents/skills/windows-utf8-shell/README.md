@@ -50,14 +50,22 @@ windows-utf8-shell/
 
 ## 手动加载 PowerShell 预处理脚本
 
-如果需要手动使用，可以在命令前加载：
+如果需要手动使用，可以在命令前加载。路径应从当前这份 skill 目录解析，不要固定写成用户级 `%USERPROFILE%\.codex\skills`：
 
 ```powershell
-$codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE ".codex" }
-. (Join-Path $codexHome "skills\windows-utf8-shell\scripts\utf8_prelude.ps1")
+$skillDir = "C:\path\to\windows-utf8-shell"
+. (Join-Path $skillDir "scripts\utf8_prelude.ps1")
+```
+
+如果命令本身写在该 skill 目录中的 `.ps1` 脚本里，优先使用 `$PSScriptRoot`：
+
+```powershell
+. (Join-Path $PSScriptRoot "scripts\utf8_prelude.ps1")
 ```
 
 它会设置 Python、PowerShell 控制台和管道输出的 UTF-8 相关环境。
+
+Codex 读取 `SKILL.md` 时已经知道当前 skill 的实际位置，因此应以该 `SKILL.md` 的父目录作为 `$skillDir`。这样同一份 skill 放在仓库级 `.agents/skills`、用户级 `$CODEX_HOME/skills` 或其他安装位置时都能工作。
 
 ## 工作准则
 

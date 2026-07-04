@@ -9,12 +9,20 @@ Keep Windows/PowerShell commands UTF-8 safe.
 
 ## Core Rules
 
-1. Source the bundled prelude before commands that read, write, print, or send non-ASCII text:
+1. Source the bundled prelude before commands that read, write, print, or send non-ASCII text. Resolve it from this skill directory, not from a hard-coded user-level skills path:
 
 ```powershell
-$codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE ".codex" }
-. (Join-Path $codexHome "skills\windows-utf8-shell\scripts\utf8_prelude.ps1")
+$skillDir = "C:\path\to\windows-utf8-shell"
+. (Join-Path $skillDir "scripts\utf8_prelude.ps1")
 ```
+
+When the command itself is inside a script stored in this skill directory, prefer `$PSScriptRoot`:
+
+```powershell
+. (Join-Path $PSScriptRoot "scripts\utf8_prelude.ps1")
+```
+
+When Codex loads this skill, it knows the exact `SKILL.md` path. Use that loaded path's parent directory as `$skillDir`. This keeps the skill portable across workspace-level `.agents/skills`, user-level `$CODEX_HOME/skills`, and other installed locations.
 
 2. Do not pipe inline scripts containing Chinese, Japanese, emoji, prompts, JSON payloads, or Markdown through PowerShell here-strings, `echo`, or shell interpolation. Put that content in UTF-8 files first.
 
