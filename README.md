@@ -84,6 +84,15 @@ latexmk -xelatex main.tex
 
 `blindreview`、`professional-degree` 和 `final-cover` 是全局模式开关，只写在 `\documentclass[...]` 里，让文件开头就能看出当前版本用途。开关裸写表示开启，例如 `final-cover`；不写表示关闭。
 
+参考文献国标版本使用 `bibliography` 选项，默认 `2025`（GB/T 7714—2025），可选 `2015`（GB/T 7714—2015）：
+
+```latex
+\documentclass[bibliography=2025]{neudissertation} % GB/T 7714—2025（默认）
+\documentclass[bibliography=2015]{neudissertation} % GB/T 7714—2015
+```
+
+两个版本均使用官方 gbt7714 v3.0.1 样式：2025 版西文作者姓不强制全大写（如 `Huang S C`），2015 版按标准仍输出全大写（如 `HUANG S C`）。
+
 参考研究生院的最新版本，2026新版似乎改变了页眉的样式为居中样式，使用 `header-2026` 可以控制页眉样式，默认为 2026 风格：
 
 ```latex

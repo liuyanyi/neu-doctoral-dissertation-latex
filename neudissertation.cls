@@ -19,7 +19,11 @@
 \DeclareBoolOption[false]{blindreview}
 \DeclareBoolOption[false]{professional-degree}
 \DeclareBoolOption[false]{final-cover}
+\DeclareStringOption[2025]{bibliography}% 参考文献国标版本：2025（默认）或 2015
 \ProcessKeyvalOptions*
+\makeatletter
+\let\neuclassbibliography\neuclass@bibliography
+\makeatother
 
 %% ---------------------------------------------------------------------------
 %% 基类：基于 ctexbook，A4 纸张、小四号字、无预置字体、双面右开
@@ -1315,7 +1319,18 @@
 \setlist{nosep}
 \setlist[enumerate]{leftmargin=2em}
 \setlist[itemize]{leftmargin=2em}
-\bibliographystyle{style/gbt7714-unsrt}
+%% 参考文献国标版本：由文档类选项 bibliography=2015 / 2025 决定
+\IfStrEq{\neuclassbibliography}{2015}{%
+  \bibliographystyle{style/gbt7714-2015-numeric}%
+}{%
+  \IfStrEq{\neuclassbibliography}{2025}{%
+    \bibliographystyle{style/gbt7714-2025-numeric}%
+  }{%
+    \ClassError{neudissertation}{Unsupported bibliography version
+      `\neuclassbibliography'.}{Use bibliography=2015 or bibliography=2025
+      in the document class options.}%
+  }%
+}
 
 \makeatother
 
