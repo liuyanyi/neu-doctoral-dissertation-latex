@@ -451,6 +451,14 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 - `PDF Compare`：编译默认专业学位版本，再生成并编译临时学术学位入口，随后按 `dev/pdf_compare_cases.json` 执行 PDF 视觉对比。
 - `Release`：按 `.github/release-include.txt` 打包 TeX 模板、样例内容、`style/`、`Figures/`、`.agents/`、README、LICENSE 和 CHANGELOG，并发布到 GitHub Release。
 
+### 版本与兼容性约定
+
+- 发布版本使用 `vYYYY.MM`；同月追加发布使用 `vYYYY.MM.N`。`neudissertation.cls` 中的 `\ProvidesClass` 日期、版本必须与 Release tag 的年月和完整版本一致。
+- `\documentclass` 选项、`\neudisetup` 配置项以及模板公开命令和环境原则上保持向后兼容。需要替换旧接口时，优先增加兼容别名并在更新日志中标记弃用。
+- 如果确实必须进行破坏性变更，应在 `CHANGELOG.md` 中醒目标记，明确支持直接升级的最早版本、受影响的接口和具体迁移步骤；更早版本的用户应先升级到受支持版本，或按迁移说明手动调整。
+- 每次发布都必须更新 `CHANGELOG.md`，说明功能变化、修复内容和兼容性影响，并写明“支持从哪个版本升级”；用户无需修改论文源码时也应明确写明“无需迁移”。
+- Release workflow 会检查 tag 格式、类文件版本以及自上一个 tag 以来是否更新了 `CHANGELOG.md`，任一项不符合时停止发布。
+
 两个 workflow 会复用 `.github/texlive-packages.txt` 中的 TeX Live 包列表，并缓存 apt 下载包；`PDF Compare` 还会缓存 Python pip 依赖。
 
 PDF 对比完成后会上传 `pdf-compare` artifact，包含 `main.pdf`、`main.log`、临时学术学位版本 PDF/log，以及每个 case 的 diff、增强 diff、红蓝 overlay、highlight、Word 渲染页、LaTeX 渲染页和 metrics。`summary.md` 和 `summary.json` 汇总所有 case 的指标。

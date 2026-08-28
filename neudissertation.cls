@@ -9,7 +9,7 @@
 %% 文档类标识：模板名称、版本号、发布日期
 %% ---------------------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[2022/11/01]
-\ProvidesClass{neudissertation}[2026/05/07 v2.0 NEU doctoral dissertation template]
+\ProvidesClass{neudissertation}[2026/08/28 v2026.08.02 NEU doctoral dissertation template]
 
 %% ---------------------------------------------------------------------------
 %% 选项处理：声明模板选项（如 blindreview 盲审模式）
