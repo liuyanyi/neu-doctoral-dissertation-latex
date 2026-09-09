@@ -84,6 +84,10 @@ latexmk -xelatex main.tex
 
 `blindreview`、`professional-degree` 和 `final-cover` 是全局模式开关，只写在 `\documentclass[...]` 里，让文件开头就能看出当前版本用途。开关裸写表示开启，例如 `final-cover`；不写表示关闭。
 
+审阅正文时可使用 `\documentclass[no-frontmatter]{neudissertation}`：跳过封面、声明、中英文摘要和目录，按原有入口调用 `\mainmatter` 后，正文从阿拉伯页码 1 开始。该选项默认关闭；提交正式论文前应移除。摘要内容仍会被 LaTeX 处理，但不输出到页面。
+
+`table`、`table*`（含 `[H]`）和 `longtable` 中的表内文字默认使用五号（10.5 bp），表格结束后恢复外部字号；仍可在表内显式覆盖。独立使用的 `tabular` 不自动改变字号。中英文图表题统一为五号，并兼容 `DocumentMetadata` 加载的 `latex-lab` 题注实现。
+
 参考文献国标版本使用 `bibliography` 选项，默认 `2025`（GB/T 7714—2025），可选 `2015`（GB/T 7714—2015）：
 
 ```latex
@@ -91,7 +95,7 @@ latexmk -xelatex main.tex
 \documentclass[bibliography=2015]{neudissertation} % GB/T 7714—2015
 ```
 
-两个版本均使用官方 gbt7714 v3.0.1 样式：2025 版西文作者姓不强制全大写（如 `Huang S C`），2015 版按标准仍输出全大写（如 `HUANG S C`）。
+两个版本均基于官方 gbt7714 v3.0.1 样式：2025 版西文作者姓不强制全大写（如 `Huang S C`），2015 版按标准仍输出全大写（如 `HUANG S C`）。随模板分发的 2025 版另修复了网页条目有出版者时重复输出年份的问题，保留括号内的创建或修改日期及访问日期。
 
 参考研究生院的最新版本，2026新版似乎改变了页眉的样式为居中样式，使用 `header-2026` 可以控制页眉样式，默认为 2026 风格：
 

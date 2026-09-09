@@ -1,0 +1,45 @@
+% Run from the repository root:
+% latexmk -xelatex -outdir=tests/build tests/reference-spacing.tex
+\documentclass[no-frontmatter]{neudissertation}
+\newsavebox{\actualref}
+\newsavebox{\expectedref}
+\newcommand{\checkrefspacing}[3]{%
+  \sbox{\actualref}{#2}%
+  \sbox{\expectedref}{#3}%
+  \ifdim\dimexpr\wd\actualref-\wd\expectedref\relax>0.01pt
+    \PackageError{reference-spacing}{#1 too wide}{}%
+  \fi
+  \ifdim\dimexpr\wd\expectedref-\wd\actualref\relax>0.01pt
+    \PackageError{reference-spacing}{#1 too narrow}{}%
+  \fi
+}
+\begin{document}
+\setcounter{chapter}{2}
+\setcounter{figure}{1}\refstepcounter{figure}\label{fig:spacing}
+\refstepcounter{subfigure}\label{fig:spacing-sub}
+\setcounter{table}{1}\refstepcounter{table}\label{tab:spacing}
+\setcounter{equation}{1}\refstepcounter{equation}\label{eq:spacing}
+\makeatletter
+\@ifundefined{r@fig:spacing}{}{%
+  \checkrefspacing{figure Chinese}{\neufigref{fig:spacing}对照}{图~2.2对照}%
+  \checkrefspacing{figure comma}{\neufigref{fig:spacing}，}{图~2.2，}%
+  \checkrefspacing{figure period}{\neufigref{fig:spacing}。}{图~2.2。}%
+  \checkrefspacing{figure space}{\neufigref{fig:spacing} 对照}{图~2.2 对照}%
+  \checkrefspacing{figure group}{\neufigref{fig:spacing}{对照}}{图~2.2{对照}}%
+  \checkrefspacing{subfigure Chinese}{\neusubfigref{fig:spacing-sub}对照}{图~2.2(a)对照}%
+  \checkrefspacing{table Chinese}{\neutabref{tab:spacing}对照}{表~2.2对照}%
+  \checkrefspacing{equation Chinese}{\neueqref{eq:spacing}对照}{式（2.2）对照}%
+  \checkrefspacing{equation comma}{\neueqref{eq:spacing}，}{式（2.2），}%
+}
+\makeatother
+\noindent
+图引用：\neufigref{fig:spacing}对照；\neufigref{fig:spacing}，\neufigref{fig:spacing}。\par
+\noindent 子图引用：\neusubfigref{fig:spacing-sub}对照。\par
+\noindent 表引用：\neutabref{tab:spacing}对照。\par
+\noindent 公式引用：\neueqref{eq:spacing}对照。\par
+\noindent 正文文献：文献\inlinecite{spacing}指出；文献\inlinecite[12]{spacing}指出。\par
+\noindent 上标文献：已有研究\upcite{spacing}。已有研究\upcite[12]{spacing}。\par
+\begin{thebibliography}{1}
+\bibitem{spacing} Reference spacing test.
+\end{thebibliography}
+\end{document}

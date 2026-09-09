@@ -1,0 +1,37 @@
+% Run: latexmk -xelatex -outdir=tests/build tests/table-font.tex
+\DocumentMetadata{testphase={phase-III}}
+\documentclass[no-frontmatter]{neudissertation}
+\makeatletter
+\newcommand{\checkfontsize}[2]{%
+  \ifdim\f@size pt=#2\relax\else
+    \PackageError{table-font}{#1: unexpected font size \f@size}{}%
+  \fi
+}
+\makeatother
+\begin{document}
+\checkfontsize{body}{12bp}
+\begin{table}[htbp]
+  \checkfontsize{table}{10.5bp}
+  \begin{tabular}{ll}A & B\end{tabular}
+  \xiaosi\checkfontsize{explicit override}{12bp}
+\end{table}
+\checkfontsize{after table}{12bp}
+\begin{table*}
+  \checkfontsize{table star}{10.5bp}
+  \begin{tabularx}{\linewidth}{XX}A & B\end{tabularx}
+\end{table*}
+\begin{table}[H]
+  \checkfontsize{table H}{10.5bp}
+  \begin{tabular}{ll}A & B\end{tabular}
+\end{table}
+\begin{longtable}{ll}
+  \checkfontsize{longtable}{10.5bp}A & B\\
+\end{longtable}
+\checkfontsize{after longtable}{12bp}
+\begin{figure}[H]
+  \checkfontsize{figure unchanged}{12bp}Figure
+\end{figure}
+\begin{tabular}{ll}
+  \checkfontsize{standalone tabular}{12bp}A & B
+\end{tabular}
+\end{document}

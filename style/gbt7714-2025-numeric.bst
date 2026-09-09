@@ -3491,7 +3491,6 @@ FUNCTION {webpage}
   publisher empty$
     'skip$
     { format.address.publisher output
-      format.date output
       bbl.pages.colon set.punct
       format.pages output
       "" set.punct

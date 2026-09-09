@@ -1,6 +1,6 @@
 %% ===========================================================================
 %%  neudissertation.cls —— 东北大学研究生学位论文 LaTeX 模板
-%%  2026 (v2.0) 修订版，基于 Word 模板格式规范
+%%  2026 年 9 月修订版（v2026.09），基于 Word 模板格式规范
 %% ===========================================================================
 %%
 %% Northeastern University doctoral dissertation template, 2026 edition.
@@ -9,7 +9,7 @@
 %% 文档类标识：模板名称、版本号、发布日期
 %% ---------------------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[2022/11/01]
-\ProvidesClass{neudissertation}[2026/08/28 v2026.08.02 NEU doctoral dissertation template]
+\ProvidesClass{neudissertation}[2026/09/09 v2026.09 NEU doctoral dissertation template]
 
 %% ---------------------------------------------------------------------------
 %% 选项处理：声明模板选项（如 blindreview 盲审模式）
@@ -19,6 +19,9 @@
 \DeclareBoolOption[false]{blindreview}
 \DeclareBoolOption[false]{professional-degree}
 \DeclareBoolOption[false]{final-cover}
+%% no-frontmatter：跳过全部前序页面（封面、声明、中英文摘要、目录），
+%% 正文直接以阿拉伯页码从第 1 页开始，用于快速审阅/编辑
+\DeclareBoolOption[false]{no-frontmatter}
 \DeclareStringOption[2025]{bibliography}% 参考文献国标版本：2025（默认）或 2015
 \ProcessKeyvalOptions*
 \makeatletter
@@ -93,10 +96,14 @@
 %% ---------------------------------------------------------------------------
 \let\neu@origtableofcontents\tableofcontents
 \renewcommand{\tableofcontents}{%
+  \ifneu@nofrontmatter
+    \relax% 审阅模式：跳过目录
+  \else
   \cleardoublepage
   \phantomsection
   \pdfbookmark[0]{目\quad 录}{toc}%
   \neu@origtableofcontents
+  \fi
 }
 \makeatother
 
@@ -340,6 +347,21 @@
 \neu@header@twentysixtrue
 \newif\ifneu@finalcover
 \neu@finalcoverfalse
+
+%% no-frontmatter 布尔标志：false 时保留全部前序页面，true 时跳过
+\newif\ifneu@nofrontmatter
+\csname ifneuclass@no-frontmatter\endcsname
+  \neu@nofrontmattertrue
+\else
+  \neu@nofrontmatterfalse
+\fi
+\AtBeginDocument{%
+  \ifneu@nofrontmatter
+    \ClassWarning{neudissertation}{Option `no-frontmatter' is active: all
+      front-matter pages are omitted; remember to disable it for the final
+      submission}%
+  \fi
+}
 
 %% ---------------------------------------------------------------------------
 %% \neudisetup 配置键定义
@@ -708,11 +730,15 @@
 %% backmatter：无章编号
 %% ---------------------------------------------------------------------------
 \renewcommand{\frontmatter}{%
-  \cleardoublepage
-  \pagenumbering{Roman}
-  \setcounter{page}{1}
-  \@mainmatterfalse
-  \pagestyle{fancy}
+  \ifneu@nofrontmatter
+    \relax% 审阅模式：跳过罗马页码切换，正文保持阿拉伯页码
+  \else
+    \cleardoublepage
+    \pagenumbering{Roman}
+    \setcounter{page}{1}
+    \@mainmatterfalse
+    \pagestyle{fancy}
+  \fi
 }
 \renewcommand{\mainmatter}{%
   \cleardoublepage
@@ -995,6 +1021,9 @@
 %% 3. 生成英文封面（A Dissertation in ...）
 %% ---------------------------------------------------------------------------
 \newcommand{\makeneucovers}{%
+  \ifneu@nofrontmatter
+    \relax% 审阅模式：跳过全部封面页
+  \else
   \begingroup
   \pagestyle{neuempty}%
   \thispagestyle{neuempty}%
@@ -1073,6 +1102,7 @@
   \null
   \cleardoublepage
   \endgroup
+  \fi
 }
 % Declaration and authorization.
 %% ---------------------------------------------------------------------------
@@ -1098,6 +1128,9 @@
 \newcommand{\neu@authorsignaturegraphic}{\neu@signaturegraphic{\neu@authorsignature}{\neu@signatureheight}}
 \newcommand{\neu@supervisorsignaturegraphic}{\neu@signaturegraphic{\neu@supervisorsignature}{\neu@signatureheight}}
 \newcommand{\makeneudeclaration}{%
+  \ifneu@nofrontmatter
+    \relax% 审阅模式：跳过声明与授权页
+  \else
   \cleardoublepage
   \markboth{}{}%
   \addcontentsline{toc}{chapter}{独创性声明}%
@@ -1152,6 +1185,7 @@
     {\song\sihao 签字日期：\neu@declarationsigndate};
   }%
   \null
+  \fi
 }
 
 % Abstract environments.
@@ -1181,24 +1215,43 @@
 
 % ---------- 中文摘要环境 ----------
 % 命名规范：中文相关环境/宏统一使用 "-cn" 后缀，这里使用 `abstract-cn`。
+\newbox\neu@frontmatterskipbox
 \newenvironment{abstractcn}{%
-  \cleardoublepage
-  \markboth{摘\quad 要}{}
-  \addcontentsline{toc}{chapter}{摘\quad 要}
-  \thispagestyle{plain}
-  \neuabstracttitle{摘\hspace{1em}要}
-  \thesisbodyfont
-  \thesisparagraphsetup
+  \ifneu@nofrontmatter
+    \setbox\neu@frontmatterskipbox\vbox\bgroup
+    \ignorespaces
+  \else
+    \cleardoublepage
+    \markboth{摘\quad 要}{}
+    \addcontentsline{toc}{chapter}{摘\quad 要}
+    \thispagestyle{plain}
+    \neuabstracttitle{摘\hspace{1em}要}
+    \thesisbodyfont
+    \thesisparagraphsetup
+  \fi
 }{%
-  \par
+  \ifneu@nofrontmatter
+    \egroup
+  \else
+    \par
+  \fi
 }
 \newenvironment{abstracten}{%
-  \cleardoublepage
-  \markboth{Abstract}{}
-  \addcontentsline{toc}{chapter}{Abstract}
-  \thispagestyle{plain}
-  \neuabstracttitle{Abstract}
-}{}
+  \ifneu@nofrontmatter
+    \setbox\neu@frontmatterskipbox\vbox\bgroup
+    \ignorespaces
+  \else
+    \cleardoublepage
+    \markboth{Abstract}{}
+    \addcontentsline{toc}{chapter}{Abstract}
+    \thispagestyle{plain}
+    \neuabstracttitle{Abstract}
+  \fi
+}{%
+  \ifneu@nofrontmatter
+    \egroup
+  \fi
+}
 
 % Back-matter environments.
 %% ===========================================================================
@@ -1253,11 +1306,22 @@
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
 \numberwithin{table}{chapter}
+% Float initialization resets the font; apply the table default afterwards.
+\AddToHook{cmd/@floatboxreset/after}[neudissertation/table-font]{%
+  \ifdefstring{\@captype}{table}{\wuhao}{}%
+}
+\AddToHook{env/longtable/begin}[neudissertation/table-font]{\wuhao}
 \DeclareCaptionFont{neuwuhao}{\wuhao}
 \captionsetup{font=neuwuhao,labelsep=space,skip=3bp}
 \captionsetup[figure]{position=bottom,aboveskip=3bp,belowskip=0bp}
 \captionsetup[table]{position=top,aboveskip=0bp,belowskip=3bp}
 \captionsetup[subfigure]{font=neuwuhao,labelformat=simple,labelsep=space,justification=centering,singlelinecheck=true,skip=3bp}
+% Keep latex-lab's renderer and tagging sockets; match the caption style.
+\@ifpackageloaded{latex-lab-testphase-float}{%
+  \AddToHook{cmd/@makecaption/before}[neudissertation/caption-font]{\wuhao}%
+  \NewSocketPlug{caption/label}{neudissertation}{#1\space}%
+  \AssignSocketPlug{caption/label}{neudissertation}%
+}{}
 \renewcommand{\thesubfigure}{(\alph{subfigure})}
 \makeatletter
 \renewcommand{\p@subfigure}{\thefigure}
@@ -1280,9 +1344,16 @@
   {\centering\wuhao Table~\ref{#1}\quad #3\par}%
   \vspace{3bp}%
 }
-\newcommand{\neufigref}[1]{图~\ref{#1}}
-\newcommand{\neusubfigref}[1]{图~\ref{#1}}
-\newcommand{\neutabref}[1]{表~\ref{#1}}
+% hyperref's closing link special hides xeCJK's trailing Latin boundary node.
+% Restore that node so xeCJK adds its normal glue before following Chinese
+% text, while retaining punctuation handling and explicit source spaces.
+\ExplSyntaxOn
+\NewDocumentCommand{\neurefnumber}{m}
+  { \ref{#1} \xeCJK_make_node:n { default } }
+\ExplSyntaxOff
+\newcommand{\neufigref}[1]{图~\neurefnumber{#1}}
+\newcommand{\neusubfigref}[1]{图~\neurefnumber{#1}}
+\newcommand{\neutabref}[1]{表~\neurefnumber{#1}}
 \newcommand{\neueqref}[1]{式（\ref{#1}）}
 % Use superscript numbers for citations, as required by the standard.
 \citestyle{super}

@@ -1,0 +1,26 @@
+% With metadata: latexmk -xelatex -outdir=tests/build tests/frontmatter-caption.tex
+% Without metadata: use a wrapper defining \NoMetadata before inputting this file.
+\ifdefined\NoMetadata\else\DocumentMetadata{pdfversion=1.7}\fi
+\documentclass[no-frontmatter]{neudissertation}
+\begin{document}
+\makeneucovers
+\frontmatter
+\makeneudeclaration
+\begin{abstractcn}OMITTED-CN\end{abstractcn}
+\begin{abstracten}OMITTED-EN\end{abstracten}
+\tableofcontents
+\mainmatter
+\chapter{模板回归检查}
+正文应为小四，图表题与表内文字应为五号。
+\begin{figure}[H]
+\centering\rule{30mm}{10mm}
+\neufigcaption{fig:test}{中文图题}{English figure caption}
+\end{figure}
+\begin{table}[H]
+\neutabcaption{tab:test}{中文表题}{English table caption}
+\centering\begin{tabular}{ll}\hline
+表内五号 & Table text\\\hline
+\end{tabular}
+\end{table}
+\neufigref{fig:test}后接中文，\neutabref{tab:test}后接中文。
+\end{document}
