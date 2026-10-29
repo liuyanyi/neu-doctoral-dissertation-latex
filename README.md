@@ -517,3 +517,8 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 图题上间距为 4bp，表题不额外添加 caption 下间距，双语表题结束后保留 4bp；ruled 算法横线内侧间距为 3bp。章节标题、正文行距、段落及公式间距保持原设置。浮动体内核补丁不匹配时会明确报错；旧版 TeX Live 应在对应环境验证。
 
 `tests/float-spacing.tex` 覆盖固定/普通浮动体、各级标题前后、页首页底、长题注及页末分页。它使用普通 `algorithm` 环境，不要求新增算法封装接口。
+
+
+### 目录链接兼容
+
+启用 `\DocumentMetadata` 时，为 titletoc 排版的目录条目补齐 latex-lab 链接钩子；独创性声明、中英文摘要使用独立跳转锚点。未启用相关目录机制时保留原路径。

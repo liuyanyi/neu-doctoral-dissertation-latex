@@ -767,6 +767,39 @@
 {}
 {\titlerule*[0.5pc]{.}\contentspage}
 
+%% 目录条目超链接：\DocumentMetadata 会加载 latex-lab 的目录模块，该模块用
+%% \hyper@nopatch@toc 关闭 hyperref 原有的目录链接补丁，改由 contentsline/* 钩子
+%% 插入跳转链接，而这些钩子只在 latex-lab 自己的条目格式（\l@chapter 等、
+%% \@dottedtocline）内执行。本模板的 chapter～subsubsection 条目格式由 titletoc 的
+%% \titlecontents 接管（titletoc 会重定义 \l@chapter 等），钩子不会执行，PDF 目录
+%% 条目因此没有任何链接注解。此处对这些层级补执行 latex-lab 的钩子，使目录恢复
+%% 可点击跳转；链接策略（linktoc）仍由 latex-lab 与 hyperref 决定。未使用
+%% \titlecontents 的层级（如图表清单中的 figure/table）保持原路径不变。
+%% ---------------------------------------------------------------------------
+\@ifundefined{hyper@nopatch@toc}{}{%
+  \let\neu@contentsline\contentsline
+  \renewcommand{\contentsline}[4]{%
+    \@ifundefined{ttlb@#1}{%
+      %% 该层级未使用 \titlecontents 排版：沿用 latex-lab 的原有链接机制。
+      \neu@contentsline{#1}{#2}{#3}{#4}%
+    }{%
+      \neu@contentsline{#1}{%
+          \UseHookWithArguments{contentsline/text/before}{4}%
+            {\csname toclevel@#1\endcsname}{#2}{#3}{#4}%
+          #2%
+          \UseHookWithArguments{contentsline/text/after}{4}%
+            {\csname toclevel@#1\endcsname}{#2}{#3}{#4}%
+        }{%
+          \UseHookWithArguments{contentsline/page/before}{4}%
+            {\csname toclevel@#1\endcsname}{#2}{#3}{#4}%
+          #3%
+          \UseHookWithArguments{contentsline/page/after}{4}%
+            {\csname toclevel@#1\endcsname}{#2}{#3}{#4}%
+        }{#4}%
+    }%
+  }%
+}
+
 % Matter transitions.
 %% ===========================================================================
 %% 第 4 节：文档结构切换（frontmatter / mainmatter / backmatter）
@@ -1182,7 +1215,8 @@
   \else
   \cleardoublepage
   \markboth{}{}%
-  \addcontentsline{toc}{chapter}{独创性声明}%
+  \phantomsection
+    \addcontentsline{toc}{chapter}{独创性声明}%
   \thispagestyle{neunumberonly}%
   \null
   \neu@pagecoordinatepicture{%
@@ -1272,6 +1306,7 @@
   \else
     \cleardoublepage
     \markboth{摘\quad 要}{}
+    \phantomsection
     \addcontentsline{toc}{chapter}{摘\quad 要}
     \thispagestyle{plain}
     \neuabstracttitle{摘\hspace{1em}要}
@@ -1292,6 +1327,7 @@
   \else
     \cleardoublepage
     \markboth{Abstract}{}
+    \phantomsection
     \addcontentsline{toc}{chapter}{Abstract}
     \thispagestyle{plain}
     \neuabstracttitle{Abstract}
