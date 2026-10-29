@@ -532,3 +532,8 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 ### 英文题注编号间隔
 
 英文图题、表题的编号与标题之间使用普通空格，避免 `\quad` 产生过宽间隔；原有双语题注接口保持不变。
+
+
+### 表注
+
+在表体之后使用 `\neutabnote{说明文字}`，自动输出“注：”，采用五号字并在与表体同宽的居中区域内左对齐。支持 table/table* 中的 tabular、tabular*、tabularx；不将此接口视为跨页 longtable 表注。测试见 `tests/table-note.tex`。

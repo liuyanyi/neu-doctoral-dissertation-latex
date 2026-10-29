@@ -1,0 +1,39 @@
+% Run from repository root: latexmk -xelatex -outdir=tests/build tests/table-note.tex
+\DocumentMetadata{pdfversion=1.7,lang=zh-CN}
+\documentclass[no-frontmatter]{neudissertation}
+\makeatletter
+\newcommand{\assertnotesize}{%
+  \ifdim\f@size pt=10.5bp\else
+    \PackageError{table-note}{Note must use caption font size}{}\fi
+  \ifdim\leftskip=0pt\else
+    \PackageError{table-note}{Note must be left aligned}{}\fi
+}
+\newcommand{\assertbody}{%
+  \ifdim\f@size pt=12bp\else
+    \PackageError{table-note}{Note font leaked into body}{}\fi
+}
+\newcommand{\assertnotewidth}{%
+  \ifdim\linewidth=\neu@tablebodywidth\else
+    \PackageError{table-note}{Note width differs from table body}{}\fi
+}
+\makeatother
+\begin{document}
+\begin{table}[H]
+  \centering
+  \neutabcaption{tab:note-test}{表注格式检查}{Table Note Format Check}
+  \begin{tabular}{cc}A & B\\ 1 & 2\end{tabular}
+  \edef\savedleftskip{\the\leftskip}
+  \neutabnote{\assertnotesize\assertnotewidth 加粗表示最优值。}
+  \edef\currentleftskip{\the\leftskip}
+  \ifx\savedleftskip\currentleftskip\else
+    \PackageError{table-note}{Note alignment leaked into centering}{}\fi
+\end{table}
+\begin{table}[H]
+  \centering
+  \begin{tabularx}{80mm}{XX}A & B\\ 1 & 2\end{tabularx}
+  \neutabnote{\assertnotewidth\ifdim\linewidth=80mm\else
+    \PackageError{table-note}{Tabularx width not captured}{}\fi
+    固定宽度表格的表注应与表体左边缘对齐。}
+\end{table}
+\assertbody 正文字号及对齐不受表注影响。
+\end{document}

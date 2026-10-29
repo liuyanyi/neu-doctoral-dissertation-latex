@@ -1429,6 +1429,45 @@
   {\centering\wuhao Table~\ref{#1}\space #3\par}%
   \vspace{4bp}%
 }
+% 记录表体自然宽度；外层捕获避免嵌套tabular覆盖宽度。
+\makeatletter
+\newsavebox{\neu@tablebodybox}
+\newdimen\neu@tablebodywidth
+\newcount\neu@tablebodydepth
+\newif\ifneu@measuretable
+\AddToHook{env/table/begin}{\neu@measuretabletrue\global\neu@tablebodywidth=\linewidth}
+\AddToHook{env/table*/begin}{\neu@measuretabletrue\global\neu@tablebodywidth=\linewidth}
+\newcommand{\neu@capturetablebegin}{%
+  \ifneu@measuretable
+    \ifnum\neu@tablebodydepth=0 \setbox\neu@tablebodybox=\hbox\bgroup\fi
+    \global\advance\neu@tablebodydepth by 1
+  \fi
+}
+\newcommand{\neu@capturetableend}{%
+  \ifneu@measuretable
+    \global\advance\neu@tablebodydepth by -1
+    \ifnum\neu@tablebodydepth=0
+      \egroup
+      \global\neu@tablebodywidth=\wd\neu@tablebodybox
+      \usebox{\neu@tablebodybox}%
+    \fi
+  \fi
+}
+\AddToHook{env/tabular/before}{\neu@capturetablebegin}
+\AddToHook{env/tabular/after}{\neu@capturetableend}
+\AddToHook{env/tabular*/before}{\neu@capturetablebegin}
+\AddToHook{env/tabular*/after}{\neu@capturetableend}
+\AddToHook{env/tabularx/before}{\neu@capturetablebegin}
+\AddToHook{env/tabularx/after}{\neu@capturetableend}
+% 表注与题注同为五号，在居中的表体同宽区域内左对齐。
+\newcommand{\neutabnote}[1]{%
+  \par\vspace{3bp}%
+  {\centering\noindent
+    \begin{minipage}{\neu@tablebodywidth}
+      \wuhao\raggedright\noindent 注：#1\par
+    \end{minipage}\par}%
+}
+\makeatother
 % Link specials hide xeCJK's boundaries around reference numbers. Consume the
 % preceding CJK boundary before opening the link and restore the trailing Latin
 % node after closing it. Install after hyperref's begin-document setup; preserve
