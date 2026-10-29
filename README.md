@@ -1,5 +1,7 @@
 ﻿# 东北大学博士学位论文 LaTeX 模板（2026 版）
 
+当前版本：`v2026.10`。版本变更见 [CHANGELOG.md](CHANGELOG.md)。
+
 ## 构建
 
 推荐使用 XeLaTeX 编译：
@@ -10,7 +12,7 @@ latexmk -xelatex main.tex
 
 ### 兼容性
 
-模板目标兼容 TeX Live 2023–2026，已在以下环境测试通过：
+模板目标兼容 TeX Live 2023–2026。以下为项目历史验证环境；`v2026.10` 本次仅在 Windows / TeX Live 2026 完成回归，其他环境尚未复测：
 
 #### 本地环境
 
@@ -505,34 +507,7 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 - [Gitee NEUCloudLab/NEU论文Latex模板](https://gitee.com/NEUCloudLab/NEU-dissertation-template) — 模板源码重构基础
 - [GitHub sci-m-wang/NEU-Thesis](https://github.com/sci-m-wang/NEU-Thesis) — 部分内容参考
 
-## License
-
-GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
-
-
-### 浮动体间距（V2）
-
-模板统一管理图、表和带横线算法的间距：页首/页底浮动体与正文、相邻浮动体采用 `12bp plus 2bp minus 2bp`；普通文中浮动体上下间距为 12bp/2bp，紧接标题时为 0bp/6bp；`[H]` 浮动体上方为 11bp（标题后不重复叠加），下方不再追加间距。修复 `[H]` 浮动体之后标题段前间距被抑制的问题。
-
-图题上间距为 4bp，表题不额外添加 caption 下间距，双语表题结束后保留 4bp；ruled 算法横线内侧间距为 3bp。章节标题、正文行距、段落及公式间距保持原设置。浮动体内核补丁不匹配时会明确报错；旧版 TeX Live 应在对应环境验证。
-
-`tests/float-spacing.tex` 覆盖固定/普通浮动体、各级标题前后、页首页底、长题注及页末分页。它使用普通 `algorithm` 环境，不要求新增算法封装接口。
-
-
-### 目录链接兼容
-
-启用 `\DocumentMetadata` 时，为 titletoc 排版的目录条目补齐 latex-lab 链接钩子；独创性声明、中英文摘要使用独立跳转锚点。未启用相关目录机制时保留原路径。
-
-
-### 交叉引用间距
-
-统一修复 `\ref`（含 `\ref*`）超链接边界处的中西文间距，覆盖章节、图表及公式编号，并保留中文标点和显式空格的处理。回归样例：`tests/reference-spacing.tex`，需编译两遍。
-
-
-### 英文题注编号间隔
-
-英文图题、表题的编号与标题之间使用普通空格，避免 `\quad` 产生过宽间隔；原有双语题注接口保持不变。
-
+## 补充模板接口
 
 ### 表注
 
@@ -552,3 +527,7 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 ### 段落式自动编号
 
 `thesispoints` 使用中文括号编号（1），`thesispointsen` 使用英文括号编号 (1)。环境内以 `\item` 分项，首行缩进，续行保持正文宽度，适用于贡献与结论条目。
+
+## License
+
+GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。

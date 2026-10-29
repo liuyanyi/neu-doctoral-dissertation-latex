@@ -1,6 +1,6 @@
 %% ===========================================================================
 %%  neudissertation.cls —— 东北大学研究生学位论文 LaTeX 模板
-%%  2026 年 9 月修订版（v2026.09），基于 Word 模板格式规范
+%%  2026 年 10 月修订版（v2026.10），基于 Word 模板格式规范
 %% ===========================================================================
 %%
 %% Northeastern University doctoral dissertation template, 2026 edition.
@@ -9,7 +9,7 @@
 %% 文档类标识：模板名称、版本号、发布日期
 %% ---------------------------------------------------------------------------
 \NeedsTeXFormat{LaTeX2e}[2022/11/01]
-\ProvidesClass{neudissertation}[2026/09/09 v2026.09 NEU doctoral dissertation template]
+\ProvidesClass{neudissertation}[2026/10/29 v2026.10 NEU doctoral dissertation template]
 
 %% ---------------------------------------------------------------------------
 %% 选项处理：声明模板选项（如 blindreview 盲审模式）
