@@ -1429,12 +1429,22 @@
   {\centering\wuhao Table~\ref{#1}\quad #3\par}%
   \vspace{4bp}%
 }
-% hyperref's closing link special hides xeCJK's trailing Latin boundary node.
-% Restore that node so xeCJK adds its normal glue before following Chinese
-% text, while retaining punctuation handling and explicit source spaces.
+% Link specials hide xeCJK's boundaries around reference numbers. Consume the
+% preceding CJK boundary before opening the link and restore the trailing Latin
+% node after closing it. Install after hyperref's begin-document setup; preserve
+% starred references and let xeCJK handle punctuation and source spaces.
 \ExplSyntaxOn
+\AddToHook{begindocument/end}{
+  \NewCommandCopy\neu_original_ref\ref
+  \RenewDocumentCommand\ref{s m}{
+    \mode_leave_vertical:
+    \xeCJK_check_for_ecglue:
+    \IfBooleanTF{#1}{\neu_original_ref*{#2}}{\neu_original_ref{#2}}
+    \xeCJK_make_node:n { default }
+  }
+}
 \NewDocumentCommand{\neurefnumber}{m}
-  { \ref{#1} \xeCJK_make_node:n { default } }
+  { \ref{#1} }
 \ExplSyntaxOff
 \newcommand{\neufigref}[1]{图~\neurefnumber{#1}}
 \newcommand{\neusubfigref}[1]{图~\neurefnumber{#1}}

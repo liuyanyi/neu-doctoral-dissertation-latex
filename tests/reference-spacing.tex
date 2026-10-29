@@ -15,12 +15,19 @@
 }
 \begin{document}
 \setcounter{chapter}{2}
+\refstepcounter{chapter}\label{chap:spacing}
+\setcounter{chapter}{2}
+\refstepcounter{section}\refstepcounter{subsection}\label{subsec:spacing}
 \setcounter{figure}{1}\refstepcounter{figure}\label{fig:spacing}
 \refstepcounter{subfigure}\label{fig:spacing-sub}
 \setcounter{table}{1}\refstepcounter{table}\label{tab:spacing}
 \setcounter{equation}{1}\refstepcounter{equation}\label{eq:spacing}
 \makeatletter
-\@ifundefined{r@fig:spacing}{}{%
+\@ifundefined{r@chap:spacing}{}{%
+  \checkrefspacing{chapter Chinese}{第\ref{chap:spacing}章}{第3章}%
+  \checkrefspacing{subsection Chinese}{见\ref{subsec:spacing}节}{见2.1.1节}%
+  \checkrefspacing{starred Chinese}{第\ref*{chap:spacing}章}{第3章}%
+  \checkrefspacing{reference English}{Section \ref{subsec:spacing} text}{Section 2.1.1 text}%
   \checkrefspacing{figure Chinese}{\neufigref{fig:spacing}对照}{图~2.2对照}%
   \checkrefspacing{figure comma}{\neufigref{fig:spacing}，}{图~2.2，}%
   \checkrefspacing{figure period}{\neufigref{fig:spacing}。}{图~2.2。}%
@@ -32,6 +39,8 @@
   \checkrefspacing{equation comma}{\neueqref{eq:spacing}，}{式（2.2），}%
 }
 \makeatother
+\noindent
+章节引用：第\ref{chap:spacing}章；见\ref{subsec:spacing}节。\par
 \noindent
 图引用：\neufigref{fig:spacing}对照；\neufigref{fig:spacing}，\neufigref{fig:spacing}。\par
 \noindent 子图引用：\neusubfigref{fig:spacing-sub}对照。\par

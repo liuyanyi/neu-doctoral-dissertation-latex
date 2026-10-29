@@ -522,3 +522,8 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 ### 目录链接兼容
 
 启用 `\DocumentMetadata` 时，为 titletoc 排版的目录条目补齐 latex-lab 链接钩子；独创性声明、中英文摘要使用独立跳转锚点。未启用相关目录机制时保留原路径。
+
+
+### 交叉引用间距
+
+统一修复 `\ref`（含 `\ref*`）超链接边界处的中西文间距，覆盖章节、图表及公式编号，并保留中文标点和显式空格的处理。回归样例：`tests/reference-spacing.tex`，需编译两遍。
