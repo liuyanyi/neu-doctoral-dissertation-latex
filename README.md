@@ -542,3 +542,8 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 ### 算法接口
 
 模板加载 algorithm、algorithmic 并按章编号。使用 `\begin{neualgorithm}[!htbp]{alg:example}{算法标题}`，环境内直接写 `\STATE` 等伪代码，最后 `\end{neualgorithm}`；通过 `\neualgref{alg:example}` 引用。接口自动提供算法标题、标签和行号。
+
+
+### 从摘要开始
+
+文档类选项 `start-at-abstract` 跳过封面、题名页和独创性声明，保留中英文摘要与目录。`no-frontmatter` 仍跳过全部前置页，同时启用时以后者为准。默认模式不变。

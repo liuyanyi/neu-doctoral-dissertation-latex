@@ -22,6 +22,8 @@
 %% no-frontmatter：跳过全部前序页面（封面、声明、中英文摘要、目录），
 %% 正文直接以阿拉伯页码从第 1 页开始，用于快速审阅/编辑
 \DeclareBoolOption[false]{no-frontmatter}
+%% start-at-abstract：跳过摘要之前的封面、题名页和声明，保留摘要与目录
+\DeclareBoolOption[false]{start-at-abstract}
 \DeclareStringOption[2025]{bibliography}% 参考文献国标版本：2025（默认）或 2015
 \ProcessKeyvalOptions*
 \makeatletter
@@ -412,6 +414,14 @@
   \neu@nofrontmattertrue
 \else
   \neu@nofrontmatterfalse
+\fi
+%% 两种裁剪模式均跳过摘要之前的页面；no-frontmatter 继续控制摘要和目录。
+\newif\ifneu@skippreabstract
+\csname ifneuclass@start-at-abstract\endcsname
+  \neu@skippreabstracttrue
+\fi
+\ifneu@nofrontmatter
+  \neu@skippreabstracttrue
 \fi
 \AtBeginDocument{%
   \ifneu@nofrontmatter
@@ -1112,7 +1122,7 @@
 %% 3. 生成英文封面（A Dissertation in ...）
 %% ---------------------------------------------------------------------------
 \newcommand{\makeneucovers}{%
-  \ifneu@nofrontmatter
+  \ifneu@skippreabstract
     \relax% 审阅模式：跳过全部封面页
   \else
   \begingroup
@@ -1222,7 +1232,7 @@
 \newcommand{\neu@authorsignaturegraphic}{\neu@signaturegraphic{\neu@authorsignature}{\neu@signatureheight}}
 \newcommand{\neu@supervisorsignaturegraphic}{\neu@signaturegraphic{\neu@supervisorsignature}{\neu@signatureheight}}
 \newcommand{\makeneudeclaration}{%
-  \ifneu@nofrontmatter
+  \ifneu@skippreabstract
     \relax% 审阅模式：跳过声明与授权页
   \else
   \cleardoublepage
