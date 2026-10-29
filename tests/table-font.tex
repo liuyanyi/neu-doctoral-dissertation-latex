@@ -7,6 +7,19 @@
     \PackageError{table-font}{#1: unexpected font size \f@size}{}%
   \fi
 }
+
+% Trial passes must not create PDF structures that survive counter rollback.
+\AddToHook{begindocument/end}[table-font/trial-check]{%
+  \let\test@TXtrial\TX@trial
+  \def\TX@trial#1{%
+    \test@TXtrial{#1%
+      \csname tag_if_active:T\endcsname{%
+        \PackageError{table-font}{Tagging active during tabularx trial}{}%
+      }%
+    }%
+  }%
+}
+\DeclareHookRule{begindocument/end}{table-font/trial-check}{after}{neudissertation/tabularx-tagging}
 \makeatother
 \begin{document}
 \checkfontsize{body}{12bp}
@@ -20,6 +33,9 @@
   \checkfontsize{table star}{10.5bp}
   \begin{tabularx}{\linewidth}{XX}A & B\end{tabularx}
 \end{table*}
+\csname tag_if_active:F\endcsname{%
+  \PackageError{table-font}{Tagging not restored after tabularx}{}%
+}
 \begin{table}[H]
   \checkfontsize{table H}{10.5bp}
   \begin{tabular}{ll}A & B\end{tabular}

@@ -63,6 +63,26 @@
 \RequirePackage{booktabs}
 \RequirePackage{longtable}
 \RequirePackage{tabularx}
+
+\makeatletter
+% Old tabularx trials reset counters but leave PDF structures behind.
+% New tabularx and latex-lab's table module already suspend trial tagging.
+\AddToHook{begindocument/end}[neudissertation/tabularx-tagging]{%
+  \@ifpackageloaded{tagpdf}{%
+    \IfPackageAtLeastTF{tabularx}{2023/12/11}{}{%
+      \@ifpackageloaded{latex-lab-testphase-table}{}{%
+        \let\neu@originalTXtrial\TX@trial
+        \def\TX@trial#1{%
+          \csname tag_stop:n\endcsname{neu-tabularx-trial}%
+          \neu@originalTXtrial{#1}%
+          \csname tag_start:n\endcsname{neu-tabularx-trial}%
+        }%
+      }%
+    }%
+  }{}%
+}
+\makeatother
+
 \RequirePackage{multirow}
 \RequirePackage{makecell}
 \RequirePackage{enumitem}
