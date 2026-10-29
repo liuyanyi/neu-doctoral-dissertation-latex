@@ -1426,8 +1426,13 @@
 % Keep latex-lab's renderer and tagging sockets; match the caption style.
 \@ifpackageloaded{latex-lab-testphase-float}{%
   \AddToHook{cmd/@makecaption/before}[neudissertation/caption-font]{\wuhao}%
-  \NewSocketPlug{caption/label}{neudissertation}{#1\space}%
-  \AssignSocketPlug{caption/label}{neudissertation}%
+  % Older latex-lab float modules do not expose the caption label socket.
+  \@ifundefined{IfSocketExistsTF}{}{%
+    \IfSocketExistsTF{caption/label}{%
+      \NewSocketPlug{caption/label}{neudissertation}{#1\space}%
+      \AssignSocketPlug{caption/label}{neudissertation}%
+    }{}%
+  }%
 }{}
 \renewcommand{\thesubfigure}{(\alph{subfigure})}
 \makeatletter
