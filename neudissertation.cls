@@ -1425,7 +1425,15 @@
 \captionsetup[subfigure]{font=neuwuhao,labelformat=simple,labelsep=space,justification=centering,singlelinecheck=true,skip=3bp}
 % Keep latex-lab's renderer and tagging sockets; match the caption style.
 \@ifpackageloaded{latex-lab-testphase-float}{%
-  \AddToHook{cmd/@makecaption/before}[neudissertation/caption-font]{\wuhao}%
+  % The 2023 float module replaces this command at begin-document and
+  % cannot accept a generic command hook. Wrap its final implementation
+  % after initialization, retaining the renderer and all tagging operations.
+  \AddToHook{begindocument/end}[neudissertation/caption-font]{%
+    \let\neu@originalmakecaption\@makecaption
+    \long\def\@makecaption#1#2{%
+      \wuhao\neu@originalmakecaption{#1}{#2}%
+    }%
+  }%
   % Older latex-lab float modules do not expose the caption label socket.
   \@ifundefined{IfSocketExistsTF}{}{%
     \IfSocketExistsTF{caption/label}{%

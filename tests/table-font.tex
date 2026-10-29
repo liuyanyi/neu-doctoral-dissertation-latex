@@ -34,4 +34,10 @@
 \begin{tabular}{ll}
   \checkfontsize{standalone tabular}{12bp}A & B
 \end{tabular}
+% Exercise actual captions under phase-III, not only table body fonts.
+\begin{figure}[H]
+  \centering\rule{20mm}{5mm}
+  \neufigcaption{fig:phase-font}{\checkfontsize{phase caption}{10.5bp}实验模式图题}{Phase caption}
+\end{figure}
+\checkfontsize{after phase caption}{12bp}
 \end{document}
