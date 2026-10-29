@@ -1547,6 +1547,11 @@
 \setlist{nosep}
 \setlist[enumerate]{leftmargin=2em}
 \setlist[itemize]{leftmargin=2em}
+%% 段落式自动编号：首行缩进，续行保持正文宽度。
+\newlist{thesispoints}{enumerate}{1}
+\setlist[thesispoints]{label=（\arabic*）,wide=2em,labelsep=0.5em,nosep}
+\newlist{thesispointsen}{enumerate}{1}
+\setlist[thesispointsen]{label=(\arabic*),wide=2em,labelsep=0.5em,nosep}
 %% 参考文献国标版本：由文档类选项 bibliography=2015 / 2025 决定
 \IfStrEq{\neuclassbibliography}{2015}{%
   \bibliographystyle{style/gbt7714-2015-numeric}%

@@ -547,3 +547,8 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 ### 从摘要开始
 
 文档类选项 `start-at-abstract` 跳过封面、题名页和独创性声明，保留中英文摘要与目录。`no-frontmatter` 仍跳过全部前置页，同时启用时以后者为准。默认模式不变。
+
+
+### 段落式自动编号
+
+`thesispoints` 使用中文括号编号（1），`thesispointsen` 使用英文括号编号 (1)。环境内以 `\item` 分项，首行缩进，续行保持正文宽度，适用于贡献与结论条目。
