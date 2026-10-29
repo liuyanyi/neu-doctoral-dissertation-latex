@@ -44,9 +44,9 @@
       "height": 3508
     },
     "crop_mode": "min",
-    "changed_pixels": 352444,
-    "changed_percent": 4.049522091958175,
-    "mean_abs_diff": 5.653569178205904,
+    "changed_pixels": 345540,
+    "changed_percent": 3.9701962968733415,
+    "mean_abs_diff": 5.465596917416148,
     "max_abs_diff": 255,
     "diff_bbox": [
       356,
