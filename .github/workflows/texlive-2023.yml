@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          docker run --rm --user "$(id -u):$(id -g)" \
+          docker run --rm -i --user "$(id -u):$(id -g)" \
             -e HOME=/tmp -v "$GITHUB_WORKSPACE:/work" -w /work \
             --entrypoint /bin/bash "$TL_IMAGE" -s <<'CHECKS'
           set -euo pipefail
@@ -71,6 +71,9 @@ jobs:
           done
           exit "$failed"
           CHECKS
+          test -s tmp/texlive-2023/environment.txt
+          test -s tmp/texlive-2023/results.tsv
+          test "$(wc -l < tmp/texlive-2023/results.tsv)" -eq 12
       - name: Inspect generated PDFs and summarize results
         if: always()
         run: python dev/check_compatibility_pdfs.py --root tmp/texlive-2023
