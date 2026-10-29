@@ -15,9 +15,9 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_CONFIG = Path("dev/pdf_compare_cases.json")
-DEFAULT_OUTPUT_DIR = Path("tmp/pdf-compare")
-DEFAULT_BASELINE_DIR = Path("template_reference/compare_result/baseline")
+DEFAULT_CONFIG = Path("tests/config/pdf_compare_cases.json")
+DEFAULT_OUTPUT_DIR = Path("tests/build/pdf-compare")
+DEFAULT_BASELINE_DIR = Path("tests/baseline")
 BASELINE_METRICS_FILENAME = "diff_metrics.json"
 DEFAULT_CHANGED_PERCENT_TOLERANCE = 0.05
 DEFAULT_MEAN_ABS_DIFF_TOLERANCE = 0.1
@@ -77,7 +77,7 @@ def load_cases(config_path: Path) -> list[CompareCase]:
 def run_compare(case: CompareCase, output_dir: Path) -> dict[str, Any]:
     command = [
         sys.executable,
-        "dev/compare_pdf_visual.py",
+        "tests/tools/compare_pdf_visual.py",
         str(case.reference_pdf),
         str(case.latex_pdf),
         "--word-page",

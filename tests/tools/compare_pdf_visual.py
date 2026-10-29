@@ -2,9 +2,9 @@
 Render two PDF pages at the same DPI and generate visual comparison images.
 
 Typical usage:
-    uv pip install -r dev/requirements.txt
-    .venv\\Scripts\\python dev\\compare_pdf_visual.py word.pdf main.pdf
-    .venv\\Scripts\\python dev\\compare_pdf_visual.py word.pdf main.pdf --page 1 --dpi 300
+    uv pip install -r tests/requirements.txt
+    .venv\\Scripts\\python tests/tools/compare_pdf_visual.py word.pdf main.pdf
+    .venv\\Scripts\\python tests/tools/compare_pdf_visual.py word.pdf main.pdf --page 1 --dpi 300
 """
 
 from __future__ import annotations
@@ -188,8 +188,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("dev/pdf-diff"),
-        help="directory for generated images, default: dev/pdf-diff",
+        default=Path("tests/build/pdf-diff"),
+        help="directory for generated images, default: tests/build/pdf-diff",
     )
     parser.add_argument(
         "--prefix",

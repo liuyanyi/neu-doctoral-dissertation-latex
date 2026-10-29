@@ -1,30 +1,66 @@
-# 模板回归样例
+# 模板测试与维护
 
-从仓库根目录执行（输出目录已被 Git 忽略）：
+所有测试专用内容集中在本目录，命令从仓库根目录执行。公开模板示例仍为 `main.tex` 和各章节；学校原始 Word 资料仍在 `template_reference/`。
 
-```powershell
-latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=tests/build tests/reference-spacing.tex
-latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=tests/build tests/table-font.tex
-latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=tests/build tests/frontmatter-caption.tex
-latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=tests/build tests/frontmatter-caption-plain.tex
-latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=tests/build tests/webpage-date.tex
-latexmk -xelatex main.tex
+| 位置 | 用途 |
+| --- | --- |
+| `run.py` | 本地统一入口；CI 用 `--prepare-only` 准备用例 |
+| `config/cases.json` | 唯一编译用例清单，本地、2023 CI 和 PDF 检查共用 |
+| `cases/` | 版本探针、8 个回归样例及专用 BibTeX 数据 |
+| `tools/` | PDF 检查、视觉比较和学术学位入口生成工具 |
+| `config/pdf_compare_cases.json` | 5 项视觉对比配置 |
+| `fixtures/reference-pages/` | 从学校样例提取的对比 PDF 页面 |
+| `baseline/` | 已接受的视觉指标与叠加图；不自动刷新 |
+| `archive/visual-comparisons/` | 早期对比图，仅供追溯，不参与判定 |
+| `docs/migration-2026-09.md` | 历史迁移与验证记录，旧命令不作为当前入口 |
+| `build/` | 被 Git 忽略的全部运行产物、临时入口、日志与报告 |
+
+## 本地回归
+
+需要可用的 XeLaTeX、latexmk 和 Python 3.10+。测试依赖与模板编译依赖分别管理：
+
+```bash
+python -m pip install -r tests/requirements.txt
+python tests/run.py
+python tests/tools/run_pdf_compare.py --check-baseline
 ```
 
-`reference-spacing` 对比真实引用与直接排印编号的宽度，覆盖中文、标点、空格、分组、子图和公式；需要 latexmk 完成引用解析后的编译。`table-font` 在各环境内断言字号，并检查局部覆盖、环境外恢复及独立 tabular、figure 不受影响。
+第一条测试命令编译清单中的 11 项：版本探针、专业与学术学位完整示例、引用间距、表格字号与实验性图题、两种题注/正文起始模式、网页日期、签名布局、浮动体间距和表注。失败样例不会阻止剩余样例执行；任一编译失败、未解析引用或 PDF 断言失败都会使整体返回非零。
 
-两份 `frontmatter-caption` PDF 均应只有一页，正文页码为 1，不出现 `OMITTED-CN` / `OMITTED-EN`。检查两种模式中中文图表题（含编号）、英文题名和表内文字均为 10.5 bp，正文为 12 bp。`webpage-date` 中带出版者的第一条只应出现一次 2024；无出版者的第二条保留 2023；两条均保留访问日期。
+默认输出为 `tests/build/regression/<用例>/`，汇总在 `results.tsv`、`checks.json`、`summary.md`；不会更新根目录 `main.pdf`。`--output` 可以指定独立运行目录。视觉比较默认读取这组输出，并将结果写入 `tests/build/pdf-compare/`；使用自定义编译输出时，相应通过 `--config` 指定对比输入。
 
-## 2026-09-09 迁移依据
+单项排错示例（测试入口中的相对路径均相对于仓库根目录）：
 
-来源为 `D:/codes/final-paper` 当日工作区的 `neudissertation.cls`、2025 版 BST 及两份原有测试。仅迁入模板实现与测试，论文内容和个人配置不在迁移范围内。
+```bash
+latexmk -xelatex -halt-on-error -outdir=tests/build/single/table-font tests/cases/table-font.tex
+```
 
-- 题注：session `01a079ce-4823-7013-9b23-c7b8c9ab938e`（2026-09-07）。用户实测中文图题为 12 bp、英文为 10.5 bp；最终要求兼容 `DocumentMetadata`。保留最终 hook/socket 方案，不采用记录中已放弃的替换题注函数或移除元数据方案。
-- 引用：session `01a0803d-5515-76a1-b6a5-9e470f82567c`（2026-09-08）。hyperref 结束链接节点遮蔽 xeCJK 的西文边界；恢复边界节点后，中文自动加间距、标点保持原有处理。
-- 表内字号：session `01a08546-6462-74a3-8fc0-05aa43a7c3f4`（2026-09-09）。用户要求将默认五号放入模板；字体设置放在浮动体字体重置之后，并覆盖 longtable。
-- `no-frontmatter`：依据来源类文件中的审阅用途说明迁入；当前可检索 session 未找到最初实现对话。摘要通过丢弃盒子隐藏，因此仍处理其内容。
-- 网页年份：来源提交 `947cc54e5663357ce9231cb4f8654b2c72ed052a` 中的 BST 补丁。当前可检索 session 未找到最初讨论；从代码可确认网页已有创建/修改日期输出，删除出版者分支中额外的 `format.date`，并用带/不带出版者的样例验证。
+`table-font` 保留 `phase-III`，覆盖字号作用域、旧版 tabularx 试排标记、连续 `[H]` 图表题、独立父结构及普通浮动图题。`signature-layout` 检查不同尺寸签名不改变文本坐标。两份 `frontmatter-caption` 检查单页正文、隐藏前置页及实际字号；`webpage-date` 检查年份与访问日期次数。通过这些检查不等于 PDF/UA 合规认证。
 
-本次运行环境为 TeX Live 2026；不将本机验证视为其他 TeX Live 版本已经复测。
+新增用例时，把输入放入 `cases/`，在 `config/cases.json` 注册；如有新的 PDF 不变量，在 `tools/check_compatibility_pdfs.py` 添加检查。无需再在工作流中复制一份用例列表。
 
-验证结果：上述五个回归样例和 39 页 `main.pdf` 编译成功，`git diff --check` 通过。通过 PDF 文字对象核实两种题注模式的五号字号、单页审阅输出和网页年份次数；目视检查两份题注测试及主文档 PDF 第 15–21 页。主文档没有未解析引用或 Overfull/Underfull 提示，仍有 tagpdf 的 XeTeX 支持提示、xeCJK robust 提示及未设置元数据语言的提示。
+## 视觉基线
+
+`config/pdf_compare_cases.json` 覆盖封面、声明页、中英文题名页及两种学位模式。判定使用 `baseline/diff_metrics.json` 的窗口：`changed_percent` 为 ±0.05，`mean_abs_diff` 为 ±0.1；保留原有指标及容差。叠加图供人工检查，不以 Word 页面与 LaTeX 页面像素完全相同为目标。
+
+确认排版改变可以接受、实际查看新旧对照后，才显式更新基线：
+
+```bash
+python tests/run.py
+python tests/tools/run_pdf_compare.py --check-baseline
+# 审阅对比图之后执行，并单独审阅/提交 baseline 的差异
+python tests/tools/run_pdf_compare.py --update-baseline
+```
+
+单页工具为 `tests/tools/compare_pdf_visual.py`，参数见 `--help`；输出也应放在 `tests/build/` 下。
+
+## CI 与已验证环境
+
+GitHub 要求工作流位于 `.github/workflows/`，这里只保留平台调度；测试定义、检查逻辑和数据均在 `tests/`。
+
+- **TeX Live 2023 Compatibility**：手动触发固定摘要的历史容器。宿主机准备共享清单，容器内使用真实 2023 引擎编译，宿主机检查 PDF；不更新历史宏包、不套用 2026 像素基线。输出在 `tests/build/texlive-2023/`，artifact 保留 14 天。
+- **PDF Compare**：执行统一回归，再检查 5 项视觉基线；`update_baseline=true` 仅生成供审阅的产物，不自动修改仓库基线。
+- **Build**：单独编译公开 `main.tex` 示例。
+- **Release**：依据 `.github/release-include.txt` 打包公开模板；测试目录不在发布包中。
+
+2026-10-29，提交 `79a6e24` 的 [真实 TeX Live 2023 检查](https://github.com/liuyanyi/neu-doctoral-dissertation-latex/actions/runs/40830800143) 为 **11/11 通过**。Windows / TeX Live 2026 同样通过回归及 5 项视觉基线；Overleaf 的历史验证不代表本版本已复测。2023 CI 成功记录针对所链接的提交，测试管理重构后的工作流需以新的运行结果为准。

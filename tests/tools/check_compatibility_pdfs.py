@@ -52,9 +52,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
     args = parser.parse_args()
-    names = ['version-probe', 'main', 'main-academic', 'reference-spacing', 'table-font',
-             'frontmatter-caption', 'frontmatter-caption-plain', 'webpage-date',
-             'signature-layout', 'float-spacing', 'table-note']
+    manifest = Path(__file__).resolve().parents[1] / 'config/cases.json'
+    names = [case['name'] for case in json.loads(manifest.read_text(encoding='utf-8'))]
     results = {}
     status_file = args.root / 'results.tsv'
     statuses = dict(line.split('\t') for line in status_file.read_text().splitlines()[1:]) if status_file.exists() else {}
@@ -67,11 +66,11 @@ def main():
             results[name] = {'passed': False, 'detail': str(error)}
     args.root.mkdir(parents=True, exist_ok=True)
     (args.root / 'checks.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
-    lines = ['# TeX Live 2023 compatibility', '', '| Case | Status | Detail |', '|---|---|---|']
+    lines = ['# Template regression checks', '', '| Case | Status | Detail |', '|---|---|---|']
     for name, result in results.items():
         detail = result['detail'].replace('|', '/').replace('\n', ' ')
         lines.append(f"| {name} | {'PASS' if result['passed'] else 'FAIL'} | {detail} |")
-    lines += ['', 'This checks compilation and PDF invariants, not visual equivalence to TeX Live 2026.']
+    lines += ['', 'This checks compilation and PDF invariants. Visual baselines are checked separately.']
     summary = '\n'.join(lines) + '\n'
     (args.root / 'summary.md').write_text(summary, encoding='utf-8')
     if os.environ.get('GITHUB_STEP_SUMMARY'):

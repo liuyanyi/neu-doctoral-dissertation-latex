@@ -12,17 +12,15 @@ latexmk -xelatex main.tex
 
 ### 兼容性
 
-模板目标兼容 TeX Live 2023–2026。以下为项目历史验证环境；`v2026.10` 本次仅在 Windows / TeX Live 2026 完成回归，其他环境尚未复测：
+模板目标兼容 TeX Live 2023–2026。`v2026.10` 已完成以下验证：
 
-#### 本地环境
+| 环境 | 本版验证结果 |
+| :--- | :--- |
+| Windows 11 / TeX Live 2026 / XeLaTeX | 11 项编译与 PDF 检查通过，5 项视觉基线检查通过 |
+| Linux 容器 / 真实 TeX Live 2023 / XeLaTeX | [11 项兼容性检查全部通过](https://github.com/liuyanyi/neu-doctoral-dissertation-latex/actions/runs/40830800143)，验证提交 `79a6e24` |
+| Overleaf（TeX Live 2024、2025）及 Windows / TeX Live 2023 | 历史版本验证过，本版尚未在这些环境复测 |
 
-- [x] TeX Live 2023 (Windows 11)
-- [x] TeX Live 2026 (Windows 11)
-
-#### 在线环境
-
-- [x] 本地部署版本 Overleaf (TeX Live 2025)
-- [x] Overleaf 云上版本 (TeX Live 2024, 2025)
+2023 检查覆盖两种学位完整示例、版本探针和 8 个回归样例，包括实验性图题、字号、引用、签名与日期；通过检查不等于完成 PDF/UA 合规认证，也不表示跨版本像素一致。
 
 > [!NOTE]
 > Overleaf 上记得选择 XeLaTeX 编译器。云上版本容易出现编译超时的情况，建议在本地环境编译，或使用 Overleaf 的本地部署版本。
@@ -422,43 +420,17 @@ cosupervisor-en = {},
 
 中文摘要环境统一为 `abstractcn`，旧的 `zhabstract` 已不再提供。现有文档请直接改用 `\begin{abstractcn}` 和 `\end{abstractcn}`。
 
-## 格式比较工具
+## 模板维护与测试
 
-为了快速比较模板生成的 PDF 与学校提供的样例 PDF 之间的格式差异，项目在 `dev/` 目录下提供了基于 Python 的 PDF 比较工具 `compare_pdf_visual.py`。该工具用于开发过程中，帮助确保模板生成的 PDF 与学校提供的样例 PDF 在格式上保持一致。
-
-### 使用方法
+测试样例、工具、用例清单、参考页面和视觉基线统一维护在 [`tests/`](tests/README.md)。普通论文写作无需运行测试工具；维护者可从仓库根目录执行：
 
 ```bash
-uv run dev\compare_pdf_visual.py .\template_reference\word_page\cover_page.pdf main.pdf --word-page 1 --latex-page 1 --dpi 300 --output-dir tmp\pdf-diff --prefix cover_page --save-rendered
+python -m pip install -r tests/requirements.txt
+python tests/run.py
+python tests/tools/run_pdf_compare.py --check-baseline
 ```
 
-### 参数说明
-
-| 参数 | 说明 |
-| :--- | :--- |
-| `--word-page` | Word PDF 的页码 |
-| `--latex-page` | LaTeX PDF 的页码 |
-| `--dpi` | 生成差异图像的分辨率 |
-| `--output-dir` | 差异图像的输出目录 |
-| `--prefix` | 差异图像文件的前缀 |
-| `--save-rendered` | 保存渲染后的图像，便于进一步分析 |
-
-### 开发中的比较命令
-
-开发过程中的比较文件保留在 `template_reference/compare_result` 目录下，主要比较封面页、声明页、英文题名页、专业学位题名页和学术学位题名页。批量比较配置维护在 `dev/pdf_compare_cases.json` 中：
-
-```bash
-uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --output-dir tmp/pdf-compare
-```
-
-### CI 编译与 PDF 对比
-
-仓库提供两个手动触发的 GitHub Actions：
-
-- `Build`：只编译 `main.tex`，并上传 `main.pdf`、`main.log` 等构建产物。
-- `TeX Live 2023 Compatibility`：手动运行固定摘要的真实 TeX Live 2023 历史容器，编译专业/学术学位示例及8个回归样例，检查未解析引用、PDF 字号、日期及签名布局。入口为 Actions → TeX Live 2023 Compatibility → Run workflow。结果见任务摘要和 `texlive-2023-compatibility` artifact（保留14天）；无需本机安装 TeX Live 2023。
-- `PDF Compare`：编译默认专业学位版本，再生成并编译临时学术学位入口，随后按 `dev/pdf_compare_cases.json` 执行 PDF 视觉对比。
-- `Release`：按 `.github/release-include.txt` 打包 TeX 模板、样例内容、`style/`、`Figures/`、`.agents/`、README、LICENSE 和 CHANGELOG，并发布到 GitHub Release。
+所有测试产物默认写入 `tests/build/`，不覆盖根目录的示例 PDF。手动 CI、历史兼容性验证、单项运行与基线更新流程见 [测试维护说明](tests/README.md)。
 
 ### 版本与兼容性约定
 
@@ -468,32 +440,6 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 - 每次发布都必须更新 `CHANGELOG.md`，说明功能变化、修复内容和兼容性影响，并写明“支持从哪个版本升级”；用户无需修改论文源码时也应明确写明“无需迁移”。
 - Release workflow 会检查 tag 格式、类文件版本以及自上一个 tag 以来是否更新了 `CHANGELOG.md`，任一项不符合时停止发布。
 
-两个 workflow 会复用 `.github/texlive-packages.txt` 中的 TeX Live 包列表，并缓存 apt 下载包；`PDF Compare` 还会缓存 Python pip 依赖。
-
-PDF 对比完成后会上传 `pdf-compare` artifact，包含 `main.pdf`、`main.log`、临时学术学位版本 PDF/log，以及每个 case 的 diff、增强 diff、红蓝 overlay、highlight、Word 渲染页、LaTeX 渲染页和 metrics。`summary.md` 和 `summary.json` 汇总所有 case 的指标。
-对比脚本也会在 workflow 日志末尾输出指标表格，并写入 GitHub Actions 的 Step Summary，便于不下载 artifact 直接检查结果。
-
-`template_reference/compare_result/baseline` 下保留已接受的红蓝 overlay PNG 供人工审阅。CI 的阻断条件只比较 `baseline/diff_metrics.json` 中的指标窗口，不直接以 Word 原始模板的 diff 大小或 PNG 像素级一致性作为失败条件。
-
-默认指标窗口为：
-
-- `changed_percent`: ±0.05
-- `mean_abs_diff`: ±0.1
-
-本地更新 baseline：
-
-```bash
-latexmk -xelatex main.tex
-uv run --with-requirements dev/requirements.txt python dev/make_academic_entry.py
-latexmk -xelatex -jobname=main-academic -outdir=tmp/ci-academic tmp/ci-academic/main-academic.tex
-uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --output-dir tmp/pdf-compare --update-baseline
-```
-
-本地检查 baseline：
-
-```bash
-uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --output-dir tmp/pdf-compare --check-baseline
-```
 
 ## 模板构建来源和参考信息
 
@@ -512,7 +458,7 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 
 ### 表注
 
-在表体之后使用 `\neutabnote{说明文字}`，自动输出“注：”，采用五号字并在与表体同宽的居中区域内左对齐。支持 table/table* 中的 tabular、tabular*、tabularx；不将此接口视为跨页 longtable 表注。测试见 `tests/table-note.tex`。
+在表体之后使用 `\neutabnote{说明文字}`，自动输出“注：”，采用五号字并在与表体同宽的居中区域内左对齐。支持 table/table* 中的 tabular、tabular*、tabularx；不将此接口视为跨页 longtable 表注。测试见 [统一测试说明](tests/README.md)。
 
 
 ### 算法接口

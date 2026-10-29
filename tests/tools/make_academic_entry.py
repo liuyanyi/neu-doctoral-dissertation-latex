@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("tmp/ci-academic/main-academic.tex"),
+        default=Path("tests/build/regression/generated/main-academic.tex"),
         help="temporary academic TeX entry to write",
     )
     return parser.parse_args()

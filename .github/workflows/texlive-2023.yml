@@ -21,12 +21,12 @@ jobs:
           python-version: '3.12'
       - name: Install PDF inspection dependency (host only)
         run: python -m pip install 'PyMuPDF==1.26.7'
-      - name: Prepare academic sample
-        run: python dev/make_academic_entry.py --output tmp/texlive-2023/main-academic.tex
+      - name: Prepare shared regression cases
+        run: python tests/run.py --output tests/build/texlive-2023 --prepare-only
       - name: Pull pinned historical image
         run: |
           docker pull "$TL_IMAGE"
-          docker image inspect "$TL_IMAGE" > tmp/texlive-2023/image.json
+          docker image inspect "$TL_IMAGE" > tests/build/texlive-2023/image.json
       - name: Compile with real TeX Live 2023
         shell: bash
         run: |
@@ -35,7 +35,7 @@ jobs:
             -e HOME=/tmp -v "$GITHUB_WORKSPACE:/work" -w /work \
             --entrypoint /bin/bash "$TL_IMAGE" -s <<'CHECKS'
           set -euo pipefail
-          out=tmp/texlive-2023
+          out=tests/build/texlive-2023
           {
             xelatex --version
             latexmk -version
@@ -44,15 +44,9 @@ jobs:
           } > "$out/environment.txt" 2>&1
           cat "$out/environment.txt"
           xelatex --version | grep -q 'TeX Live 2023'
-          printf '\\listfiles\n\\documentclass{neudissertation}\n\\begin{document}Version probe.\\end{document}\n' > "$out/version-probe.tex"
           printf 'case\texit_code\n' > "$out/results.tsv"
           failed=0
-          for source in "$out/version-probe.tex" main.tex "$out/main-academic.tex" \
-            tests/reference-spacing.tex tests/table-font.tex \
-            tests/frontmatter-caption.tex tests/frontmatter-caption-plain.tex \
-            tests/webpage-date.tex tests/signature-layout.tex \
-            tests/float-spacing.tex tests/table-note.tex; do
-            name=$(basename "$source" .tex)
+          while IFS=$'\t' read -r name source; do
             mkdir -p "$out/$name"
             code=0
             latexmk -xelatex -interaction=nonstopmode -halt-on-error \
@@ -68,15 +62,15 @@ jobs:
               failed=1
               tail -n 60 "$out/$name/console.txt"
             fi
-          done
+          done < "$out/cases.tsv"
           exit "$failed"
           CHECKS
-          test -s tmp/texlive-2023/environment.txt
-          test -s tmp/texlive-2023/results.tsv
-          test "$(wc -l < tmp/texlive-2023/results.tsv)" -eq 12
+          test -s tests/build/texlive-2023/environment.txt
+          test -s tests/build/texlive-2023/results.tsv
+          test "$(wc -l < tests/build/texlive-2023/results.tsv)" -eq "$(( $(wc -l < tests/build/texlive-2023/cases.tsv) + 1 ))"
       - name: Inspect generated PDFs and summarize results
         if: always()
-        run: python dev/check_compatibility_pdfs.py --root tmp/texlive-2023
+        run: python tests/tools/check_compatibility_pdfs.py --root tests/build/texlive-2023
       - name: Upload PDFs and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -84,11 +78,11 @@ jobs:
           name: texlive-2023-compatibility
           retention-days: 14
           path: |
-            tmp/texlive-2023/**/*.pdf
-            tmp/texlive-2023/**/*.log
-            tmp/texlive-2023/**/*.blg
-            tmp/texlive-2023/**/*.txt
-            tmp/texlive-2023/**/*.json
-            tmp/texlive-2023/**/*.tsv
-            tmp/texlive-2023/**/*.md
+            tests/build/texlive-2023/**/*.pdf
+            tests/build/texlive-2023/**/*.log
+            tests/build/texlive-2023/**/*.blg
+            tests/build/texlive-2023/**/*.txt
+            tests/build/texlive-2023/**/*.json
+            tests/build/texlive-2023/**/*.tsv
+            tests/build/texlive-2023/**/*.md
           if-no-files-found: warn

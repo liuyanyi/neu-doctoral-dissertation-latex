@@ -1,0 +1,46 @@
+[
+  {
+    "name": "version-probe",
+    "source": "tests/cases/version-probe.tex"
+  },
+  {
+    "name": "main",
+    "source": "main.tex"
+  },
+  {
+    "name": "main-academic",
+    "source": "{output}/generated/main-academic.tex"
+  },
+  {
+    "name": "reference-spacing",
+    "source": "tests/cases/reference-spacing.tex"
+  },
+  {
+    "name": "table-font",
+    "source": "tests/cases/table-font.tex"
+  },
+  {
+    "name": "frontmatter-caption",
+    "source": "tests/cases/frontmatter-caption.tex"
+  },
+  {
+    "name": "frontmatter-caption-plain",
+    "source": "tests/cases/frontmatter-caption-plain.tex"
+  },
+  {
+    "name": "webpage-date",
+    "source": "tests/cases/webpage-date.tex"
+  },
+  {
+    "name": "signature-layout",
+    "source": "tests/cases/signature-layout.tex"
+  },
+  {
+    "name": "float-spacing",
+    "source": "tests/cases/float-spacing.tex"
+  },
+  {
+    "name": "table-note",
+    "source": "tests/cases/table-note.tex"
+  }
+]

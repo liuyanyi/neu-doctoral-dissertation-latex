@@ -8,41 +8,41 @@
     {
       "id": "cover_page",
       "label": "final cover",
-      "reference_pdf": "template_reference/word_page/cover_page_v2.pdf",
+      "reference_pdf": "tests/fixtures/reference-pages/cover_page_v2.pdf",
       "reference_page": 1,
-      "latex_pdf": "main.pdf",
+      "latex_pdf": "tests/build/regression/main/main.pdf",
       "latex_page": 1
     },
     {
       "id": "declaration",
       "label": "declaration page",
-      "reference_pdf": "template_reference/word_page/declear.pdf",
+      "reference_pdf": "tests/fixtures/reference-pages/declear.pdf",
       "reference_page": 1,
-      "latex_pdf": "main.pdf",
+      "latex_pdf": "tests/build/regression/main/main.pdf",
       "latex_page": 7
     },
     {
       "id": "title_page_en",
       "label": "English title page",
-      "reference_pdf": "template_reference/word_page/en_title_page.pdf",
+      "reference_pdf": "tests/fixtures/reference-pages/en_title_page.pdf",
       "reference_page": 1,
-      "latex_pdf": "main.pdf",
+      "latex_pdf": "tests/build/regression/main/main.pdf",
       "latex_page": 5
     },
     {
       "id": "title_page_professional",
       "label": "professional degree title page",
-      "reference_pdf": "template_reference/word_page/title_page_202606_engv.pdf",
+      "reference_pdf": "tests/fixtures/reference-pages/title_page_202606_engv.pdf",
       "reference_page": 1,
-      "latex_pdf": "main.pdf",
+      "latex_pdf": "tests/build/regression/main/main.pdf",
       "latex_page": 3
     },
     {
       "id": "title_page_academic",
       "label": "academic degree title page",
-      "reference_pdf": "template_reference/word_page/title_page_202606.pdf",
+      "reference_pdf": "tests/fixtures/reference-pages/title_page_202606.pdf",
       "reference_page": 1,
-      "latex_pdf": "tmp/ci-academic/main-academic.pdf",
+      "latex_pdf": "tests/build/regression/main-academic/main-academic.pdf",
       "latex_page": 3
     }
   ]
