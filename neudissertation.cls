@@ -1413,7 +1413,7 @@
 \makeatother
 \newcommand{\neufigcaption}[3]{%
   \caption{#2\label{#1}}%
-  {\centering\wuhao Fig.~\ref{#1}\quad #3\par}%
+  {\centering\wuhao Fig.~\ref{#1}\space #3\par}%
 }
 \NewDocumentEnvironment{neusubfigure}{O{t}m}{%
   \begin{subfigure}[#1]{#2}%
@@ -1426,7 +1426,7 @@
 }
 \newcommand{\neutabcaption}[3]{%
   \caption{#2\label{#1}}%
-  {\centering\wuhao Table~\ref{#1}\quad #3\par}%
+  {\centering\wuhao Table~\ref{#1}\space #3\par}%
   \vspace{4bp}%
 }
 % Link specials hide xeCJK's boundaries around reference numbers. Consume the
