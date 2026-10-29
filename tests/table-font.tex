@@ -20,6 +20,26 @@
   }%
 }
 \DeclareHookRule{begindocument/end}{table-font/trial-check}{after}{neudissertation/tabularx-tagging}
+
+% Legacy captions need the structure belonging to this [H] float, not an
+% empty value or the parent left over from an earlier float.
+\newcommand{\checklegacyfloatparent}{%
+  \IfPackageAtLeastTF{latex-lab-testphase-float}{2024/01/01}{}{%
+    \ifx\@current@float@struct\@empty
+      \PackageError{table-font}{Missing legacy H float parent}{}%
+    \else
+      \ifnum\@current@float@struct>0\relax\else
+        \PackageError{table-font}{Invalid legacy H float parent}{}%
+      \fi
+      \ifcsname test@previousfloatparent\endcsname
+        \ifx\@current@float@struct\test@previousfloatparent
+          \PackageError{table-font}{Reused legacy H float parent}{}%
+        \fi
+      \fi
+      \global\let\test@previousfloatparent\@current@float@struct
+    \fi
+  }%
+}
 \makeatother
 \begin{document}
 \checkfontsize{body}{12bp}
@@ -52,8 +72,22 @@
 \end{tabular}
 % Exercise actual captions under phase-III, not only table body fonts.
 \begin{figure}[H]
+  \checklegacyfloatparent
   \centering\rule{20mm}{5mm}
   \neufigcaption{fig:phase-font}{\checkfontsize{phase caption}{10.5bp}实验模式图题}{Phase caption}
 \end{figure}
 \checkfontsize{after phase caption}{12bp}
+\begin{table}[H]
+  \checklegacyfloatparent
+  \neutabcaption{tab:phase-font}{\checkfontsize{phase table caption}{10.5bp}实验模式表题}{Phase table caption}
+  \centering\begin{tabular}{ll}A & B\end{tabular}
+\end{table}
+\checkfontsize{after phase table caption}{12bp}
+\begin{figure}[htbp]
+  \centering\rule{20mm}{5mm}
+  \neufigcaption{fig:phase-floating}{浮动图题}{Floating caption}
+\end{figure}
+\checkfontsize{after floating caption}{12bp}
+References: \ref{fig:phase-font}, \ref{tab:phase-font}, \ref{fig:phase-floating}.
+
 \end{document}

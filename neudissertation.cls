@@ -1445,6 +1445,31 @@
 \captionsetup[subfigure]{font=neuwuhao,labelformat=simple,labelsep=space,justification=centering,singlelinecheck=true,skip=3bp}
 % Keep latex-lab's renderer and tagging sockets; match the caption style.
 \@ifpackageloaded{latex-lab-testphase-float}{%
+  % In the 2023 module, captions require a numeric float parent. float's
+  % [H] entry bypasses @xfloat, so it must open/close that parent itself.
+  % Retain float's box placement and the legacy module's tagging renderer.
+  \newcommand{\neu@patchlegacyHfloats}{%
+    \let\neu@originalfloatHH\@float@HH
+    \let\neu@originalfloatendH\float@endH
+    \def\@float@HH##1[H]{%
+      \par
+      \def\@captype{##1}%
+      \csname __tag_float_begin:\endcsname
+      \neu@originalfloatHH{##1}[H]%
+      \MakeLinkTarget[tagstructure]{g__tag_struct_abs_int}%
+      \ignorespaces
+    }%
+    \def\float@endH{%
+      \neu@originalfloatendH
+      \par
+      \csname __tag_float_end:\endcsname
+    }%
+  }%
+  \IfPackageAtLeastTF{latex-lab-testphase-float}{2024/01/01}{}{%
+    \AddToHook{begindocument/end}[neudissertation/legacy-H-float]{%
+      \neu@patchlegacyHfloats
+    }%
+  }%
   % The 2023 float module replaces this command at begin-document and
   % cannot accept a generic command hook. Wrap its final implementation
   % after initialization, retaining the renderer and all tagging operations.
