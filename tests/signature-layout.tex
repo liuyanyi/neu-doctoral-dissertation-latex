@@ -1,0 +1,12 @@
+% Compile from the repository root into a separate test output directory.
+% All three declaration pages must have identical text coordinates.
+\documentclass{neudissertation}
+\neudisetup{signature-date={2026},author-signature={},supervisor-signature={}}
+\begin{document}
+\makeneudeclaration
+\neudisetup{author-signature={Figures/signature.jpeg},
+  supervisor-signature={Figures/signature.jpeg},signature-height={8mm}}
+\makeneudeclaration
+\neudisetup{signature-height={16mm}}
+\makeneudeclaration
+\end{document}

@@ -116,6 +116,8 @@ latexmk -xelatex main.tex
 
 `author-signature` 和 `supervisor-signature` 支持 `png`、`jpg`、`pdf` 等 `\includegraphics` 可读取的签名文件；为空时声明页签名处留空。`signature-date` 为空时默认使用 `cover-year/month` 生成的中文日期，`signature-height` 用于调整签名图片高度。
 
+签名图片以不占排版尺寸的叠加层显示，调整高度或更换宽高比不会移动签名标签、日期及声明正文。图片从签名标签后向右延伸；过大的图片仍可能覆盖相邻内容，应按声明页留白设置合适高度。
+
 `final-cover` 用于控制是否在现有中英文题名页之前增加一页 TeX 化的 2026 最终版博士学位论文封面：
 
 ```latex

@@ -1119,7 +1119,10 @@
 \newcommand{\neu@signaturegraphic}[2]{%
   \ifdefempty{#1}{}{%
     \IfFileExists{#1}{%
-      \raisebox{-0.35\height}{\includegraphics[height=#2,keepaspectratio]{#1}}%
+      % Overlay only: image dimensions must not change the text node's bounds.
+      \makebox[0pt][l]{%
+        \raisebox{-0.35\height}[0pt][0pt]{\includegraphics[height=#2,keepaspectratio]{#1}}%
+      }%
     }{%
       \ClassWarning{neudissertation}{Signature file `#1' not found}%
     }%
