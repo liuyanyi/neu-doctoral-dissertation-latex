@@ -45,6 +45,18 @@
 \RequirePackage{titletoc}
 \RequirePackage{graphicx}
 \RequirePackage{float}
+\RequirePackage[chapter]{algorithm}
+\RequirePackage{algorithmic}
+\floatname{algorithm}{算法}
+% 算法按章编号；正文只提供位置、标签、标题和伪代码。
+\newenvironment{neualgorithm}[3][!htbp]{%
+  \begin{algorithm}[#1]%
+    \caption{#3}\label{#2}%
+    \begin{algorithmic}[1]%
+}{%
+    \end{algorithmic}%
+  \end{algorithm}%
+}
 \RequirePackage{array}
 \RequirePackage{booktabs}
 \RequirePackage{longtable}
@@ -1488,6 +1500,7 @@
 \newcommand{\neufigref}[1]{图~\neurefnumber{#1}}
 \newcommand{\neusubfigref}[1]{图~\neurefnumber{#1}}
 \newcommand{\neutabref}[1]{表~\neurefnumber{#1}}
+\newcommand{\neualgref}[1]{算法~\neurefnumber{#1}}
 \newcommand{\neueqref}[1]{式（\ref{#1}）}
 % Use superscript numbers for citations, as required by the standard.
 \citestyle{super}

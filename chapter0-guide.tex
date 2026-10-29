@@ -247,12 +247,9 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
 
 \section{算法伪代码}
 
-计算机类论文常需要给出算法步骤。本文档在 \texttt{main.tex} 中加载了 \texttt{algorithm} 和 \texttt{algorithmic} 宏包，可以直接使用如下环境。
+计算机类论文常需要给出算法步骤。模板统一加载算法宏包，通过 \texttt{neualgorithm} 环境管理按章编号、标题、标签和伪代码行号，可以直接使用如下环境。
 
-\begin{algorithm}[!htbp]
-  \caption{样例训练流程}
-  \label{alg:ch0-training}
-  \begin{algorithmic}[1]
+\begin{neualgorithm}[!htbp]{alg:ch0-training}{样例训练流程}
     \REQUIRE Training set $\mathcal{D}$, learning rate $\eta$, maximum epoch $T$
     \ENSURE Model parameters $\theta$
     \STATE Initialize parameters $\theta$
@@ -262,10 +259,9 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
     \STATE Update $\theta \leftarrow \theta - \eta \nabla_{\theta}\mathcal{L}(\theta)$
     \ENDFOR
     \RETURN $\theta$
-  \end{algorithmic}
-\end{algorithm}
+\end{neualgorithm}
 
-算法~\ref{alg:ch0-training} 展示了带行号的伪代码。
+\neualgref{alg:ch0-training} 展示了带行号的伪代码。
 若需要中文关键字，可在导言区重定义相应命令。
 
 \section{引用、链接与交叉引用}
@@ -283,6 +279,6 @@ PDF、PNG、JPG 等常见图片格式均可通过 \verb|\includegraphics| 插入
   \item 子图引用：\verb|\neusubfigref{fig:ch0-four-subfig-a}|，效果为 \neusubfigref{fig:ch0-four-subfig-a}。
   \item 表引用：\verb|\neutabref{tab:ch0-complex}|，效果为 \neutabref{tab:ch0-complex}。
   \item 公式引用：\verb|\neueqref{eq:ch0-loss}|，效果为 \neueqref{eq:ch0-loss}。
-  \item 算法引用：当前模板未单独封装算法引用命令，可写作“算法~\ref{alg:ch0-training}”。
+  \item 算法引用：当前模板未单独封装算法引用命令，可写作“\neualgref{alg:ch0-training}”。
 \end{itemize}
 模板提供的公开命令和环境可参考 \texttt{README.md} 中的“模板命令说明”一节。

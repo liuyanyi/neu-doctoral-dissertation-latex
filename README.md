@@ -537,3 +537,8 @@ GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
 ### 表注
 
 在表体之后使用 `\neutabnote{说明文字}`，自动输出“注：”，采用五号字并在与表体同宽的居中区域内左对齐。支持 table/table* 中的 tabular、tabular*、tabularx；不将此接口视为跨页 longtable 表注。测试见 `tests/table-note.tex`。
+
+
+### 算法接口
+
+模板加载 algorithm、algorithmic 并按章编号。使用 `\begin{neualgorithm}[!htbp]{alg:example}{算法标题}`，环境内直接写 `\STATE` 等伪代码，最后 `\end{neualgorithm}`；通过 `\neualgref{alg:example}` 引用。接口自动提供算法标题、标签和行号。
