@@ -508,3 +508,12 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 ## License
 
 GPL-2.0 License，详见 [LICENSE](LICENSE) 文件。
+
+
+### 浮动体间距（V2）
+
+模板统一管理图、表和带横线算法的间距：页首/页底浮动体与正文、相邻浮动体采用 `12bp plus 2bp minus 2bp`；普通文中浮动体上下间距为 12bp/2bp，紧接标题时为 0bp/6bp；`[H]` 浮动体上方为 11bp（标题后不重复叠加），下方不再追加间距。修复 `[H]` 浮动体之后标题段前间距被抑制的问题。
+
+图题上间距为 4bp，表题不额外添加 caption 下间距，双语表题结束后保留 4bp；ruled 算法横线内侧间距为 3bp。章节标题、正文行距、段落及公式间距保持原设置。浮动体内核补丁不匹配时会明确报错；旧版 TeX Live 应在对应环境验证。
+
+`tests/float-spacing.tex` 覆盖固定/普通浮动体、各级标题前后、页首页底、长题注及页末分页。它使用普通 `algorithm` 环境，不要求新增算法封装接口。

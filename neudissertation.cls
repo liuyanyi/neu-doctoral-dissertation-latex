@@ -273,9 +273,55 @@
 %% ---------------------------------------------------------------------------
 %% 浮动体与数学公式间距：图表与正文间的垂直间距
 %% ---------------------------------------------------------------------------
+% V2 浮动体间距方案：保持标题与正文的规范排版参数不变。
+\makeatletter
+\newdimen\neu@floatabove
+\newdimen\neu@floatbelow
+\newcommand{\neu@floatpatchfailure}{\ClassError{neudissertation}{Float spacing patch failed}{Inspect the installed float/kernel version.}}
+% 标题后的 H 浮动体已满足“标题与后续内容保持相邻”的要求，
+% 结束后清除该状态，避免下一个标题的段前间距被抑制。
+\newcommand{\neu@floatafterH}{\@nobreakfalse\everypar{}}
+
+% H 浮动体：重新分配上下留白。后续正文采用 22bp 行距，
+% 自身已在浮动体下方形成约 11bp 留白，因此不再追加下间距。
+% 紧接标题时沿用标题的段后间距，不额外叠加 11bp 上间距。
+\renewcommand{\float@endH}{%
+  \@endfloatbox
+  \if@nobreak\nobreak\else\vskip11bp\relax\fi
+  \if@flstyle\setbox\@currbox\float@makebox\columnwidth\fi
+  \box\@currbox\vskip0bp\relax
+  \aftergroup\neu@floatafterH}
+
+% 保留普通浮动体及其位置选项，仅调整插入正文时的上下间距；
+% 延后排放、页首和页底浮动体继续使用原有放置机制。
+\pretocmd{\@addtocurcol}{%
+  \neu@floatabove=12bp\relax
+  \neu@floatbelow=2bp\relax
+  \if@nobreak\neu@floatabove=0bp\relax\neu@floatbelow=6bp\relax\fi
+}{}{\neu@floatpatchfailure}
+\patchcmd{\@addtocurcol}{\advance\@reqcolroom\intextsep}
+  {\advance\@reqcolroom\neu@floatabove\advance\@reqcolroom\neu@floatbelow}{}{\neu@floatpatchfailure}
+\patchcmd{\@addtocurcol}{\global\advance\@textfloatsheight 2\intextsep}
+  {\global\advance\@textfloatsheight\neu@floatabove\global\advance\@textfloatsheight\neu@floatbelow}{}{\neu@floatpatchfailure}
+\patchcmd{\@addtocurcol}{\vskip\intextsep\box\@currbox}
+  {\vskip\neu@floatabove\box\@currbox}{}{\neu@floatpatchfailure}
+\patchcmd{\@addtocurcol}{\penalty\interlinepenalty\vskip\intextsep}
+  {\penalty\interlinepenalty\vskip\neu@floatbelow}{}{\neu@floatpatchfailure}
+
+% 带横线的算法环境保留原有字体与结构，
+% 将横线内侧留白从默认的 2pt 调整为 3bp。
+\renewcommand{\fs@ruled}{%
+  \def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@ruled
+  \def\@fs@pre{\hrule height.8pt depth0pt\kern3bp}%
+  \def\@fs@post{\kern3bp\hrule\relax}%
+  \def\@fs@mid{\kern3bp\hrule\kern3bp}%
+  \let\@fs@iftopcapt\iftrue}
+\makeatother
+
+
 \newcommand{\thesisfloatsetup}{%
-  \setlength{\floatsep}{6bp plus 2bp minus 2bp}%
-  \setlength{\textfloatsep}{6bp plus 2bp minus 2bp}%
+  \setlength{\floatsep}{12bp plus 2bp minus 2bp}%
+  \setlength{\textfloatsep}{12bp plus 2bp minus 2bp}%
   \setlength{\intextsep}{6bp plus 2bp minus 2bp}%
   \setlength{\abovedisplayskip}{8bp plus 2bp minus 2bp}%
   \setlength{\belowdisplayskip}{8bp plus 2bp minus 2bp}%
@@ -1316,8 +1362,8 @@
 \AddToHook{env/longtable/begin}[neudissertation/table-font]{\wuhao}
 \DeclareCaptionFont{neuwuhao}{\wuhao}
 \captionsetup{font=neuwuhao,labelsep=space,skip=3bp}
-\captionsetup[figure]{position=bottom,aboveskip=3bp,belowskip=0bp}
-\captionsetup[table]{position=top,aboveskip=0bp,belowskip=3bp}
+\captionsetup[figure]{position=bottom,aboveskip=4bp,belowskip=0bp}
+\captionsetup[table]{position=top,aboveskip=0bp,belowskip=0bp}
 \captionsetup[subfigure]{font=neuwuhao,labelformat=simple,labelsep=space,justification=centering,singlelinecheck=true,skip=3bp}
 % Keep latex-lab's renderer and tagging sockets; match the caption style.
 \@ifpackageloaded{latex-lab-testphase-float}{%
@@ -1345,7 +1391,7 @@
 \newcommand{\neutabcaption}[3]{%
   \caption{#2\label{#1}}%
   {\centering\wuhao Table~\ref{#1}\quad #3\par}%
-  \vspace{3bp}%
+  \vspace{4bp}%
 }
 % hyperref's closing link special hides xeCJK's trailing Latin boundary node.
 % Restore that node so xeCJK adds its normal glue before following Chinese
