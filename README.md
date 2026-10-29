@@ -456,6 +456,7 @@ uv run --with-requirements dev/requirements.txt python dev/run_pdf_compare.py --
 仓库提供两个手动触发的 GitHub Actions：
 
 - `Build`：只编译 `main.tex`，并上传 `main.pdf`、`main.log` 等构建产物。
+- `TeX Live 2023 Compatibility`：手动运行固定摘要的真实 TeX Live 2023 历史容器，编译专业/学术学位示例及8个回归样例，检查未解析引用、PDF 字号、日期及签名布局。入口为 Actions → TeX Live 2023 Compatibility → Run workflow。结果见任务摘要和 `texlive-2023-compatibility` artifact（保留14天）；无需本机安装 TeX Live 2023。
 - `PDF Compare`：编译默认专业学位版本，再生成并编译临时学术学位入口，随后按 `dev/pdf_compare_cases.json` 执行 PDF 视觉对比。
 - `Release`：按 `.github/release-include.txt` 打包 TeX 模板、样例内容、`style/`、`Figures/`、`.agents/`、README、LICENSE 和 CHANGELOG，并发布到 GitHub Release。
 
